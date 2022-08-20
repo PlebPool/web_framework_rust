@@ -1,4 +1,8 @@
+use std::collections::HashMap;
+use std::sync::Arc;
+use crate::application::di::container::Container;
 use crate::web::server::data::models::transaction::Transaction;
+use crate::web::server::HandlerFunction;
 
 
 // TODO: Impl chain.
@@ -12,15 +16,13 @@ mod handlers {
     pub mod static_resource_handler;
 }
 
-pub fn enter_chain(mut transaction: Transaction) {
+pub fn enter_chain(mut transaction: Transaction, container: Arc<Container>) {
     let path = transaction.req().request_line_data().path.to_owned();
-    let res = transaction.res_mut();
     if path == "/" {
-        res.set_status(200);
-        res.set_reason_phrase("OK");
-        res.set_body("Hello".to_string());
-        res.add_header("Content-Type", "text/plain".to_string());
+        let handler: &HashMap<String, HandlerFunction> = container.get_ref().unwrap();
+        handler.get("/").unwrap()(&mut transaction);
     } else {
+        let res = transaction.res_mut();
         res.set_status(404);
         res.set_reason_phrase("Not Found");
     }

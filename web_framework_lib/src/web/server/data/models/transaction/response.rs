@@ -17,13 +17,9 @@ pub struct Response<'a> {
 impl Debug for Response<'_> {
     fn fmt<'a>(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
 
-        let body_as_uft8: String;
+        let body_as_uft8;
 
-        if self.body.is_empty() {
-            body_as_uft8 = String::from("[NO BODY]");
-        } else {
-            body_as_uft8 = String::from_utf8_lossy(&self.body).into_owned();
-        }
+        body_as_uft8 = String::from_utf8_lossy(&self.body);
 
         f.debug_struct("Response")
             .field("protocol", &self.protocol)
@@ -70,11 +66,8 @@ impl <'a> Response<'a> {
         res
     }
 
-    pub fn set_body_to_file(&mut self, path_from_public: String) -> Result<(), Error> {
-        let pre_path: String =
-            if path_from_public.starts_with('/') { "./src/public".to_string() }
-            else { "./src/public/".to_string() };
-        match fs::read(pre_path+path_from_public.as_str()) {
+    pub fn set_body_to_file(&mut self, path: &str) -> Result<(), Error> {
+        match fs::read(path) {
             Ok(t) => {
                 self.set_body_u8(t);
                 Ok(())

@@ -41,6 +41,7 @@ impl <'a> Transaction<'a> {
                     .as_slice())
                 .expect("Failed to resolve transaction.");
             self.set_resolved(true);
+            self.req.stream().flush().expect("Flush failed");
             Ok(())
         }
     }

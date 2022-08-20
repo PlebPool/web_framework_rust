@@ -17,7 +17,7 @@ pub trait Provider {
     /// Returns:
     ///
     /// The TypeId of the type that the trait is being implemented for.
-    fn id(&self) -> TypeId { // Default impl.
+    fn id_of_type_provided(&self) -> TypeId { // Default impl.
         TypeId::of::<Self::TypeProvided>()
     }
 }
@@ -36,7 +36,7 @@ pub trait ReferenceProvider {
     /// Returns:
     ///
     /// The type id of the type of the reference that the trait object will provide.
-    fn id(&self) -> TypeId { // Default impl.
+    fn id_of_reference_provided(&self) -> TypeId { // Default impl.
         TypeId::of::<&Self::RefProvided>()
     }
 }

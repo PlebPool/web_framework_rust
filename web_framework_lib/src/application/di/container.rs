@@ -17,14 +17,14 @@ impl Container {
     pub fn install_value_provider
     <TypeProvided: Providable, PROVIDER: 'static + Provider<TypeProvided = TypeProvided>>
     (&mut self, provider: PROVIDER) {
-        self.providers.insert(provider.id(),
+        self.providers.insert(provider.id_of_type_provided(),
                               Arc::new(Self::box_provider(provider)));
     }
 
     pub fn install_reference_provider
     <ReferenceType: Providable, PROVIDER: 'static + ReferenceProvider<RefProvided = ReferenceType>>
     (&mut self, provider: PROVIDER) {
-        self.providers.insert(provider.id(),
+        self.providers.insert(provider.id_of_reference_provided(),
                               Arc::new(Self::box_ref_provider(provider)));
     }
 

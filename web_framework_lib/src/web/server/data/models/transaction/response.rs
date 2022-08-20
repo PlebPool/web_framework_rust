@@ -120,17 +120,28 @@ impl <'a> Response<'a> {
         res
     }
 
-    /// It reads a file and sets the body of the response to the contents of the file.
+    /// > This function takes a path to a file in the `public` directory and sets the response body to
+    /// the contents of that file
     ///
     /// Arguments:
     ///
-    /// * `path`: The path to the file you want to set the body to.
+    /// * `path_from_public`: The path to the file, relative to the public folder.
     ///
     /// Returns:
     ///
     /// A Result<(), Error>
-    pub fn set_body_to_file(&mut self, path: &str) -> Result<(), Error> {
-        match fs::read(path) {
+    /// # Examples
+    /// ```
+    /// use web_framework_lib::web::server::data::models::transaction::response::Response;
+    /// let mut res: Response = Response::new_empty();
+    /// res.set_body_to_file("index.html").expect("");
+    /// res.set_body_to_file("/index.html").expect("");
+    pub fn set_body_to_file(&mut self, path_from_public: &str) -> Result<(), Error> {
+        let mut path_prefix: String = "src/public".to_string();
+        if !path_from_public.starts_with("/") {
+            path_prefix = path_prefix.add("/");
+        }
+        match fs::read(path_prefix.add(path_from_public)) {
             Ok(t) => {
                 self.set_body_u8(t);
                 Ok(())

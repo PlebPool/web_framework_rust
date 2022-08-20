@@ -1,5 +1,25 @@
 use std::str::SplitWhitespace;
 
+/// It's a struct that holds the method, path, and protocol of a request line.
+///
+/// The method is a string that holds the HTTP method of the request.
+///
+/// The path is a string that holds the path of the request.
+///
+/// The protocol is a string that holds the protocol of the request.
+///
+/// The path_query_bypassed is a boolean that holds whether or not the path has been bypassed.
+///
+/// The path_query_bypassed is a boolean that holds whether or not the path has been bypassed.
+///
+/// The path_query
+///
+/// Properties:
+///
+/// * `method`: The HTTP method used in the request.
+/// * `path`: The path of the request.
+/// * `protocol`: The protocol used in the request.
+/// * `path_query_bypassed`: This is a boolean that indicates whether the path query has been bypassed.
 #[derive(Debug)]
 pub struct RequestLineData {
     method: String,
@@ -10,6 +30,16 @@ pub struct RequestLineData {
 
 #[allow(dead_code)]
 impl <'a> RequestLineData {
+    /// It takes a string, splits it on whitespace, and then assigns the first, second, and third
+    /// elements to the method, path, and protocol fields of the Request struct
+    ///
+    /// Arguments:
+    ///
+    /// * `req_str_first_line`: The first line of the request.
+    ///
+    /// Returns:
+    ///
+    /// A new instance of the Request struct.
     pub fn new(req_str_first_line: &'a str) -> Self {
         let mut sws: SplitWhitespace = req_str_first_line.split_whitespace();
 

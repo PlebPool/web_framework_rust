@@ -4,6 +4,14 @@ use crate::web::server::data::models::transaction::request::request_line_data::R
 
 mod request_line_data;
 
+/// `Request` is a struct that contains a `RequestLineData` struct, a `HashMap` of `String`s, and a
+/// `TcpStream`.
+///
+/// Properties:
+///
+/// * `request_line_data`: This is a struct that contains the request line data.
+/// * `request_header_map`: This is a HashMap that will contain the request headers.
+/// * `stream`: The stream of data that the request is coming in on.
 #[derive(Debug)]
 pub struct Request {
     request_line_data: RequestLineData,
@@ -13,6 +21,16 @@ pub struct Request {
 
 #[allow(dead_code)]
 impl <'a> Request {
+    /// This function takes a string and a stream, and returns a Request struct
+    ///
+    /// Arguments:
+    ///
+    /// * `req_str`: The request string that was sent to the server.
+    /// * `stream`: The stream that the request was received on.
+    ///
+    /// Returns:
+    ///
+    /// A new instance of the Request struct.
     pub fn new(req_str: String, stream: TcpStream) -> Self {
         let mut req_split_new_line: Vec<&str> = req_str.split('\n').collect();
         req_split_new_line.reverse();
@@ -25,6 +43,15 @@ impl <'a> Request {
         }
     }
 
+    /// It takes a vector of strings, and returns a hashmap of strings
+    ///
+    /// Arguments:
+    ///
+    /// * `req_str`: A vector of strings, each string is a header line.
+    ///
+    /// Returns:
+    ///
+    /// A HashMap<String, String>
     fn req_str_to_map(req_str: Vec<&str>) -> HashMap<String, String> {
         let mut req_header_map: HashMap<String, String> = HashMap::new();
         for x in req_str.into_iter() {
@@ -39,6 +66,8 @@ impl <'a> Request {
     }
 
     // TODO: TMP.
+    /// If the path contains a query string, then remove the query string from the path and set the
+    /// path_query_bypassed flag to true
     pub fn cut_query(&mut self) {
         let query_split_off: Option<(&str, &str)> =
             self.request_line_data.path.split_once('?');

@@ -1,3 +1,4 @@
+use std::borrow::Cow;
 use std::collections::HashMap;
 use std::fmt::{Debug, Formatter};
 use std::fs;
@@ -6,6 +7,23 @@ use std::ops::Add;
 
 const DEFAULT_HTTP_VERSION: &str = "HTTP/2";
 
+/// `Response` is a struct that contains a reference to a string, a `u16`, another reference to a
+/// string, a `HashMap` of references to strings and strings, and a `Vec` of `u8`s.
+///
+/// The `'a` is a lifetime parameter. It's a way of saying that the struct contains references to data
+/// that will live at least as long as the struct itself.
+///
+/// The `&'a str` is a reference to a string that will live at least as long as the struct itself.
+///
+/// The `HashMap
+///
+/// Properties:
+///
+/// * `protocol`: The protocol used for the response, e.g. HTTP/1.1
+/// * `status`: The HTTP status code.
+/// * `reason_phrase`: The reason phrase is a human-readable string that is usually
+/// * `headers`: A HashMap of the headers in the response.
+/// * `body`: The body of the response.
 pub struct Response<'a> {
     protocol: &'a str,
     status: u16,
@@ -17,7 +35,7 @@ pub struct Response<'a> {
 impl Debug for Response<'_> {
     fn fmt<'a>(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
 
-        let body_as_uft8;
+        let body_as_uft8: Cow<str>;
 
         body_as_uft8 = String::from_utf8_lossy(&self.body);
 
@@ -30,8 +48,20 @@ impl Debug for Response<'_> {
             .finish()
     }
 }
+
 #[allow(dead_code)]
 impl <'a> Response<'a> {
+    /// `new` is a function that takes a `status` and a `reason_phrase` and returns a `Response` struct
+    ///
+    /// Arguments:
+    ///
+    /// * `status`: The HTTP status code.
+    /// * `reason_phrase`: The reason phrase is a human-readable string that is usually used to explain
+    /// the status code.
+    ///
+    /// Returns:
+    ///
+    /// A new instance of the Response struct.
     pub fn new(status: u16, reason_phrase: &'a str) -> Self {
         Self {
             protocol: DEFAULT_HTTP_VERSION,
@@ -42,6 +72,11 @@ impl <'a> Response<'a> {
         }
     }
 
+    /// > This function creates a new `Response` struct with default values
+    ///
+    /// Returns:
+    ///
+    /// A new instance of the Response struct.
     pub fn new_empty() -> Self {
         Self {
             protocol: DEFAULT_HTTP_VERSION,
@@ -52,20 +87,48 @@ impl <'a> Response<'a> {
         }
     }
 
+    /// `ok()` returns a new `Response` with a status code of 200 and a status message of "OK"
+    ///
+    /// Returns:
+    ///
+    /// A new instance of the `Response` struct.
     pub fn ok() -> Self {
         Self::new(200, "OK")
     }
 
+    /// `not_found()` returns a new `Status` with a code of `404` and a message of `Not Found`
+    ///
+    /// Returns:
+    ///
+    /// A new instance of the `HttpResponse` struct.
     pub fn not_found() -> Self {
         Self::new(404, "Not Found")
     }
 
+    /// `bad_request` returns a `Response` with a status code of 400 and a body of `s`
+    ///
+    /// Arguments:
+    ///
+    /// * `s`: &str - The string to be sent as the body of the response.
+    ///
+    /// Returns:
+    ///
+    /// A new Response object with a status code of 400 and a body of the string passed in.
     pub fn bad_request(s: &str) -> Self {
         let mut res: Response = Self::new(400, "Bad Request");
         res.set_body(s.to_owned());
         res
     }
 
+    /// It reads a file and sets the body of the response to the contents of the file.
+    ///
+    /// Arguments:
+    ///
+    /// * `path`: The path to the file you want to set the body to.
+    ///
+    /// Returns:
+    ///
+    /// A Result<(), Error>
     pub fn set_body_to_file(&mut self, path: &str) -> Result<(), Error> {
         match fs::read(path) {
             Ok(t) => {
@@ -78,18 +141,40 @@ impl <'a> Response<'a> {
         }
     }
 
+    /// `add_header` takes a mutable reference to a `Request` struct and two strings, one of which is
+    /// borrowed, and inserts the key and value into the `headers` field of the `Request` struct
+    ///
+    /// Arguments:
+    ///
+    /// * `key`: &'a str
+    /// * `val`: String - The value of the header.
     pub fn add_header(&mut self, key: &'a str, val: String) {
         self.headers.insert(key, val);
     }
 
+    /// It sets the body of the response to the given string.
+    ///
+    /// Arguments:
+    ///
+    /// * `body`: The body of the request.
     pub fn set_body(&mut self, body: String) {
         self.set_body_u8(Vec::from(body.as_bytes()));
     }
 
+    /// It sets the body of the response to a vector of u8.
+    ///
+    /// Arguments:
+    ///
+    /// * `body`: The body of the request.
     pub fn set_body_u8(&mut self, body: Vec<u8>) {
         self.body = body;
     }
 
+    /// It takes the response object and converts it into a vector of bytes
+    ///
+    /// Returns:
+    ///
+    /// A vector of bytes.
     pub fn get_as_u8_vec(&mut self) -> Vec<u8> {
         if self.status == 0 {
             panic!("Response status was never mutated but you're attempting to writing a body for it.")

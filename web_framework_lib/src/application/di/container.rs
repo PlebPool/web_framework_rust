@@ -9,6 +9,7 @@ pub struct Container {
     providers: HashMap<TypeId, Arc<dyn Any>>
 }
 
+/// Telling the compiler that the Container is safe to send to other threads.
 unsafe impl Send for Container { }
 unsafe impl Sync for Container { }
 

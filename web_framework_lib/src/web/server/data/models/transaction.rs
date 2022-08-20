@@ -7,6 +7,14 @@ use crate::web::server::data::models::transaction::response::Response;
 pub mod request;
 pub mod response;
 
+/// `Transaction` is a struct that contains a `Request`, a `Response`, and a `bool` that indicates
+/// whether the transaction has been resolved.
+///
+/// Properties:
+///
+/// * `req`: The request object.
+/// * `res`: The response object that will be sent back to the client.
+/// * `resolved`: This is a boolean that indicates whether the transaction has been resolved.
 pub struct Transaction<'a> {
     req: Request,
     res: Response<'a>,
@@ -25,10 +33,26 @@ impl Debug for Transaction<'_> {
 
 #[allow(dead_code)]
 impl <'a> Transaction<'a> {
+    /// `new` is a function that takes two arguments, `req` and `res`, and returns a `Response` object
+    ///
+    /// Arguments:
+    ///
+    /// * `req`: The request object.
+    /// * `res`: The response object that will be sent back to the client.
+    ///
+    /// Returns:
+    ///
+    /// A new instance of the `Resolver` struct.
     pub fn new(req: Request, res: Response<'a>) -> Self {
         Self { req, res, resolved: false }
     }
 
+    /// If the transaction is not resolved, and the response status is not 0, then write the response to
+    /// the stream and set the transaction as resolved
+    ///
+    /// Returns:
+    ///
+    /// A Result<(), &str>
     pub fn resolve(&mut self) -> Result<(), &str> {
         return if self.resolved {
             Err("Transaction already resolved...")

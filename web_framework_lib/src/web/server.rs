@@ -30,10 +30,10 @@ pub fn start(port: &str, container: Arc<Container>) {
 
     for tcp_stream in listener.incoming() {
 
-        let thread_builder = thread::Builder::new()
+        let thread_builder: thread::Builder = thread::Builder::new()
             .name(String::from("REQUEST_HANDLER_THREAD"));
 
-        let container = Arc::clone(&container);
+        let container: Arc<Container> = Arc::clone(&container);
 
         thread_builder.spawn(move || {
             let transaction: Transaction = request_parser

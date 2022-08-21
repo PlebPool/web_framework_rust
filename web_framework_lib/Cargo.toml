@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 syn = "1.0.99"
+di_ioc_lib = { path = "../di_ioc_lib" }

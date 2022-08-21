@@ -3,6 +3,10 @@
 version = 3
 
 [[package]]
+name = "di_ioc_lib"
+version = "0.1.0"
+
+[[package]]
 name = "proc-macro2"
 version = "1.0.43"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -41,5 +45,6 @@ checksum = "c4f5b37a154999a8f3f98cc23a628d850e154479cd94decf3414696e12e31aaf"
 name = "web_framework_lib"
 version = "0.1.0"
 dependencies = [
+ "di_ioc_lib",
  "syn",
 ]

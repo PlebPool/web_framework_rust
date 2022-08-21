@@ -1,7 +1,7 @@
 use std::net::TcpListener;
 use std::sync::Arc;
 use std::thread;
-use crate::application::di::container::Container;
+use di_ioc_lib::di::container::Container;
 use crate::web::server::data::models::transaction::Transaction;
 use crate::web::server::data::request_parser;
 use crate::web::server::function_chain::chain_handler;

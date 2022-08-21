@@ -1,10 +1,9 @@
 use std::collections::HashMap;
 use std::sync::Arc;
-use web_framework_lib::application::di::container::Container;
+use di_ioc_lib::di::container::Container;
 use web_framework_lib::web::server;
 use web_framework_lib::web::server::data::models::transaction::Transaction;
 use web_framework_lib::web::server::HandlerFunction;
-use rocket::route;
 
 pub fn index(transaction: &mut Transaction){
     let res = transaction.res_mut();

@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use std::sync::Arc;
-use crate::application::di::container::Container;
+use di_ioc_lib::di::container::Container;
 use crate::web::server::data::models::transaction::Transaction;
 use crate::web::server::HandlerFunction;
 

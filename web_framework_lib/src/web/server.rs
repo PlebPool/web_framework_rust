@@ -23,7 +23,6 @@ mod function_chain {
 
 pub type HandlerFunction = fn(transaction: &mut Transaction);
 
-// TODO: Pass a handler context to this function.
 pub fn start(port: &str, container: Arc<Container>) {
     let listener: TcpListener = TcpListener::bind("127.0.0.1:".to_owned() + port)
         .expect("BIND FAILED");

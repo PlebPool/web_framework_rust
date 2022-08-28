@@ -1,8 +1,10 @@
 use std::collections::HashMap;
 use std::net::TcpStream;
+use crate::web::server::data::models::transaction::request::request_headers::RequestHeaders;
 use crate::web::server::data::models::transaction::request::request_line_data::RequestLineData;
 
 mod request_line_data;
+mod request_headers;
 
 /// `Request` is a struct that contains a `RequestLineData` struct, a `HashMap` of `String`s, and a
 /// `TcpStream`.
@@ -15,12 +17,12 @@ mod request_line_data;
 #[derive(Debug)]
 pub struct Request {
     request_line_data: RequestLineData,
-    request_header_map: HashMap<String, String>,
+    request_headers: RequestHeaders,
     stream: TcpStream
 }
 
 #[allow(dead_code)]
-impl <'a> Request {
+impl Request {
     /// This function takes a string and a stream, and returns a Request struct
     ///
     /// Arguments:
@@ -38,7 +40,7 @@ impl <'a> Request {
             request_line_data:
             RequestLineData
             ::new(req_split_new_line.pop().expect("No first line")),
-            request_header_map: Self::req_str_to_map(req_split_new_line.to_owned()),
+            request_headers: RequestHeaders::new(Self::req_str_to_header_map(req_split_new_line.to_owned())),
             stream
         }
     }
@@ -52,7 +54,7 @@ impl <'a> Request {
     /// Returns:
     ///
     /// A HashMap<String, String>
-    fn req_str_to_map(req_str: Vec<&str>) -> HashMap<String, String> {
+    fn req_str_to_header_map(req_str: Vec<&str>) -> HashMap<String, String> {
         let mut req_header_map: HashMap<String, String> = HashMap::new();
         for x in req_str.into_iter() {
             match x.split_once(':') {
@@ -65,7 +67,7 @@ impl <'a> Request {
         req_header_map
     }
 
-    // TODO: TMP.
+    // TODO: TMP. IMPL QUERIES.
     /// If the path contains a query string, then remove the query string from the path and set the
     /// path_query_bypassed flag to true
     pub fn cut_query(&mut self) {
@@ -80,8 +82,8 @@ impl <'a> Request {
     pub fn request_line_data(&self) -> &RequestLineData {
         &self.request_line_data
     }
-    pub fn request_header_map(&self) -> &HashMap<String, String> {
-        &self.request_header_map
+    pub fn request_header_map(&self) -> &RequestHeaders {
+        &self.request_headers
     }
     pub fn stream(&self) -> &TcpStream {
         &self.stream
@@ -90,8 +92,8 @@ impl <'a> Request {
     pub fn set_request_line_data(&mut self, request_line_data: RequestLineData) {
         self.request_line_data = request_line_data;
     }
-    pub fn set_request_header_map(&mut self, request_header_map: HashMap<String, String>) {
-        self.request_header_map = request_header_map;
+    pub fn set_request_header_map(&mut self, request_header_map: RequestHeaders) {
+        self.request_headers = request_header_map;
     }
     pub fn set_stream(&mut self, stream: TcpStream) {
         self.stream = stream;

@@ -15,8 +15,8 @@ pub fn index(transaction: &mut Transaction){
 
 fn main() {
     let mut container: Container = Container::default();
-    let mut co: RouteHandlerContainer = RouteHandlerContainer::new();
-    co.insert("/".to_string(), index);
-    container.install_reference_provider(Arc::new(co));
+    let mut rhc: RouteHandlerContainer = RouteHandlerContainer::new();
+    rhc.insert("/".to_string(), index);
+    container.install_reference_provider(Arc::new(rhc));
     server::start("7878", Arc::new(container))
 }

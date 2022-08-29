@@ -41,6 +41,7 @@ pub trait ReferenceProvider {
     }
 }
 
+/// Implementing the `ReferenceProvider` trait for the `Arc<T>` type.
 impl <T: Providable> ReferenceProvider for Arc<T> {
     type RefProvided = T;
 
@@ -49,8 +50,13 @@ impl <T: Providable> ReferenceProvider for Arc<T> {
     }
 }
 
+/// Implementing the `Providable` trait for the `HashMap<K, V>` type.
 impl <K: 'static, V: 'static> Providable for HashMap<K, V> { }
 
+/// Implementing the `Providable` trait for the `Vec<T>` type.
+impl <T: 'static> Providable for Vec<T> { }
+
+/// Implementing the `Provider` trait for the `Arc<T>` type.
 impl <T: Providable> Provider for Arc<T> {
     type TypeProvided = Self;
 
@@ -59,6 +65,7 @@ impl <T: Providable> Provider for Arc<T> {
     }
 }
 
+/// Implementing the `ReferenceProvider` trait for the `Box<T>` type.
 impl <T: Providable> ReferenceProvider for Box<T> {
     type RefProvided = T;
 
@@ -67,6 +74,7 @@ impl <T: Providable> ReferenceProvider for Box<T> {
     }
 }
 
+/// Implementing the `ReferenceProvider` trait for the `Rc<T>` type.
 impl <T: Providable> ReferenceProvider for Rc<T> {
     type RefProvided = T;
 

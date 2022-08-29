@@ -12,10 +12,10 @@ pub mod data {
     }
     pub mod enums {
         pub mod http_method_enum;
+        pub mod static_file_ext_enum;
     }
     pub mod request_parser;
 }
-
 
 pub mod function_chain {
     pub mod route_handler_container;

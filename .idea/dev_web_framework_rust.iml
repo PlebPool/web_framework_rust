@@ -5,9 +5,13 @@
       <sourceFolder url="file://$MODULE_DIR$/server/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/web_framework_lib/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/di_ioc_lib/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/web_framework_lib/src/proc_macros/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/web_framework_lib/src/proc_macros_derive/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/server/target" />
       <excludeFolder url="file://$MODULE_DIR$/web_framework_lib/target" />
       <excludeFolder url="file://$MODULE_DIR$/di_ioc_lib/target" />
+      <excludeFolder url="file://$MODULE_DIR$/web_framework_lib/src/proc_macros_derive/target" />
+      <excludeFolder url="file://$MODULE_DIR$/web_framework_lib/src/proc_macros/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

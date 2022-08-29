@@ -17,7 +17,8 @@ pub mod data {
 }
 
 
-mod function_chain {
+pub mod function_chain {
+    pub mod route_handler_container;
     pub mod chain_handler;
 }
 

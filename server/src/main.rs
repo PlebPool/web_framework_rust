@@ -1,10 +1,9 @@
-use std::collections::HashMap;
 use std::sync::Arc;
 use di_ioc_lib::di::container::Container;
 use web_framework_lib::web::server;
 use web_framework_lib::web::server::data::models::transaction::response::Response;
 use web_framework_lib::web::server::data::models::transaction::Transaction;
-use web_framework_lib::web::server::HandlerFunction;
+use web_framework_lib::web::server::function_chain::route_handler_container::RouteHandlerContainer;
 
 pub fn index(transaction: &mut Transaction){
     let res: &mut Response = transaction.res_mut();
@@ -15,9 +14,9 @@ pub fn index(transaction: &mut Transaction){
 }
 
 fn main() {
-    let mut container = Container::default();
-    let mut map: HashMap<String, HandlerFunction> = HashMap::new();
-    map.insert("/".to_string(), index);
-    container.install_reference_provider(Arc::new(map));
+    let mut container: Container = Container::default();
+    let mut co: RouteHandlerContainer = RouteHandlerContainer::new();
+    co.insert("/".to_string(), index);
+    container.install_reference_provider(Arc::new(co));
     server::start("7878", Arc::new(container))
 }

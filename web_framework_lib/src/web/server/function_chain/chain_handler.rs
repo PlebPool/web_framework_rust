@@ -1,9 +1,8 @@
-use std::collections::HashMap;
 use std::sync::Arc;
 use di_ioc_lib::di::container::Container;
+use crate::web::server::data::models::transaction::response::Response;
 use crate::web::server::data::models::transaction::Transaction;
-use crate::web::server::HandlerFunction;
-
+use crate::web::server::function_chain::route_handler_container::RouteHandlerContainer;
 
 // TODO: Impl chain.
 // TODO: Build chain.
@@ -24,17 +23,23 @@ mod handlers {
 /// * `transaction`: The transaction object that is passed through the chain.
 /// * `container`: Arc<Container> - This is the container that holds the route map.
 pub fn enter_chain(mut transaction: Transaction, container: Arc<Container>) {
-    let path = transaction.req().request_line_data().path.to_owned();
-    let route_map: &HashMap<String, HandlerFunction> = container.get_ref()
-        .expect("Failed to get route_map");
+    let path: String = transaction.req().request_line_data().path.to_owned();
+
+    let route_map: &RouteHandlerContainer = container.get_ref()
+        .expect("Failed to get RouteHandlerContainer.");
+
     if let Some(handler) = route_map.get(&path) {
         handler(&mut transaction);
     } else {
-        let res = transaction.res_mut();
+        if transaction.req().request_line_data().path.contains('.') {
+            // TODO: Check if extension is valid.
+            // TODO: Check if req is looking in valid directory.
+            // TODO: Send file if exists.
+        }
+        let res: &mut Response = transaction.res_mut();
         res.set_status(404);
         res.set_reason_phrase("Not Found");
     }
-
     match transaction.resolve() {
         Err(e) => {
             println!("{}", e);

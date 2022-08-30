@@ -1,6 +1,5 @@
 use proc_macro::TokenStream;
 use std::iter::Map;
-use syn::punctuated::Iter;
 use quote::quote;
 
 struct EnumFromStrAttrs {
@@ -38,7 +37,7 @@ pub fn impl_enum_from_str(derive_input: syn::DeriveInput) -> TokenStream {
 
     let output_token_stream = match data {
         syn::Data::Enum(syn::DataEnum { variants, .. }) => {
-            let variant_token_identity_iterator: Map<Iter<syn::Variant>, fn(&syn::Variant) -> &syn::Ident> =
+            let variant_token_identity_iterator: Map<syn::punctuated::Iter<syn::Variant>, fn(&syn::Variant) -> &syn::Ident> =
                 variants.iter().map(|v| &v.ident);
             let mut variant_token_identity_string_vec: Vec<String> =
                 variants.iter().map(|v| {
@@ -61,7 +60,7 @@ pub fn impl_enum_from_str(derive_input: syn::DeriveInput) -> TokenStream {
                     }
                 }).collect();
             }
-            let variant_token_identity_string_iterator: Iter<String> =
+            let variant_token_identity_string_iterator: std::slice::Iter<String> =
                 variant_token_identity_string_vec.iter();
             quote! {
                 impl #ident {

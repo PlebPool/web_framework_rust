@@ -5,12 +5,6 @@ use crate::web::server::data::models::transaction::response::Response;
 use crate::web::server::data::models::transaction::Transaction;
 use crate::web::server::function_chain::route_handler_container::RouteHandlerContainer;
 
-// TODO: Impl chain.
-// TODO: Build chain.
-// TODO: Execute chain.
-// TODO: Resolve transaction.
-// TODO: Log transaction to terminal.
-
 mod handlers {
     pub mod handler_config;
     pub mod static_resource_handler;
@@ -25,10 +19,8 @@ mod handlers {
 /// * `container`: Arc<Container> - This is the container that holds the route map.
 pub fn enter_chain(mut transaction: Transaction, container: Arc<Container>) {
     let path: String = transaction.req().request_line_data().path.to_owned();
-
     let route_map: &RouteHandlerContainer = container.get_ref()
         .expect("Failed to get RouteHandlerContainer.");
-
     if let Some(handler) = route_map.get(&path) {
         handler(&mut transaction);
     } else {
@@ -46,7 +38,7 @@ pub fn enter_chain(mut transaction: Transaction, container: Arc<Container>) {
             println!("{}", e);
         },
         Ok(_) => {
-            println!("Request handled: {:#?}", transaction);
+            dbg!(transaction);
         }
     };
 }
@@ -66,29 +58,10 @@ fn rule_out_static_resources(transaction: &mut Transaction) -> bool {
                     return true
                 },
                 Err(e) => {
-                    println!("ERROR: {}", e);
+                    dbg!(e);
                 }
             }
         }
     }
     false
-
 }
-
-// if path.contains('.') {
-// let split = path.split_once('.').expect("Split failed");
-// let ext: Result<StaticFileExt, ()> = StaticFileExt::from_str(split.1);
-// if let Ok(sfe) = ext {
-// let res: &mut Response = transaction.res_mut();
-// res.set_body_to_file(path.as_str())
-// .expect("Failed to set file to body");
-// res.add_header("Content-Type", sfe.mime_type()
-// .expect("Failed to get mime type").to_string());
-// res.set_status(200);
-// res.set_reason_phrase("OK");
-// }
-// } else {
-// let res: &mut Response = transaction.res_mut();
-// res.set_status(404);
-// res.set_reason_phrase("Not Found");
-// }

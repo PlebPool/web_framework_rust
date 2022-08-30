@@ -34,11 +34,8 @@ pub struct Response<'a> {
 
 impl Debug for Response<'_> {
     fn fmt<'a>(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-
         let body_as_uft8: Cow<str>;
-
-        body_as_uft8 = String::from_utf8_lossy(&self.body);
-
+        body_as_uft8 = String::from_utf8_lossy(self.body().as_slice());
         f.debug_struct("Response")
             .field("protocol", &self.protocol)
             .field("status", &self.status)
@@ -201,7 +198,7 @@ impl <'a> Response<'a> {
                               status=self.status,
                               reason=self.reason_phrase,
                               headers=header_map_to_str).as_bytes());
-        res_as_u8_vec.append(&mut self.body);
+        res_as_u8_vec.append(&mut self.body.clone()); // Cloning for debugging purposes.
         res_as_u8_vec
     }
 

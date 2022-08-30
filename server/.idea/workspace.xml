@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="CargoProjects">
+    <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="7883851b-4bf5-4208-9ccd-636ea8b7d534" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../web_framework_lib/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/Cargo.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../web_framework_lib/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/proc_macros/Cargo.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/proc_macros/Cargo.toml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/proc_macros/src/lib.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/proc_macros_derive/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/proc_macros_derive/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/proc_macros_derive/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/proc_macros_derive/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/web/server/data/enums/static_file_ext_enum.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/web/server/data/enums/static_file_ext_enum.rs" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/../di_ioc_lib/src/di/container.rs" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/../web_framework_lib/src/web/server.rs" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/../web_framework_lib/src/web/server/data/models/transaction/request.rs" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/../web_framework_lib/src/web/server/function_chain/chain_handler.rs" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="MacroExpansionManager">
+    <option name="directoryName" value="2q9frbk9" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2DhvTUx08VEkfC4G3WKNGf9q6Im" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/mattias.wegblad/Desktop/git/web_framework_rust/server&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;org.rust.cargo.project.model.PROJECT_DISCOVERY&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;language.rust.cargo.check&quot;
+  }
+}</component>
+  <component name="RunManager">
+    <configuration name="Run server" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="run --package server --bin server" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="withSudo" value="false" />
+      <option name="buildTarget" value="REMOTE" />
+      <option name="backtrace" value="SHORT" />
+      <envs />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Cargo.Run server" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="RustProjectSettings">
+    <option name="runExternalLinterOnTheFly" value="true" />
+    <option name="toolchainHomeDirectory" value="$USER_HOME$/.cargo/bin" />
+    <option name="version" value="2" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="7883851b-4bf5-4208-9ccd-636ea8b7d534" name="Changes" comment="" />
+      <created>1661164139319</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1661164139319</updated>
+      <workItem from="1661164140883" duration="699000" />
+      <workItem from="1661768130572" duration="3332000" />
+      <workItem from="1661840204015" duration="628000" />
+      <workItem from="1661852920235" duration="457000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>

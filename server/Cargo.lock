@@ -16,14 +16,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "proc_macros"
-version = "0.1.0"
-
-[[package]]
 name = "proc_macros_derive"
 version = "0.1.0"
 dependencies = [
- "proc_macros",
+ "proc-macro2",
  "quote",
  "syn",
 ]
@@ -67,7 +63,6 @@ name = "web_framework_lib"
 version = "0.1.0"
 dependencies = [
  "di_ioc_lib",
- "proc_macros",
  "proc_macros_derive",
  "syn",
 ]

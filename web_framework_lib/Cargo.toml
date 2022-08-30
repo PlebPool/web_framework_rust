@@ -9,4 +9,3 @@ edition = "2021"
 syn = "1.0.99"
 di_ioc_lib = { path = "../di_ioc_lib" }
 proc_macros_derive = { path = "src/proc_macros_derive" }
-proc_macros = { path = "src/proc_macros" }

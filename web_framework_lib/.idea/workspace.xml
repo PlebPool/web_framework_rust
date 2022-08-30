@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="CargoProjects">
+    <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="4096ca32-63f2-4816-817e-f4e328cb5bd3" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../server/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../server/Cargo.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/proc_macros/Cargo.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/proc_macros/Cargo.toml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/proc_macros/src/lib.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/proc_macros_derive/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/src/proc_macros_derive/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/proc_macros_derive/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/proc_macros_derive/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/web/server/data/enums/static_file_ext_enum.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/web/server/data/enums/static_file_ext_enum.rs" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Rust File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$USER_HOME$/.rustup/toolchains/stable-x86_64-pc-windows-msvc/lib/rustlib/src/rust/library/proc_macro/src/lib.rs" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/../di_ioc_lib/src/di/container.rs" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/proc_macros_derive/Cargo.toml" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/proc_macros_derive/mimetypes.txt" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/proc_macros_derive/resource/mime-types.csv" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/proc_macros_derive/src/lib.rs" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="MacroExpansionManager">
+    <option name="directoryName" value="jvgzqoc9" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2DhvSJ59k5RzbiskEzxt6ecdgIY" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "last_opened_file_path": "C:/Users/mattias.wegblad/Desktop/git/web_framework_rust/server",
+    "org.rust.cargo.project.model.PROJECT_DISCOVERY": "true",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\mattias.wegblad\Desktop\git\web_framework_rust\web_framework_lib\src\proc_macros_derive\resource" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Cargo.Test web::server::data::enums::static_file_ext_enum::tests::it_works">
+    <configuration name="Test tests::it_works" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package web_framework_lib --lib tests::it_works -- --exact" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="withSudo" value="false" />
+      <option name="buildTarget" value="REMOTE" />
+      <option name="backtrace" value="SHORT" />
+      <envs />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test web::server::data::enums::static_file_ext_enum::tests::it_works" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="test --package web_framework_lib --lib web::server::data::enums::static_file_ext_enum::tests::it_works -- --exact" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="withSudo" value="false" />
+      <option name="buildTarget" value="REMOTE" />
+      <option name="backtrace" value="SHORT" />
+      <envs />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Cargo.Test web::server::data::enums::static_file_ext_enum::tests::it_works" />
+        <item itemvalue="Cargo.Test tests::it_works" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="RustProjectSettings">
+    <option name="runExternalLinterOnTheFly" value="true" />
+    <option name="toolchainHomeDirectory" value="$USER_HOME$/.cargo/bin" />
+    <option name="version" value="2" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4096ca32-63f2-4816-817e-f4e328cb5bd3" name="Changes" comment="" />
+      <created>1661164128717</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1661164128717</updated>
+      <workItem from="1661164130265" duration="3856000" />
+      <workItem from="1661763742321" duration="5233000" />
+      <workItem from="1661840191235" duration="11881000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>

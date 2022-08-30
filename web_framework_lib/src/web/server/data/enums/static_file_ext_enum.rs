@@ -6,6 +6,7 @@ use proc_macros_derive::MimeTypeFromEnum;
 
 /// A enum that is used to map file extensions to mime types.
 #[derive(PartialEq, Debug, EnumFromStr, MimeTypeFromEnum)]
+#[english_number_prefix_to_numerical(true)]
 pub enum StaticFileExt {
     AAC, ABW, ARC, AVI, AZW, BIN, BMP, BZ, BZ2, CSH, CSS, CSV, DOC, DOCX, EOT, EPUB, GZ, GIF, HTML,
     ICO, ICS, JAR, JPEG, JPG, JS, JSON, JSONLD, MIDI, MJS, MP3, MPEG, MPKG, ODP, ODS, ODT, OGA, OGV,

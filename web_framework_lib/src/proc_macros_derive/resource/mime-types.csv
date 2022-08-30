@@ -65,6 +65,6 @@
 .xml;text/xml
 .xul;application/vnd.mozilla.xul+xml
 .zip;application/zip
-.threegp;video/3gpp
-.threeg2;video/3gpp2
-.sevenz;application/x-7z-compressed
+.3gp;video/3gpp
+.3g2;video/3gpp2
+.7z;application/x-7z-compressed

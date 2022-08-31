@@ -16,14 +16,14 @@ mod misc {
     pub mod english_numerical;
 }
 
-#[proc_macro_derive(MimeTypeFromEnum, attributes(csv_file_path, ident_based))]
+#[proc_macro_derive(StrFromEnum, attributes(optional_csv_file_path))]
 pub fn mime_type_from_enum_derive(input: TokenStream) -> TokenStream {
     str_from_enum::impl_mime_type(syn::parse_macro_input!(input))
 }
 
 /// It takes a Rust `TokenStream` as input, and returns a Rust `TokenStream` as output
 ///
-/// english_number_prefix_to_numerical(bool)
+/// #\[english_number_prefix_to_numerical(bool)\]
 /// # Example
 /// ## (if english_number_prefix_to_numerical is false) // Default
 /// ```

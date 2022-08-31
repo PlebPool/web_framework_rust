@@ -185,7 +185,8 @@ impl <'a> Response<'a> {
     /// A vector of bytes.
     pub fn get_as_u8_vec(&mut self) -> Vec<u8> {
         if self.status == 0 {
-            panic!("Response status was never mutated but you're attempting to writing a body for it.")
+            dbg!("Please mutate http status before getting as byte vector.");
+            panic!()
         }
         let mut header_map_to_str: String = String::new();
         for (k, v) in &self.headers {
@@ -201,7 +202,6 @@ impl <'a> Response<'a> {
         res_as_u8_vec.append(&mut self.body.clone()); // Cloning for debugging purposes.
         res_as_u8_vec
     }
-
     pub fn protocol(&self) -> &str {
         self.protocol
     }
@@ -211,19 +211,15 @@ impl <'a> Response<'a> {
     pub fn reason_phrase(&self) -> &str {
         self.reason_phrase
     }
-
     pub fn body(&self) -> &Vec<u8> {
         &self.body
     }
-
     pub fn headers(&self) -> &HashMap<&'a str, String> {
         &self.headers
     }
-
     pub fn set_status(&mut self, status: u16) {
         self.status = status;
     }
-
     pub fn set_reason_phrase(&mut self, reason_phrase: &'a str) {
         self.reason_phrase = reason_phrase;
     }

@@ -48,12 +48,12 @@ pub fn impl_enum_from_str(derive_input: syn::DeriveInput) -> TokenStream {
             // If #[english_number_prefix_to_numerical(bool)] is set.
             if attr_struct.english_number_prefix_to_numerical() {
                 variant_token_identity_string_vec = variant_token_identity_string_vec.iter().map(|s| {
-                    let num_res: Result<&str, ()> = crate::english_numerical::starts_with_numerical_lingua_franca(&s);
+                    let num_res: Result<&str, ()> = crate::english_numerical::starts_with_numeric_english(&s);
                     println!("{}", s);
                     if num_res.is_ok() {
                         let num_res: &str = num_res.unwrap();
                         let new_s = s.replace(&num_res,
-                                      &crate::english_numerical::match_lingua_franca_to_numerical(&num_res).to_string());
+                                      &crate::english_numerical::match_english_to_numeric(&num_res).to_string());
                         new_s
                     } else {
                         s.to_string()

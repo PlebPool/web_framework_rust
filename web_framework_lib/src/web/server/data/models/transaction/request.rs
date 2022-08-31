@@ -71,7 +71,7 @@ impl Request {
     /// If the path contains a query string, then remove the query string from the path and set the
     /// path_query_bypassed flag to true
     pub fn cut_query(&mut self) {
-        let owned_path: String = self.request_line_data.path().to_owned();
+        let owned_path: &str = &self.request_line_data.path();
         let query_split_off: Option<(&str, &str)> = owned_path.split_once('?');
         if let Some((path, _query_str)) = query_split_off {
             self.request_line_data.set_path(String::from(path));

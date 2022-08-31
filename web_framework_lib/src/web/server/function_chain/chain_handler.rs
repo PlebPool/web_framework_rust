@@ -18,7 +18,7 @@ mod handlers {
 /// * `transaction`: The transaction object that is passed through the chain.
 /// * `container`: Arc<Container> - This is the container that holds the route map.
 pub fn enter_chain(mut transaction: Transaction, container: Arc<Container>) {
-    let path: String = transaction.req().request_line_data().path.to_owned();
+    let path: &str = &transaction.req().request_line_data().path();
     let route_map: &RouteHandlerContainer = container.get_ref()
         .expect("Failed to get RouteHandlerContainer.");
     if let Some(handler) = route_map.get(&path) {
@@ -34,17 +34,13 @@ pub fn enter_chain(mut transaction: Transaction, container: Arc<Container>) {
         }
     }
     match transaction.resolve() {
-        Err(e) => {
-            println!("{}", e);
-        },
-        Ok(_) => {
-            dbg!(transaction);
-        }
+        Err(e) => { dbg!(e); },
+        Ok(_) => { dbg!(transaction); }
     };
 }
 
 fn rule_out_static_resources(transaction: &mut Transaction) -> bool {
-    let path: String = transaction.req().request_line_data().path().to_owned();
+    let path: &str = &transaction.req().request_line_data().path();
     if path.contains('.') {
         if let Ok(ext) = StaticFileExt
         ::from_str(path.split_once('.').expect("Split failed").1) {

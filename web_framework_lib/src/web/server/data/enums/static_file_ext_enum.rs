@@ -1,12 +1,13 @@
 use proc_macros_derive::EnumFromStr;
-use proc_macros_derive::MimeTypeFromEnum;
+use proc_macros_derive::StrFromEnum;
 
 /// `EnumFromStr` -> Adds "from_str(s: &str) -> Result<Self, ()>" function. Ignores case.
 /// `MimeTypeFromEnum` -> Adds "mime_type(&self) -> Result<&str, ()>" function.
 
 /// A enum that is used to map file extensions to mime types.
-#[derive(PartialEq, Debug, EnumFromStr, MimeTypeFromEnum)]
+#[derive(PartialEq, Debug, EnumFromStr, StrFromEnum)]
 #[english_number_prefix_to_numerical(true)]
+#[optional_csv_file_path("src/proc_macros_derive/resource/mime-types.csv")]
 pub enum StaticFileExt {
     AAC, ABW, ARC, AVI, AZW, BIN, BMP, BZ, BZ2, CSH, CSS, CSV, DOC, DOCX, EOT, EPUB, GZ, GIF, HTML,
     ICO, ICS, JAR, JPEG, JPG, JS, JSON, JSONLD, MIDI, MJS, MP3, MPEG, MPKG, ODP, ODS, ODT, OGA, OGV,

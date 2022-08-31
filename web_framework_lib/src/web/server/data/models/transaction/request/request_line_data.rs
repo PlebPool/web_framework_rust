@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::rc::Rc;
 use std::str::{Split, SplitWhitespace};
 use crate::web::server::data::models::transaction::request::request_line_data::request_queries::RequestQueries;
 
@@ -27,7 +28,7 @@ mod request_queries;
 #[derive(Debug)]
 pub struct RequestLineData {
     method: String,
-    pub(crate) path: String,
+    pub(crate) path: Rc<String>,
     protocol: String,
     pub(crate) path_query_bypassed: bool,
     request_queries: Option<RequestQueries>,
@@ -59,12 +60,14 @@ impl RequestLineData {
                 path = parent_path.to_string();
                 let mut map: HashMap<String, String> = HashMap::new();
                 let query_iterator: Split<char> = queries_str.split('&');
-                for key_val_pair in query_iterator {
-                    let key_val_pair: Option<(&str, &str)> = key_val_pair.split_once('=');
+
+                let _ = query_iterator.map(|s: &str| {
+                    let key_val_pair: Option<(&str, &str)> = s.split_once('=');
                     if let Some((key, val)) = key_val_pair {
                         map.insert(key.to_string(), val.to_string());
                     }
-                }
+                });
+
                 Some(RequestQueries::new(map))
             },
             None => {
@@ -72,11 +75,11 @@ impl RequestLineData {
                 None
             }
         };
-        let protocol =
+        let protocol: String =
             match sws.next() { Some(t) => { t }, None => { "[NO_PROTOCOL]" } }.to_string();
         Self {
             method,
-            path,
+            path: Rc::new(path),
             protocol,
             path_query_bypassed: false,
             request_queries: request_queries_opt
@@ -86,11 +89,12 @@ impl RequestLineData {
     pub fn method(&self) -> &str {
         &self.method
     }
-    pub fn path(&self) -> &str {
-        &self.path
-    }
+
     pub fn protocol(&self) -> &str {
         &self.protocol
+    }
+    pub fn path(&self) -> Rc<String> {
+        Rc::clone(&self.path)
     }
     pub fn path_query_bypassed(&self) -> bool {
         self.path_query_bypassed
@@ -98,12 +102,11 @@ impl RequestLineData {
     pub fn request_queries(&self) -> &Option<RequestQueries> {
         &self.request_queries
     }
-
     pub fn set_method(&mut self, method: String) {
         self.method = method;
     }
     pub fn set_path(&mut self, path: String) {
-        self.path = path;
+        self.path = Rc::new(path);
     }
     pub fn set_protocol(&mut self, protocol: String) {
         self.protocol = protocol;

@@ -1,7 +1,7 @@
 use std::net::TcpListener;
 use std::sync::Arc;
 use std::thread;
-use di_ioc_lib::di::container::Container;
+use di_ioc_lib::di::container::IocContainer;
 use crate::web::server::data::models::transaction::Transaction;
 use crate::web::server::data::request_parser;
 use crate::web::server::function_chain::chain_handler;
@@ -24,7 +24,7 @@ pub mod function_chain {
 
 pub type HandlerFunction = fn(transaction: &mut Transaction);
 
-pub fn start(port: &str, container: Arc<Container>) {
+pub fn start(port: &str, container: Arc<IocContainer>) {
     let listener: TcpListener = TcpListener::bind("127.0.0.1:".to_owned() + port)
         .expect("BIND FAILED");
 
@@ -33,7 +33,7 @@ pub fn start(port: &str, container: Arc<Container>) {
         let thread_builder: thread::Builder = thread::Builder::new()
             .name(String::from("REQUEST_HANDLER_THREAD"));
 
-        let container: Arc<Container> = Arc::clone(&container);
+        let container: Arc<IocContainer> = Arc::clone(&container);
 
         thread_builder.spawn(move || {
             let transaction: Transaction = request_parser

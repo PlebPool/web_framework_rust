@@ -4,6 +4,7 @@ use std::fmt::{Debug, Formatter};
 use std::fs;
 use std::io::Error;
 use std::ops::Add;
+use crate::web::server::data::enums::static_file_ext_enum::StaticFileExt;
 
 const DEFAULT_HTTP_VERSION: &str = "HTTP/2";
 
@@ -118,7 +119,7 @@ impl <'a> Response<'a> {
     }
 
     /// > This function takes a path to a file in the `public` directory and sets the response body to
-    /// the contents of that file
+    /// the contents of that file, it also sets the "Content-Type" header based on file ext.
     ///
     /// Arguments:
     ///
@@ -135,12 +136,21 @@ impl <'a> Response<'a> {
     /// res.set_body_to_file("/index.html").expect("");
     pub fn set_body_to_file(&mut self, path_from_public: &str) -> Result<(), Error> {
         let mut path_prefix: String = "src/public".to_string();
+
+        let mime_type: String = path_from_public.split_once(".")
+            .map(|(_parent_path, ext): (&str, &str)| {
+                let e: StaticFileExt = StaticFileExt::from_str(ext).expect("Invalid ext");
+                e.as_str().expect("Failed to get ext as string")
+            }).expect("Failed to get mime type.");
+        
         if !path_from_public.starts_with("/") {
             path_prefix = path_prefix.add("/");
         }
+
         match fs::read(path_prefix.add(path_from_public)) {
             Ok(t) => {
                 self.set_body_u8(t);
+                self.add_header("Content-Type", mime_type);
                 Ok(())
             },
             Err(e) => {

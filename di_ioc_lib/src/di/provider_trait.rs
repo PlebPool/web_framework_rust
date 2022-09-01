@@ -2,7 +2,7 @@ use std::any::TypeId;
 use std::collections::HashMap;
 use std::rc::Rc;
 use std::sync::Arc;
-use crate::di::container::Container;
+use crate::di::container::IocContainer;
 use crate::di::providable_trait::Providable;
 
 /// Trait defining a value provider. To be used by container.
@@ -10,7 +10,7 @@ pub trait Provider {
     type TypeProvided: 'static;
 
     /// A function that takes a container and returns a result of type `Self::TypeProvided` or a string.
-    fn provide(&self, container: &Container) -> Result<Self::TypeProvided, String>;
+    fn provide(&self, container: &IocContainer) -> Result<Self::TypeProvided, String>;
 
     /// `TypeId::of::<Self::TypeProvided>()`
     ///
@@ -27,7 +27,7 @@ pub trait ReferenceProvider {
     type RefProvided: 'static;
 
     /// A function that takes a container and returns a result of type `Self::TypeProvided` or a string.
-    fn provide(&self, container: &Container) -> Result<&Self::RefProvided, String>;
+    fn provide(&self, container: &IocContainer) -> Result<&Self::RefProvided, String>;
 
     /// `TypeId::of::<&Self::RefProvided>()`
     ///
@@ -45,7 +45,7 @@ pub trait ReferenceProvider {
 impl <T: Providable> ReferenceProvider for Arc<T> {
     type RefProvided = T;
 
-    fn provide(&self, _: &Container) -> Result<&Self::RefProvided, String> {
+    fn provide(&self, _: &IocContainer) -> Result<&Self::RefProvided, String> {
         Ok(&self)
     }
 }
@@ -60,7 +60,7 @@ impl <T: 'static> Providable for Vec<T> { }
 impl <T: Providable> Provider for Arc<T> {
     type TypeProvided = Self;
 
-    fn provide(&self, _: &Container) -> Result<Self::TypeProvided, String> {
+    fn provide(&self, _: &IocContainer) -> Result<Self::TypeProvided, String> {
         Ok(Arc::clone(&self))
     }
 }
@@ -69,7 +69,7 @@ impl <T: Providable> Provider for Arc<T> {
 impl <T: Providable> ReferenceProvider for Box<T> {
     type RefProvided = T;
 
-    fn provide(&self, _: &Container) -> Result<&Self::RefProvided, String> {
+    fn provide(&self, _: &IocContainer) -> Result<&Self::RefProvided, String> {
         Ok(&self)
     }
 }
@@ -78,7 +78,7 @@ impl <T: Providable> ReferenceProvider for Box<T> {
 impl <T: Providable> ReferenceProvider for Rc<T> {
     type RefProvided = T;
 
-    fn provide(&self, _: &Container) -> Result<&Self::RefProvided, String> {
+    fn provide(&self, _: &IocContainer) -> Result<&Self::RefProvided, String> {
         Ok(&self)
     }
 }

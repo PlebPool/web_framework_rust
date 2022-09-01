@@ -1,5 +1,5 @@
 use std::sync::Arc;
-use di_ioc_lib::di::container::Container;
+use di_ioc_lib::di::container::IocContainer;
 use crate::web::server::data::enums::static_file_ext_enum::StaticFileExt;
 use crate::web::server::data::models::transaction::response::Response;
 use crate::web::server::data::models::transaction::Transaction;
@@ -17,7 +17,7 @@ mod handlers {
 ///
 /// * `transaction`: The transaction object that is passed through the chain.
 /// * `container`: Arc<Container> - This is the container that holds the route map.
-pub fn enter_chain(mut transaction: Transaction, container: Arc<Container>) {
+pub fn enter_chain(mut transaction: Transaction, container: Arc<IocContainer>) {
     let path: &str = &transaction.req().request_line_data().path();
     let route_map: &RouteHandlerContainer = container.get_ref()
         .expect("Failed to get RouteHandlerContainer.");
@@ -42,20 +42,15 @@ pub fn enter_chain(mut transaction: Transaction, container: Arc<Container>) {
 fn rule_out_static_resources(transaction: &mut Transaction) -> bool {
     let path: &str = &transaction.req().request_line_data().path();
     if path.contains('.') {
-        if let Ok(ext) = StaticFileExt
-        ::from_str(path.split_once('.').expect("Split failed").1) {
-            let res: &mut Response = transaction.res_mut();
-            match res.set_body_to_file(&path) {
-                Ok(_) => {
-                    res.set_status(200);
-                    res.set_reason_phrase("OK");
-                    res.add_header("Content-Type", ext.mime_type()
-                        .expect("Failed to get mime type").to_string());
-                    return true
-                },
-                Err(e) => {
-                    dbg!(e);
-                }
+        let res: &mut Response = transaction.res_mut();
+        match res.set_body_to_file(&path) {
+            Ok(_) => {
+                res.set_status(200);
+                res.set_reason_phrase("OK");
+                return true
+            },
+            Err(e) => {
+                dbg!(e);
             }
         }
     }

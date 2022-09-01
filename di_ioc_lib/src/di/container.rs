@@ -11,16 +11,16 @@ pub enum ProviderError {
 }
 
 #[derive(Debug, Default)]
-pub struct Container {
+pub struct IocContainer {
     providers: HashMap<TypeId, Arc<dyn Any>>
 }
 
 /// Telling the compiler that the Container is safe to send to other threads.
-unsafe impl Send for Container { }
-unsafe impl Sync for Container { }
+unsafe impl Send for IocContainer { }
+unsafe impl Sync for IocContainer { }
 
 // TODO: Renovate error handling.
-impl Container {
+impl IocContainer {
     /// It takes a provider and installs it into the registry
     ///
     /// Arguments:

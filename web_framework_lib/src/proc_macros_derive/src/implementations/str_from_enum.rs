@@ -46,7 +46,7 @@ pub fn impl_mime_type(derive_input: syn::DeriveInput) -> TokenStream {
 
     let csv_file_path: &String;
     match attr_struct.optional_csv_file_path() {
-        Some(p) => { dbg!(p); csv_file_path = p; },
+        Some(p) => { csv_file_path = p; dbg!(&csv_file_path); },
         None => {
             panic!("You need to specify helper attribute #[optional_csv_file_path(path)], I love irony.")
         }
@@ -61,7 +61,6 @@ pub fn impl_mime_type(derive_input: syn::DeriveInput) -> TokenStream {
         println!("MimeType: {}", line);
         let line_separator_split: (&str, &str) = line.split_once(';').unwrap();
         let mut key: String = line_separator_split.0.replace('.', "").to_uppercase();
-
         // Checking if first char of key is numeric.
         let first_char: char = key.chars().nth(0).unwrap();
         if first_char.is_numeric() {
@@ -79,10 +78,10 @@ pub fn impl_mime_type(derive_input: syn::DeriveInput) -> TokenStream {
     }
     let quote: proc_macro2::TokenStream = quote! {
         impl #ident {
-            pub fn mime_type(&self) -> Result<&str, ()> {
+            pub fn as_str(&self) -> Result<String, ()> {
                 match self {
                     #(#ident::#keys => {
-                        Ok( #vals )
+                        Ok( String::from( #vals ) )
                     },)*_ => {
                         Err(())
                     }

@@ -25,7 +25,7 @@ impl StrFromEnumAttrs {
 }
 
 // TODO: Document.
-pub fn impl_mime_type(derive_input: syn::DeriveInput) -> TokenStream {
+pub fn impl_to_string(derive_input: syn::DeriveInput) -> TokenStream {
     let syn::DeriveInput { ident, attrs, data, .. } = derive_input;
 
     let variants_as_str: Vec<String> = if let syn::Data::Enum(data_enum) = data {

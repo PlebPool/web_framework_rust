@@ -56,7 +56,7 @@ pub fn impl_enum_from_str(derive_input: syn::DeriveInput) -> TokenStream {
             if attr_struct.english_number_prefix_to_numerical() {
                 variant_token_identity_string_vec = variant_token_identity_string_vec.iter().map(|s| {
                     let num_res: Result<&str, ()> = crate::english_numerical::starts_with_numeric_english(&s);
-                    println!("uwu {}", s);
+                    println!("{}", s);
                     if num_res.is_ok() {
                         let num_res: &str = num_res.unwrap();
                         let new_s: String = s.replace(num_res,

@@ -5,6 +5,7 @@ use std::fs;
 use std::io::Error;
 use std::ops::Add;
 use crate::web::server::data::enums::static_file_ext_enum::StaticFileExt;
+use std::str::FromStr;
 
 const DEFAULT_HTTP_VERSION: &str = "HTTP/2";
 
@@ -140,7 +141,7 @@ impl <'a> Response<'a> {
         let mime_type: String = path_from_public.split_once(".")
             .map(|(_parent_path, ext): (&str, &str)| {
                 let e: StaticFileExt = StaticFileExt::from_str(ext).expect("Invalid ext");
-                e.as_str().expect("Failed to get ext as string")
+                e.to_string()
             }).expect("Failed to get mime type.");
         
         if !path_from_public.starts_with("/") {

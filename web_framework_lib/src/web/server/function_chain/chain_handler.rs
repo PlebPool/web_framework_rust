@@ -1,6 +1,6 @@
 use std::sync::Arc;
 use di_ioc_lib::di::container::IocContainer;
-use crate::web::server::data::enums::static_file_ext_enum::StaticFileExt;
+use crate::web::server::data::enums::http_method_enum::HttpMethod;
 use crate::web::server::data::models::transaction::response::Response;
 use crate::web::server::data::models::transaction::Transaction;
 use crate::web::server::function_chain::route_handler_container::RouteHandlerContainer;
@@ -24,7 +24,7 @@ pub fn enter_chain(mut transaction: Transaction, container: Arc<IocContainer>) {
     if let Some(handler) = route_map.get(&path) {
         handler(&mut transaction);
     } else {
-        if transaction.req().request_line_data().method() == "GET" {
+        if transaction.req().request_line_data().method() == HttpMethod::GET.to_string() {
             let was_static: bool = rule_out_static_resources(&mut transaction);
             if !was_static {
                 let res: &mut Response = transaction.res_mut();

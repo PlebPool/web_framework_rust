@@ -19,10 +19,11 @@ pub enum StaticFileExt {
 #[cfg(test)]
 mod tests {
     use crate::web::server::data::enums::static_file_ext_enum::StaticFileExt;
+    use std::str::FromStr;
 
     #[test]
     fn it_works() {
         println!("{:#?}", StaticFileExt::from_str("AAC"));
-        println!("{:#?}", StaticFileExt::AAC.mime_type());
+        println!("{:#?}", StaticFileExt::AAC.to_string());
     }
 }

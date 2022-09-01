@@ -1,6 +1,7 @@
 use proc_macro::TokenStream;
 use std::iter::Map;
 use quote::quote;
+use syn::Attribute;
 
 struct EnumFromStrAttrs {
     english_number_prefix_to_numerical: bool
@@ -9,6 +10,7 @@ struct EnumFromStrAttrs {
 impl EnumFromStrAttrs {
     pub fn new(input: syn::Attribute) -> Self {
         let mut result: bool = false; // Default
+        dbg!(input.path.get_ident().unwrap().to_string());
         if input.path.get_ident().unwrap().to_string() == "english_number_prefix_to_numerical" {
             result = input.tokens.to_string().replace("(", "").replace(")", "")
                 .parse().expect("Failed to parse boolean.");
@@ -31,7 +33,11 @@ impl EnumFromStrAttrs {
 ///
 /// A TokenStream.
 pub fn impl_enum_from_str(derive_input: syn::DeriveInput) -> TokenStream {
-    let syn::DeriveInput { ident, data, mut attrs, .. } = derive_input;
+    let syn::DeriveInput { ident, data, attrs, .. } = derive_input;
+
+    let mut attrs: Vec<&Attribute> = attrs.iter().filter(|attr: &&Attribute| {
+        attr.path.get_ident().unwrap().to_string() == "english_number_prefix_to_numerical"
+    }).collect();
 
     let attr_struct: &EnumFromStrAttrs = &EnumFromStrAttrs::new(attrs.pop().unwrap().clone());
 
@@ -46,13 +52,14 @@ pub fn impl_enum_from_str(derive_input: syn::DeriveInput) -> TokenStream {
                     s
                 }).collect();
             // If #[english_number_prefix_to_numerical(bool)] is set.
+            dbg!(attr_struct.english_number_prefix_to_numerical());
             if attr_struct.english_number_prefix_to_numerical() {
                 variant_token_identity_string_vec = variant_token_identity_string_vec.iter().map(|s| {
                     let num_res: Result<&str, ()> = crate::english_numerical::starts_with_numeric_english(&s);
-                    println!("{}", s);
+                    println!("uwu {}", s);
                     if num_res.is_ok() {
                         let num_res: &str = num_res.unwrap();
-                        let new_s = s.replace(&num_res,
+                        let new_s: String = s.replace(num_res,
                                       &crate::english_numerical::match_english_to_numeric(&num_res).to_string());
                         new_s
                     } else {

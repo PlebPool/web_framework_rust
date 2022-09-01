@@ -4,21 +4,27 @@ use quote::quote;
 use syn::Attribute;
 
 struct EnumFromStrAttrs {
-    english_number_prefix_to_numerical: bool
+    english_number_prefix_to_numerical: Option<bool>
 }
 
 impl EnumFromStrAttrs {
-    pub fn new(input: syn::Attribute) -> Self {
-        let mut result: bool = false; // Default
-        dbg!(input.path.get_ident().unwrap().to_string());
-        if input.path.get_ident().unwrap().to_string() == "english_number_prefix_to_numerical" {
-            result = input.tokens.to_string().replace("(", "").replace(")", "")
-                .parse().expect("Failed to parse boolean.");
-        }
-        Self { english_number_prefix_to_numerical: result }
+    pub fn new(attrs: Vec<Attribute>) -> Self {
+        let mut a: Vec<&Attribute> = attrs.iter()
+            .filter(|attr: &&Attribute| attr.path.get_ident().unwrap().to_string() == "english_number_prefix_to_numerical")
+            .collect();
+        let english_number_prefix_to_numerical: Option<bool> = a.pop().map(|it: &Attribute| {
+            let str: String = it.tokens.to_string()
+                .replace("(", "").replace(")", "").replace("\"", "");
+            str.parse().expect("Failed parse")
+        });
+
+        Self { english_number_prefix_to_numerical: english_number_prefix_to_numerical }
     }
+
     pub fn english_number_prefix_to_numerical(&self) -> bool {
         self.english_number_prefix_to_numerical
+            .map(|b: bool| b )
+            .unwrap_or_else(|| false)
     }
 }
 
@@ -35,11 +41,7 @@ impl EnumFromStrAttrs {
 pub fn impl_enum_from_str(derive_input: syn::DeriveInput) -> TokenStream {
     let syn::DeriveInput { ident, data, attrs, .. } = derive_input;
 
-    let mut attrs: Vec<&Attribute> = attrs.iter().filter(|attr: &&Attribute| {
-        attr.path.get_ident().unwrap().to_string() == "english_number_prefix_to_numerical"
-    }).collect();
-
-    let attr_struct: &EnumFromStrAttrs = &EnumFromStrAttrs::new(attrs.pop().unwrap().clone());
+    let attr_struct: &EnumFromStrAttrs = &EnumFromStrAttrs::new(attrs);
 
     let output_token_stream = match data {
         syn::Data::Enum(syn::DataEnum { variants, .. }) => {
@@ -70,8 +72,10 @@ pub fn impl_enum_from_str(derive_input: syn::DeriveInput) -> TokenStream {
             let variant_token_identity_string_iterator: std::slice::Iter<String> =
                 variant_token_identity_string_vec.iter();
             quote! {
-                impl #ident {
-                    pub fn from_str(s: &str) -> Result<Self, ()> {
+                impl std::str::FromStr for #ident {
+                    type Err = ();
+
+                    fn from_str(s: &str) -> Result<Self, Self::Err> {
                         match s.to_uppercase().as_str() {
                             #(#variant_token_identity_string_iterator => {
                                 Ok( #ident::#variant_token_identity_iterator )
@@ -88,6 +92,6 @@ pub fn impl_enum_from_str(derive_input: syn::DeriveInput) -> TokenStream {
             panic!("NOT ENUM")
         }
     };
-    println!("Generated match stmt:\r\n{}", output_token_stream);
+    println!("Generated match stmt:\r\n{}", &output_token_stream.to_string());
     output_token_stream.into()
 }

@@ -9,7 +9,7 @@ pub fn index(transaction: &mut Transaction) {
     let res: &mut Response = transaction.res_mut();
     res.set_status(200);
     res.set_reason_phrase("OK");
-    res.set_body_to_file("html/index.html").expect("Failed to read file");
+    res.set_body_to_file("/html/index.html").expect("Failed to read file");
 }
 
 fn main() {

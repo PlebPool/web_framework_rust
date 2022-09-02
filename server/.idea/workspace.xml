@@ -16,12 +16,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7883851b-4bf5-4208-9ccd-636ea8b7d534" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/discord.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/discord.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/dev_web_framework_rust.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/dev_web_framework_rust.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../di_ioc_lib/src/di/container.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../di_ioc_lib/src/di/IocContainer.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../di_ioc_lib/src/di/provider_trait.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../di_ioc_lib/src/di/provider_trait.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../di_ioc_lib/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../di_ioc_lib/src/lib.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/proc_macros_derive/src/implementations/enum_from_str.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/proc_macros_derive/src/implementations/enum_from_str.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/proc_macros_derive/src/implementations/str_from_enum.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/proc_macros_derive/src/implementations/str_from_enum.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/web/server/data/enums/static_file_ext_enum.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/web/server/data/enums/static_file_ext_enum.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/web/server/data/models/transaction/response.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/web/server/data/models/transaction/response.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/proc_macros_derive/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/proc_macros_derive/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/web/server.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/web/server.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/web/server/data/models/transaction/request.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/web/server/data/models/transaction/request.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/web/server/function_chain/chain_handler.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/web/server/function_chain/chain_handler.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -36,7 +40,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/../di_ioc_lib/src/di/container.rs" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/../di_ioc_lib/src/di/IocContainer.rs" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/../web_framework_lib/src/proc_macros_derive/src/implementations/enum_from_str.rs" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/../web_framework_lib/src/proc_macros_derive/src/lib.rs" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/../web_framework_lib/src/web/server.rs" root0="SKIP_INSPECTION" />
@@ -144,22 +148,22 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/../web_framework_lib/src/web/server/data/models/transaction/response.rs</url>
-          <line>142</line>
+          <line>141</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/../web_framework_lib/src/web/server/data/models/transaction/response.rs</url>
-          <line>143</line>
+          <line>145</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/../web_framework_lib/src/web/server/data/models/transaction/response.rs</url>
-          <line>144</line>
+          <line>146</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/../web_framework_lib/src/web/server/data/models/transaction/response.rs</url>
-          <line>140</line>
+          <line>139</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>

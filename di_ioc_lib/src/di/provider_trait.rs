@@ -2,7 +2,7 @@ use std::any::TypeId;
 use std::collections::HashMap;
 use std::rc::Rc;
 use std::sync::Arc;
-use crate::di::container::IocContainer;
+use crate::di::ioc_container::IocContainer;
 use crate::di::providable_trait::Providable;
 
 /// Trait defining a value provider. To be used by container.

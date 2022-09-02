@@ -40,7 +40,8 @@ impl Request {
             request_line_data:
             RequestLineData
             ::new(req_split_new_line.pop().expect("No first line")),
-            request_headers: RequestHeaders::new(Self::req_str_to_header_map(req_split_new_line.to_owned())),
+            request_headers: RequestHeaders::new(Self
+            ::req_str_to_header_map(req_split_new_line.to_owned())),
             stream
         }
     }
@@ -59,24 +60,13 @@ impl Request {
         for x in req_str.into_iter() {
             match x.split_once(':') {
                 Some((hdr_key, hdr_val)) => {
-                    req_header_map.insert(hdr_key.trim().to_string(), hdr_val.trim().to_string());
+                    req_header_map.insert(hdr_key.trim().to_string(),
+                                          hdr_val.trim().to_string());
                 },
                 None => {}
             }
         }
         req_header_map
-    }
-
-    // TODO: TMP. IMPL QUERIES.
-    /// If the path contains a query string, then remove the query string from the path and set the
-    /// path_query_bypassed flag to true
-    pub fn cut_query(&mut self) {
-        let owned_path: &str = &self.request_line_data.path();
-        let query_split_off: Option<(&str, &str)> = owned_path.split_once('?');
-        if let Some((path, _query_str)) = query_split_off {
-            self.request_line_data.set_path(String::from(path));
-            self.request_line_data.set_path_query_bypassed(true);
-        }
     }
 
     pub fn request_line_data(&self) -> &RequestLineData {

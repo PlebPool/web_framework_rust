@@ -1,5 +1,5 @@
 use std::sync::Arc;
-use di_ioc_lib::di::container::IocContainer;
+use di_ioc_lib::di::ioc_container::IocContainer;
 use crate::web::server::data::enums::http_method_enum::HttpMethod;
 use crate::web::server::data::models::transaction::response::Response;
 use crate::web::server::data::models::transaction::Transaction;

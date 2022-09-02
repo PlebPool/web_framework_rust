@@ -5,8 +5,6 @@ use proc_macro::TokenStream;
 use crate::implementations::{enum_from_str, str_from_enum};
 use crate::misc::english_numerical;
 
-// TODO: Generify implementations.
-
 mod implementations {
     pub mod enum_from_str;
     pub mod str_from_enum;

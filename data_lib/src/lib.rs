@@ -1,9 +1,7 @@
 
-pub mod di {
-    pub mod ioc_container;
-    pub mod provider_trait;
-    pub mod providable_trait;
-}
+// pub mod conn;
+
+pub mod conn;
 
 #[cfg(test)]
 mod tests {

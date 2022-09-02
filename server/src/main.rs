@@ -1,5 +1,5 @@
 use std::sync::Arc;
-use di_ioc_lib::di::container::IocContainer;
+use di_ioc_lib::di::ioc_container::IocContainer;
 use web_framework_lib::web::server;
 use web_framework_lib::web::server::data::models::transaction::response::Response;
 use web_framework_lib::web::server::data::models::transaction::Transaction;

@@ -24,24 +24,24 @@ impl StrFromEnumAttrs {
     }
 }
 
-// TODO: Document.
+/// It takes a CSV file and generates a `ToString` implementation for an enum
+///
+/// Arguments:
+///
+/// * `derive_input`: syn::DeriveInput
+///
+/// Returns:
+///
+/// A TokenStream.
 pub fn impl_to_string(derive_input: syn::DeriveInput) -> TokenStream {
     let syn::DeriveInput { ident, attrs, data, .. } = derive_input;
-
     let variants_as_str: Vec<String> = if let syn::Data::Enum(data_enum) = data {
         data_enum.variants.iter().map(|v: &Variant| {
-            let tmp: String = v.ident.to_string();
-            // let first_char: char = tmp.chars().nth(0).unwrap();
-            // if first_char.is_numeric() {
-            //     tmp = tmp.replace(first_char,
-            //                       match_numeric_to_english(first_char));
-            // }
-            tmp
+            v.ident.to_string()
         }).collect()
     } else {
         panic!("No Enum data.")
     };
-
     let attr_struct: StrFromEnumAttrs = StrFromEnumAttrs::new(attrs.clone());
 
     let data: String = match attr_struct.optional_csv_file_path() {

@@ -19,7 +19,6 @@ pub struct IocContainer {
 unsafe impl Send for IocContainer { }
 unsafe impl Sync for IocContainer { }
 
-// TODO: Renovate error handling.
 impl IocContainer {
     /// It takes a provider and installs it into the registry
     ///

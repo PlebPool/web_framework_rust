@@ -6,6 +6,6 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-syn = "1.0.99"
 di_ioc_lib = { path = "../di_ioc_lib" }
 proc_macros_derive = { path = "src/proc_macros_derive" }
+regex = "1.6.0"

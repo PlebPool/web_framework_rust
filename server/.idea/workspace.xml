@@ -16,17 +16,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7883851b-4bf5-4208-9ccd-636ea8b7d534" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../.idea/dev_web_framework_rust.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/dev_web_framework_rust.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../di_ioc_lib/src/di/container.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../di_ioc_lib/src/di/IocContainer.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../di_ioc_lib/src/di/provider_trait.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../di_ioc_lib/src/di/provider_trait.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../di_ioc_lib/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../di_ioc_lib/src/lib.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/proc_macros_derive/src/implementations/str_from_enum.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/proc_macros_derive/src/implementations/str_from_enum.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/proc_macros_derive/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/proc_macros_derive/src/lib.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/web/server.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/web/server.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/web/server/data/models/transaction/request.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/web/server/data/models/transaction/request.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/web/server/function_chain/chain_handler.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/web/server/function_chain/chain_handler.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../web_framework_lib/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/Cargo.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../web_framework_lib/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/web/server/data/models/transaction/request/request_line_data.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/web/server/data/models/transaction/request/request_line_data.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/web/server/function_chain/route_handler_container.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/web/server/function_chain/route_handler_container.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,7 +35,6 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/../di_ioc_lib/src/di/IocContainer.rs" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/../web_framework_lib/src/proc_macros_derive/src/implementations/enum_from_str.rs" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/../web_framework_lib/src/proc_macros_derive/src/lib.rs" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/../web_framework_lib/src/web/server.rs" root0="SKIP_INSPECTION" />
@@ -126,6 +120,9 @@
       <workItem from="1661954667443" duration="6077000" />
       <workItem from="1662024458005" duration="4675000" />
       <workItem from="1662051069573" duration="4387000" />
+      <workItem from="1662158628024" duration="1000" />
+      <workItem from="1662210498702" duration="599000" />
+      <workItem from="1662290405831" duration="599000" />
     </task>
     <servers />
   </component>

@@ -4,6 +4,7 @@ use std::str::{Split, SplitWhitespace};
 use crate::web::server::data::models::transaction::request::request_line_data::request_queries::RequestQueries;
 
 mod request_queries;
+mod request_path_params;
 
 /// It's a struct that holds the method, path, and protocol of a request line.
 ///

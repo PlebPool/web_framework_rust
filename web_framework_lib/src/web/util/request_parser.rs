@@ -1,9 +1,9 @@
 use std::io::Read;
 use std::net::TcpStream;
 use std::str::from_utf8;
-use crate::web::server::data::models::transaction::request::Request;
-use crate::web::server::data::models::transaction::response::Response;
-use crate::web::server::data::models::transaction::Transaction;
+use crate::web::models::transaction::request::Request;
+use crate::web::models::transaction::response::Response;
+use crate::web::models::transaction::Transaction;
 
 /// It reads a buffer from a TcpStream, parses it into a Request, creates a new empty Response, and
 /// returns a Transaction

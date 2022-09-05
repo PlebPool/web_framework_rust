@@ -4,7 +4,7 @@ use std::fmt::{Debug, Formatter};
 use std::fs;
 use std::io::Error;
 use std::ops::Add;
-use crate::web::server::data::enums::static_file_ext_enum::StaticFileExt;
+use crate::web::util::enums::static_file_ext_enum::StaticFileExt;
 use std::str::FromStr;
 
 const DEFAULT_HTTP_VERSION: &str = "HTTP/2";

@@ -18,7 +18,7 @@ pub enum StaticFileExt {
 
 #[cfg(test)]
 mod tests {
-    use crate::web::server::data::enums::static_file_ext_enum::StaticFileExt;
+    use crate::web::util::enums::static_file_ext_enum::StaticFileExt;
     use std::str::FromStr;
 
     #[test]

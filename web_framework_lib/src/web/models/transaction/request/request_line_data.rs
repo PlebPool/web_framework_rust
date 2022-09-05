@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::rc::Rc;
 use std::str::{Split, SplitWhitespace};
-use crate::web::server::data::models::transaction::request::request_line_data::request_queries::RequestQueries;
+use crate::web::models::transaction::request::request_line_data::request_queries::RequestQueries;
 
 mod request_queries;
 mod request_path_params;

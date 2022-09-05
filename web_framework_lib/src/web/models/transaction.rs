@@ -1,8 +1,8 @@
 use std::fmt::{Debug, Formatter};
 use std::io::Write;
 use std::thread;
-use crate::web::server::data::models::transaction::request::Request;
-use crate::web::server::data::models::transaction::response::Response;
+use crate::web::models::transaction::request::Request;
+use crate::web::models::transaction::response::Response;
 
 pub mod request;
 pub mod response;

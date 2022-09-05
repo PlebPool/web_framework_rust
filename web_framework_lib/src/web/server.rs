@@ -2,25 +2,9 @@ use std::net::TcpListener;
 use std::sync::Arc;
 use std::thread;
 use di_ioc_lib::di::ioc_container::IocContainer;
-use crate::web::server::data::models::transaction::Transaction;
-use crate::web::server::data::request_parser;
-use crate::web::server::function_chain::chain_handler;
-
-pub mod data {
-    pub mod models {
-        pub mod transaction;
-    }
-    pub mod enums {
-        pub mod http_method_enum;
-        pub mod static_file_ext_enum;
-    }
-    pub mod request_parser;
-}
-
-pub mod function_chain {
-    pub mod route_handler_container;
-    pub mod chain_handler;
-}
+use crate::web::models::transaction::Transaction;
+use crate::web::util::request_parser;
+use crate::web::request_handling::chain_handler;
 
 pub type HandlerFunction = fn(transaction: &mut Transaction);
 

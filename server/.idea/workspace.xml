@@ -17,11 +17,22 @@
   <component name="ChangeListManager">
     <list default="true" id="7883851b-4bf5-4208-9ccd-636ea8b7d534" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../web_framework_lib/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../web_framework_lib/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/web/server/data/models/transaction/request/request_line_data.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/web/server/data/models/transaction/request/request_line_data.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/web/server/function_chain/route_handler_container.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/web/server/function_chain/route_handler_container.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/web/server.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/web/server.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/web/server/data/enums/http_method_enum.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/web/util/enums/http_method_enum.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/web/server/data/enums/static_file_ext_enum.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/web/util/enums/static_file_ext_enum.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/web/server/data/models/transaction.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/web/models/transaction.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/web/server/data/models/transaction/request.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/web/models/transaction/request.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/web/server/data/models/transaction/request/request_headers.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/web/models/transaction/request/request_headers.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/web/server/data/models/transaction/request/request_line_data.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/web/models/transaction/request/request_line_data.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/web/server/data/models/transaction/request/request_line_data/request_path_params.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/web/models/transaction/request/request_line_data/request_path_params.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/web/server/data/models/transaction/request/request_line_data/request_queries.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/web/models/transaction/request/request_line_data/request_queries.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/web/server/data/models/transaction/response.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/web/models/transaction/response.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/web/server/data/request_parser.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/web/util/request_parser.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/web/server/function_chain/chain_handler.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/web/request_handling/chain_handler.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/web/server/function_chain/chain_handler/handlers/handler_config.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/web/request_handling/chain_handler/handlers/handler_config.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/web/server/function_chain/chain_handler/handlers/static_resource_handler.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/web/request_handling/chain_handler/handlers/static_resource_handler.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../web_framework_lib/src/web/server/function_chain/route_handler_container.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../web_framework_lib/src/web/request_handling/route_handler_container.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,9 +48,9 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/../web_framework_lib/src/proc_macros_derive/src/implementations/enum_from_str.rs" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/../web_framework_lib/src/proc_macros_derive/src/lib.rs" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/../web_framework_lib/src/web/models/transaction/request.rs" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/../web_framework_lib/src/web/request_handling/chain_handler.rs" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/../web_framework_lib/src/web/server.rs" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/../web_framework_lib/src/web/server/data/models/transaction/request.rs" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/../web_framework_lib/src/web/server/function_chain/chain_handler.rs" root0="SKIP_INSPECTION" />
   </component>
   <component name="MacroExpansionManager">
     <option name="directoryName" value="2q9frbk9" />
@@ -123,6 +134,7 @@
       <workItem from="1662158628024" duration="1000" />
       <workItem from="1662210498702" duration="599000" />
       <workItem from="1662290405831" duration="599000" />
+      <workItem from="1662395963438" duration="1283000" />
     </task>
     <servers />
   </component>
@@ -144,22 +156,22 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/../web_framework_lib/src/web/server/data/models/transaction/response.rs</url>
+          <url>file://$PROJECT_DIR$/../web_framework_lib/src/web/models/transaction/response.rs</url>
           <line>141</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/../web_framework_lib/src/web/server/data/models/transaction/response.rs</url>
+          <url>file://$PROJECT_DIR$/../web_framework_lib/src/web/models/transaction/response.rs</url>
           <line>145</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/../web_framework_lib/src/web/server/data/models/transaction/response.rs</url>
+          <url>file://$PROJECT_DIR$/../web_framework_lib/src/web/models/transaction/response.rs</url>
           <line>146</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/../web_framework_lib/src/web/server/data/models/transaction/response.rs</url>
+          <url>file://$PROJECT_DIR$/../web_framework_lib/src/web/models/transaction/response.rs</url>
           <line>139</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>

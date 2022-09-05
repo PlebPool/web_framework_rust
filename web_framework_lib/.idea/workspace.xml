@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="CMakePresetLoader"><![CDATA[{
+  "useNewFormat": true
+}]]></component>
   <component name="CMakeSettings">
     <configurations>
       <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
@@ -10,15 +16,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4096ca32-63f2-4816-817e-f4e328cb5bd3" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../server/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../server/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/proc_macros/Cargo.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/proc_macros/Cargo.toml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/proc_macros/src/lib.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/proc_macros_derive/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/src/proc_macros_derive/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/proc_macros_derive/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/proc_macros_derive/src/lib.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/web/server/data/enums/static_file_ext_enum.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/web/server/data/enums/static_file_ext_enum.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../server/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../server/src/main.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/proc_macros_derive/src/implementations/enum_from_str.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/proc_macros_derive/src/implementations/enum_from_str.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/proc_macros_derive/src/implementations/str_from_enum.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/proc_macros_derive/src/implementations/str_from_enum.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/web/models/transaction.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/web/models/transaction.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/web/models/transaction/request.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/web/models/transaction/request.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/web/models/transaction/request/request_line_data.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/web/models/transaction/request/request_line_data.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/web/models/transaction/response.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/web/models/transaction/response.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/web/request_handling/chain_handler.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/web/request_handling/chain_handler.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/web/request_handling/route_handler_container.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/web/request_handling/route_handler_container.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/web/server.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/web/server.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/web/util/enums/static_file_ext_enum.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/web/util/enums/static_file_ext_enum.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/web/util/request_parser.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/web/util/request_parser.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,8 +50,6 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$USER_HOME$/.rustup/toolchains/stable-x86_64-pc-windows-msvc/lib/rustlib/src/rust/library/proc_macro/src/lib.rs" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/../di_ioc_lib/src/di/container.rs" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/proc_macros_derive/Cargo.toml" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/proc_macros_derive/mimetypes.txt" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/proc_macros_derive/resource/mime-types.csv" root0="SKIP_INSPECTION" />
@@ -60,15 +69,16 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Project.color": "0e500a",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
     "WebServerToolWindowFactoryState": "false",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "last_opened_file_path": "C:/Users/mattias.wegblad/Desktop/git/web_framework_rust/server",
+    "last_opened_file_path": "/home/wegblad/Desktop/gymnasiearbete/web_framework_rust/server",
     "org.rust.cargo.project.model.PROJECT_DISCOVERY": "true",
-    "settings.editor.selected.configurable": "preferences.pluginManager"
+    "settings.editor.selected.configurable": "language.rust.cargo.check"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -76,7 +86,24 @@
       <recent name="C:\Users\mattias.wegblad\Desktop\git\web_framework_rust\web_framework_lib\src\proc_macros_derive\resource" />
     </key>
   </component>
-  <component name="RunManager" selected="Cargo.Test web::server::data::enums::static_file_ext_enum::tests::it_works">
+  <component name="RunManager" selected="Cargo.Expand web_framework_lib::web::request_handling::route_handler_container::route_path">
+    <configuration name="Expand web_framework_lib::web::request_handling::route_handler_container::route_path" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="command" value="expand --lib --color=always --theme=Dracula --tests web::request_handling::route_handler_container::route_path" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="withSudo" value="false" />
+      <option name="buildTarget" value="REMOTE" />
+      <option name="backtrace" value="SHORT" />
+      <envs />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Test tests::it_works" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
       <option name="command" value="test --package web_framework_lib --lib tests::it_works -- --exact" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -113,6 +140,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Cargo.Expand web_framework_lib::web::request_handling::route_handler_container::route_path" />
         <item itemvalue="Cargo.Test web::server::data::enums::static_file_ext_enum::tests::it_works" />
         <item itemvalue="Cargo.Test tests::it_works" />
       </list>
@@ -120,7 +148,7 @@
   </component>
   <component name="RustProjectSettings">
     <option name="runExternalLinterOnTheFly" value="true" />
-    <option name="toolchainHomeDirectory" value="$USER_HOME$/.cargo/bin" />
+    <option name="toolchainHomeDirectory" value="/usr/bin" />
     <option name="version" value="2" />
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -134,6 +162,7 @@
       <workItem from="1661164130265" duration="3856000" />
       <workItem from="1661763742321" duration="5233000" />
       <workItem from="1661840191235" duration="11881000" />
+      <workItem from="1662401062541" duration="8255000" />
     </task>
     <servers />
   </component>

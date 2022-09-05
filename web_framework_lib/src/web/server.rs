@@ -1,10 +1,11 @@
+use di_ioc_lib::di::ioc_container::IocContainer;
 use std::net::TcpListener;
 use std::sync::Arc;
 use std::thread;
-use di_ioc_lib::di::ioc_container::IocContainer;
+
 use crate::web::models::transaction::Transaction;
-use crate::web::util::request_parser;
 use crate::web::request_handling::chain_handler;
+use crate::web::util::request_parser;
 
 pub type HandlerFunction = fn(transaction: &mut Transaction);
 

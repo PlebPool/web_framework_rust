@@ -4,8 +4,9 @@ use std::fmt::{Debug, Formatter};
 use std::fs;
 use std::io::Error;
 use std::ops::Add;
-use crate::web::util::enums::static_file_ext_enum::StaticFileExt;
 use std::str::FromStr;
+
+use crate::web::util::enums::static_file_ext_enum::StaticFileExt;
 
 const DEFAULT_HTTP_VERSION: &str = "HTTP/2";
 
@@ -226,10 +227,13 @@ impl <'a> Response<'a> {
     pub fn headers(&self) -> &HashMap<&'a str, String> {
         &self.headers
     }
-    pub fn set_status(&mut self, status: u16) {
+
+    pub fn set_status(&mut self, status: u16) -> &mut Self {
         self.status = status;
+        self
     }
-    pub fn set_reason_phrase(&mut self, reason_phrase: &'a str) {
+    pub fn set_reason_phrase(&mut self, reason_phrase: &'a str) -> &mut Self {
         self.reason_phrase = reason_phrase;
+        self
     }
 }

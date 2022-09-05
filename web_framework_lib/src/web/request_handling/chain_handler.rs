@@ -1,9 +1,10 @@
-use std::sync::Arc;
 use di_ioc_lib::di::ioc_container::IocContainer;
-use crate::web::util::enums::http_method_enum::HttpMethod;
+use std::sync::Arc;
+
 use crate::web::models::transaction::response::Response;
 use crate::web::models::transaction::Transaction;
 use crate::web::request_handling::route_handler_container::RouteHandlerContainer;
+use crate::web::util::enums::http_method_enum::HttpMethod;
 
 mod handlers {
     pub mod handler_config;
@@ -21,7 +22,7 @@ pub fn enter_chain(mut transaction: Transaction, container: Arc<IocContainer>) {
     let path: &str = &transaction.req().request_line_data().path();
     let route_map: &RouteHandlerContainer = container.get_ref()
         .expect("Failed to get RouteHandlerContainer.");
-    if let Some(handler) = route_map.get(&path) {
+    if let Some(handler) = route_map.get_match(&path) {
         handler(&mut transaction);
     } else {
         if transaction.req().request_line_data().method() == HttpMethod::GET.to_string() {

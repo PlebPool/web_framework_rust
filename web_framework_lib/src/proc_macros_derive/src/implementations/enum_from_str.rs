@@ -1,6 +1,6 @@
 use proc_macro::TokenStream;
-use std::iter::Map;
 use quote::quote;
+use std::iter::Map;
 use syn::Attribute;
 
 struct EnumFromStrAttrs {

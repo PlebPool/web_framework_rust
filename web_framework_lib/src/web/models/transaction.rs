@@ -1,6 +1,7 @@
 use std::fmt::{Debug, Formatter};
 use std::io::Write;
 use std::thread;
+
 use crate::web::models::transaction::request::Request;
 use crate::web::models::transaction::response::Response;
 

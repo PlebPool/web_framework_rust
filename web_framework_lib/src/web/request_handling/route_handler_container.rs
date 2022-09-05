@@ -1,6 +1,7 @@
-use std::collections::HashMap;
-use std::fmt::{Debug, Formatter};
 use di_ioc_lib::di::providable_trait::Providable;
+use std::collections::HashMap;
+use std::ops::Add;
+use regex::{Error, Regex};
 use crate::web::server::HandlerFunction;
 
 /// `RouteHandlerContainer` is a struct that contains a `HashMap` of `Regex` and `HandlerFunction`
@@ -20,11 +21,41 @@ impl RouteHandlerContainer {
         Self { path_map: HashMap::new() }
     }
 
-    pub fn get(&self, path: &str) -> Option<&HandlerFunction> {
-        self.path_map.get(path)
+    // TODO: Implement searching algorithms.
+    pub fn get_match(&self, path: &str) -> Option<&HandlerFunction> {
+        self.path_map.iter().find(|(s, _)| {
+            let reg_res: Result<bool, Error> = Regex::new(s).map(|r: Regex| {
+                let val: bool = r.is_match(&path);
+                dbg!(&r, &path, &val);
+                val
+            });
+            return match reg_res {
+                Err(error) => { dbg!(error); false },
+                Ok(t) => { t }
+            };
+        }).map(|(_, h): (_, &HandlerFunction)| h)
     }
 
-    pub fn insert(&mut self, k: String, v: HandlerFunction) {
+    pub fn insert(&mut self, k: &str, v: HandlerFunction) {
+        let mut k: String = String::from(k);
+        let mut closed_curly_brackets_pos_vec: Vec<usize> = Vec::new();
+        let mut open_curly_brackets_pos_vec: Vec<usize> = Vec::new();
+        for (i, c) in k.chars().enumerate() {
+            if c == '{' {
+                open_curly_brackets_pos_vec.push(i);
+            } else if c == '}' {
+                closed_curly_brackets_pos_vec.push(i);
+            }
+        }
+        if open_curly_brackets_pos_vec.len() != closed_curly_brackets_pos_vec.len() {
+            dbg!(open_curly_brackets_pos_vec.len(), closed_curly_brackets_pos_vec.len(), k);
+            panic!("open_curly_brackets_pos_vec.len() != closed_curly_brackets_pos_vec.len()");
+        }
+        for (open, closed)
+        in open_curly_brackets_pos_vec.iter().zip(closed_curly_brackets_pos_vec) {
+            k.replace_range(open..&(closed+1), ".{1,}");
+        }
+        k = String::from("^").add(&k.add("$"));
         self.path_map.insert(k, v);
     }
 }
@@ -39,8 +70,7 @@ mod test {
     #[test]
     fn test() {
         let mut rhc = RouteHandlerContainer::new();
-        rhc.insert("/hey/test".to_string(), dummy);
-        rhc.insert("/hey/{param}/test".to_string(), dummy);
-
+        rhc.insert("/hey/test", dummy);
+        rhc.insert("/hey/{param}/test", dummy);
     }
 }

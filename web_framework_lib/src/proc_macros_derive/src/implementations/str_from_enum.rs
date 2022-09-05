@@ -1,10 +1,9 @@
 use proc_macro::TokenStream;
 use quote::quote;
-use std::str::Split;
 use std::fs;
 use std::ops::Add;
+use std::str::Split;
 use syn::{Attribute, Variant};
-
 
 struct StrFromEnumAttrs {
     optional_csv_file_path: Option<String>,

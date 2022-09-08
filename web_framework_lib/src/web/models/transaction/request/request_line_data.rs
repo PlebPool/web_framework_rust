@@ -77,7 +77,7 @@ impl RequestLineData {
             match sws.next() { Some(t) => { t }, None => { "[NO_PROTOCOL]" } }.to_string();
         Self {
             method,
-            path: path,
+            path,
             protocol,
             path_query_bypassed: false,
             request_queries: request_queries_opt
@@ -86,7 +86,7 @@ impl RequestLineData {
 
     pub fn get_path_cell_by_index(&self, index: usize) -> Option<String> {
         self.path.split('/')
-            .filter(|s| *s != "")
+            .filter(|s| !s.is_empty())
             .collect::<Vec<&str>>()
             .get(index)
             .map(|s| String::from(*s))

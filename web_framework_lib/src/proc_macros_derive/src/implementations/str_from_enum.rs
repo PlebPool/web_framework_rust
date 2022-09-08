@@ -1,6 +1,7 @@
 use proc_macro::TokenStream;
 use quote::quote;
 use std::fs;
+use std::io::Lines;
 use std::ops::Add;
 use std::str::Split;
 use syn::{Attribute, Variant};
@@ -61,7 +62,7 @@ pub fn impl_to_string(derive_input: syn::DeriveInput) -> TokenStream {
         }
     };
     // dbg!(&data);
-    let data_as_str_newline_split: Split<char> = data.split('\n');
+    let data_as_str_newline_split = data.lines();
     let mut keys: Vec<proc_macro2::TokenStream> = Vec::new();
     let mut vals: Vec<String> = Vec::new();
     for line in data_as_str_newline_split {

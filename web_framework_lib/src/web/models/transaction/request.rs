@@ -35,7 +35,7 @@ impl Request {
     ///
     /// A new instance of the Request struct.
     pub fn new(req_str: String, stream: TcpStream) -> Self {
-        let mut req_split_new_line: Vec<&str> = req_str.split('\n').collect();
+        let mut req_split_new_line: Vec<&str> = req_str.lines().collect();
         req_split_new_line.reverse();
         Self {
             request_line_data:

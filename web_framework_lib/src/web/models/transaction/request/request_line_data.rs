@@ -86,7 +86,7 @@ impl RequestLineData {
     }
 
     pub fn get_path_cell_by_index(&self, index: usize) -> Option<String> {
-        self.path.split("/")
+        self.path.split('/')
             .filter(|s| *s != "")
             .collect::<Vec<&str>>()
             .get(index)

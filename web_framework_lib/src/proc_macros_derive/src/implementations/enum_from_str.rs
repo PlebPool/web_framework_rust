@@ -17,13 +17,10 @@ impl EnumFromStrAttrs {
                 .replace("(", "").replace(")", "").replace("\"", "");
             str.parse().expect("Failed parse")
         });
-
-        Self { english_number_prefix_to_numerical: english_number_prefix_to_numerical }
+        Self { english_number_prefix_to_numerical }
     }
-
     pub fn english_number_prefix_to_numerical(&self) -> bool {
         self.english_number_prefix_to_numerical
-            .map(|b: bool| b )
             .unwrap_or_else(|| false)
     }
 }
@@ -73,7 +70,6 @@ pub fn impl_enum_from_str(derive_input: syn::DeriveInput) -> TokenStream {
             quote! {
                 impl std::str::FromStr for #ident {
                     type Err = ();
-
                     fn from_str(s: &str) -> Result<Self, Self::Err> {
                         match s.to_uppercase().as_str() {
                             #(#variant_token_identity_string_iterator => {

@@ -65,7 +65,7 @@ pub fn impl_to_string(derive_input: syn::DeriveInput) -> TokenStream {
     let mut keys: Vec<proc_macro2::TokenStream> = Vec::new();
     let mut vals: Vec<String> = Vec::new();
     for line in data_as_str_newline_split {
-        let line_separator_split: Option<(&str, &str)> = line.split_once(";");
+        let line_separator_split: Option<(&str, &str)> = line.split_once(';');
         let _ = line_separator_split.map(|(key, val): (&str, &str)| {
             let mut key: String = String::from(key);
             let k_first_char: char = key.chars().nth(0).expect("Key lacks first char");
@@ -73,11 +73,11 @@ pub fn impl_to_string(derive_input: syn::DeriveInput) -> TokenStream {
                 let num_in_english: &str = crate::english_numerical::match_numeric_to_english(k_first_char);
                 key = key.replacen(k_first_char, num_in_english, 1);
             }
-            key = key.replace(".", "").to_uppercase();
+            key = key.replace('.', "").to_uppercase();
             if variants_as_str.contains(&key) {
                 keys.push(key.parse().unwrap());
-                vals.push(val.replace("\r\n", "")
-                    .replace("\r", ""));
+                vals.push(val.replace('\n', "")
+                    .replace('\r', ""));
             }
         });
     }

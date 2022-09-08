@@ -68,7 +68,7 @@ pub fn impl_to_string(derive_input: syn::DeriveInput) -> TokenStream {
         let line_separator_split: Option<(&str, &str)> = line.split_once(';');
         let _ = line_separator_split.map(|(key, val): (&str, &str)| {
             let mut key: String = String::from(key);
-            let k_first_char: char = key.chars().nth(0).expect("Key lacks first char");
+            let k_first_char: char = key.chars().next().expect("Key lacks first char");
             if k_first_char.is_numeric() {
                 let num_in_english: &str = crate::english_numerical::match_numeric_to_english(k_first_char);
                 key = key.replacen(k_first_char, num_in_english, 1);

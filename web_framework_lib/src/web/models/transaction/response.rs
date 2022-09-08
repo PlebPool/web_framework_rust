@@ -194,8 +194,7 @@ impl <'a> Response<'a> {
     /// A vector of bytes.
     pub fn get_as_u8_vec(&mut self) -> Vec<u8> {
         if self.status == 0 {
-            dbg!("Please mutate http status before getting as byte vector.");
-            panic!()
+            panic!("Please mutate http status before getting as byte vector.")
         }
         let mut header_map_to_str: String = String::new();
         for (k, v) in &self.headers {

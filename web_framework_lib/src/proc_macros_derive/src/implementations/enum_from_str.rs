@@ -21,7 +21,7 @@ impl EnumFromStrAttrs {
     }
     pub fn english_number_prefix_to_numerical(&self) -> bool {
         self.english_number_prefix_to_numerical
-            .unwrap_or_else(|| false)
+            .unwrap_or(false)
     }
 }
 

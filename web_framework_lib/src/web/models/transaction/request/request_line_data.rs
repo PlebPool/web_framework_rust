@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use std::rc::Rc;
 use std::str::{Split, SplitWhitespace};
 
 use crate::web::models::transaction::request::request_line_data::request_queries::RequestQueries;
@@ -29,7 +28,7 @@ mod request_queries;
 #[derive(Debug)]
 pub struct RequestLineData {
     method: String,
-    pub(crate) path: Rc<String>,
+    pub(crate) path: String,
     protocol: String,
     pub(crate) path_query_bypassed: bool,
     request_queries: Option<RequestQueries>
@@ -78,7 +77,7 @@ impl RequestLineData {
             match sws.next() { Some(t) => { t }, None => { "[NO_PROTOCOL]" } }.to_string();
         Self {
             method,
-            path: Rc::new(path),
+            path: path,
             protocol,
             path_query_bypassed: false,
             request_queries: request_queries_opt
@@ -100,8 +99,8 @@ impl RequestLineData {
     pub fn protocol(&self) -> &str {
         &self.protocol
     }
-    pub fn path(&self) -> Rc<String> {
-        Rc::clone(&self.path)
+    pub fn path(&self) -> &str {
+        &self.path
     }
     pub fn path_query_bypassed(&self) -> bool {
         self.path_query_bypassed
@@ -113,7 +112,7 @@ impl RequestLineData {
         self.method = method;
     }
     pub fn set_path(&mut self, path: String) {
-        self.path = Rc::new(path);
+        self.path = path;
     }
     pub fn set_protocol(&mut self, protocol: String) {
         self.protocol = protocol;

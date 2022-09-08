@@ -55,7 +55,7 @@ pub fn enter_chain(mut transaction: Transaction, container: Arc<IocContainer>) {
 }
 
 fn rule_out_static_resources(transaction: &mut Transaction) -> bool {
-    let path: &str = &transaction.req().request_line_data().path();
+    let path: &str = &transaction.req().request_line_data().path().to_owned();
     if path.contains('.') {
         let res: &mut Response = transaction.res_mut();
         match res.set_body_to_file(&path) {

@@ -10,6 +10,7 @@ use crate::web::util::request_parser;
 pub type HandlerFunction = fn(transaction: &mut Transaction);
 
 pub fn start(port: &str, container: Arc<IocContainer>) {
+    env_logger::init();
     let listener: TcpListener = TcpListener::bind("127.0.0.1:".to_owned() + port)
         .expect("BIND FAILED");
 

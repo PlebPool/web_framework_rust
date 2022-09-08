@@ -46,7 +46,7 @@ pub fn impl_to_string(derive_input: syn::DeriveInput) -> TokenStream {
     let data: String = match attr_struct.optional_csv_file_path() {
         Some(p) => {
             let csv_file_path: &String = p;
-            dbg!(&csv_file_path);
+            // dbg!(&csv_file_path);
              String::from_utf8_lossy(&fs::read(csv_file_path.as_str())
                  .expect("Failed to read CSV file.")).to_string()
         },
@@ -60,7 +60,7 @@ pub fn impl_to_string(derive_input: syn::DeriveInput) -> TokenStream {
             result
         }
     };
-    dbg!(&data);
+    // dbg!(&data);
     let data_as_str_newline_split: Split<char> = data.split('\n');
     let mut keys: Vec<proc_macro2::TokenStream> = Vec::new();
     let mut vals: Vec<String> = Vec::new();

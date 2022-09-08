@@ -54,7 +54,6 @@ pub fn impl_enum_from_str(derive_input: syn::DeriveInput) -> TokenStream {
                     s
                 }).collect();
             // If #[english_number_prefix_to_numerical(bool)] is set.
-            dbg!(attr_struct.english_number_prefix_to_numerical());
             if attr_struct.english_number_prefix_to_numerical() {
                 variant_token_identity_string_vec = variant_token_identity_string_vec.iter().map(|s| {
                     let num_res: Result<&str, ()> = crate::english_numerical::starts_with_numeric_english(&s);

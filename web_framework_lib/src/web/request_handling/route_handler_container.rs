@@ -28,11 +28,15 @@ impl RouteHandlerContainer {
         self.path_map.iter().find(|(regex_str, _)| {
             let reg_match_result: Result<bool, Error> = Regex::new(regex_str).map(|regex_struct: Regex| {
                 let val: bool = regex_struct.is_match(&path);
-                dbg!(&regex_struct, &path, &val);
+                // dbg!(&regex_struct, &path, &val);
+                log::debug!("regex: {}, path: {}, is_match: {}",regex_str, path, val);
                 val
             });
             return match reg_match_result {
-                Err(error) => { dbg!(error); false },
+                Err(error) => {
+                    log::error!("{}", error);
+                    false
+                },
                 Ok(t) => { t }
             };
         }).map(|(_, h): (_, &HandlerFunction)| h)
@@ -64,7 +68,13 @@ impl RouteHandlerContainer {
             }
         }
         if open_curly_brackets_pos_vec.len() != closed_curly_brackets_pos_vec.len() {
-            dbg!(open_curly_brackets_pos_vec.len(), closed_curly_brackets_pos_vec.len(), k);
+            // dbg!(open_curly_brackets_pos_vec.len(), closed_curly_brackets_pos_vec.len(), k);
+            if log::log_enabled!(log::Level::Debug) {
+                log::debug!("open_curly_pos_vec.len(): {}, closed_curly_brackets_pos_vec.len(): {}",
+                    open_curly_brackets_pos_vec.len(),
+                    closed_curly_brackets_pos_vec.len()
+                )
+            }
             panic!("open_curly_brackets_pos_vec.len() != closed_curly_brackets_pos_vec.len()");
         }
         for (open, closed)

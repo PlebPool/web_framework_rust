@@ -36,7 +36,7 @@ pub fn enter_chain(mut transaction: Transaction, container: Arc<IocContainer>) {
     }
     match transaction.resolve() {
         Err(e) => { dbg!(e); },
-        Ok(_) => { dbg!(transaction); }
+        Ok(_) => { log::debug!("{:#?}", transaction); }
     };
 }
 

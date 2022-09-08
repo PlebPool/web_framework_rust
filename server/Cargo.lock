@@ -31,6 +31,10 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 [[package]]
 name = "di_ioc_lib"
 version = "0.1.0"
+dependencies = [
+ "env_logger",
+ "log",
+]
 
 [[package]]
 name = "env_logger"
@@ -132,6 +136,7 @@ name = "server"
 version = "0.1.0"
 dependencies = [
  "di_ioc_lib",
+ "env_logger",
  "web_framework_lib",
 ]
 

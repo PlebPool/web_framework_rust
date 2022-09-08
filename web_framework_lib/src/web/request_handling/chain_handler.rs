@@ -35,8 +35,22 @@ pub fn enter_chain(mut transaction: Transaction, container: Arc<IocContainer>) {
         }
     }
     match transaction.resolve() {
-        Err(e) => { dbg!(e); },
-        Ok(_) => { log::debug!("{:#?}", transaction); }
+        Err(e) => {
+            if log::log_enabled!(log::Level::Error) {
+                log::error!("{}", e);
+            }
+        },
+        Ok(_) => {
+            if log::log_enabled!(log::Level::Info) {
+                log::info!("Transaction resolved for {}, status: {}, path: {}",
+                transaction.req().stream().peer_addr().unwrap(),
+                transaction.res().status(),
+                transaction.req().request_line_data().path);
+            }
+            if log::log_enabled!(log::Level::Debug) {
+                log::debug!("\n{:#?}", transaction);
+            }
+        }
     };
 }
 
@@ -51,7 +65,9 @@ fn rule_out_static_resources(transaction: &mut Transaction) -> bool {
                 return true
             },
             Err(e) => {
-                dbg!(e);
+                if log::log_enabled!(log::Level::Error) {
+                    log::error!("{}", e);
+                }
             }
         }
     }

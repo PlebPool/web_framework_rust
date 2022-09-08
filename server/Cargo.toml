@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 web_framework_lib = { path = "../web_framework_lib" }
 di_ioc_lib = { path = "../di_ioc_lib" }
+env_logger = "0.9.0"

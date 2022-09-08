@@ -10,9 +10,18 @@ pub enum ProviderError {
     ProviderCastFailed
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug)]
 pub struct IocContainer {
     providers: HashMap<TypeId, Arc<dyn Any>>
+}
+
+impl Default for IocContainer {
+    fn default() -> Self {
+        let _ = env_logger::try_init();
+        Self {
+            providers: HashMap::default()
+        }
+    }
 }
 
 /// Telling the compiler that the Container is safe to send to other threads.

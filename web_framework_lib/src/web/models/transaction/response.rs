@@ -141,9 +141,8 @@ impl <'a> Response<'a> {
         let mime_type: String = path_from_public.split_once('.')
             .map(|(_parent_path, ext): (&str, &str)| {
                 let ext: String = ext.replace(".download", "");
-                let e: StaticFileExt = StaticFileExt::from_str(&ext).expect(
-                    format!("Invalid ext: {}", ext).as_str()
-                );
+                let e: StaticFileExt = StaticFileExt::from_str(&ext)
+                    .unwrap_or_else(|()| panic!("Invalid ext: {}", ext));
                 e.to_string()
             }).expect("Failed to get mime type.");
         if !path_from_public.starts_with('/') { path_prefix = path_prefix.add("/"); }

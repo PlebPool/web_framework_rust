@@ -95,18 +95,23 @@ impl IocContainer {
         }
     }
 
+    /// It returns a unique identifier for a given type
+    ///
+    /// Returns:
+    ///
+    /// A TypeId
     fn get_id<T: 'static>() -> TypeId {
         TypeId::of::<T>()
     }
 
-    /// We want box references to the providers.
+    /// Returns a box reference referencing a value provider.
     fn box_provider<T: 'static, P: 'static + Provider<TypeProvided = T>>(
         provider: P,
     ) -> Box<dyn Provider<TypeProvided = T>> {
         Box::new(provider)
     }
 
-    /// We want box references to the providers.
+    /// Returns a box reference referencing a reference provider.
     fn box_ref_provider<T: 'static, P: 'static + ReferenceProvider<RefProvided = T>>(
         provider: P,
     ) -> Box<dyn ReferenceProvider<RefProvided = T>> {

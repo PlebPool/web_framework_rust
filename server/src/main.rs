@@ -1,3 +1,4 @@
+use std::env;
 use std::sync::Arc;
 use di_ioc_lib::di::ioc_container::IocContainer;
 use web_framework_lib::web::server;
@@ -25,6 +26,7 @@ pub fn path_param_test(transaction: &mut Transaction) {
 }
 
 fn main() {
+    env::set_var("RUST_LOG", "debug");
     let mut container: IocContainer = IocContainer::default();
     let mut rhc: RouteHandlerContainer = RouteHandlerContainer::new();
     rhc.insert("/", index);

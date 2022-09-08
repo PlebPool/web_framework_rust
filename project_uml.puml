@@ -1,0 +1,137 @@
+https://plantuml.com/class-diagram
+@startuml
+package web_framework_lib <<Node>> {
+    namespace models {
+        class Transaction
+        Transaction : req: Request
+        Transaction : res: Response
+        Transaction : resolved: bool
+        Transaction : new(req: Request, res: Response) -> Self
+        Transaction : resolve(&mut self) -> Result<(), &str>
+        Transaction : req(&self) -> &Request
+        Transaction : res(&self) -> &Response
+        Transaction : req_mut(&mut self) -> &mut Request
+        Transaction : res_mut(&mut self) -> &mut Response
+        Transaction : resolved(&self) -> bool
+        Transaction : set_resolved(&mut self, resolved: bool)
+
+        class Request
+        Transaction "1" *-l- Request : contains
+
+        Request : request_line_data: RequestLineData
+        Request : request_headers: RequestHeaders
+        Request : stream: TcpStream
+        Request : new(req_str: String, stream: TcpStream) -> Self
+        Request : req_str_to_header_map(req_str: Vec<&str>) -> HashMap<String, String>
+        Request : request_line_data(&self) -> &RequestLineData
+        Request : request_header_map(&self) -> &RequestHeaders
+        Request : stream(&self) -> &TcpStream
+        Request : set_request_line_data(&mut self, request_line_data: RequestLineData)
+        Request : set_request_header_map(&mut self, request_headers: RequestHeaders)
+        Request : set_stream(&mut self, stream: TcpStream)
+
+        class RequestLineData
+        Request "1" *-- RequestLineData : contains
+
+        RequestLineData : method: String
+        RequestLineData : path: String
+        RequestLineData : protocol: String
+        RequestLineData : request_queries: Option<RequestQueries>
+        RequestLineData : new(req_str_first_line: &str) -> Self
+        RequestLineData : get_path_cell_by_index(&self, index: usize) -> Option<String>
+        RequestLineData : method(&self) -> &str
+        RequestLineData : protocol(&self) -> &str
+        RequestLineData : path(&self) -> &str
+        RequestLineData : request_queries(&self) -> &Option<RequestQueries>
+        RequestLineData : set_method(&mut self, method: String)
+        RequestLineData : set_path(&mut self, path: String)
+        RequestLineData : set_protocol(&mut self, protocol: String)
+        RequestLineData : set_request_queries(&mut self, request_queries: Option<RequestQueries>)
+
+        class RequestQueries
+        RequestLineData "1" *-r- RequestQueries : contains
+
+        RequestQueries : new_empty() -> Self
+        RequestQueries : new(queries: HashMap<String, String>) -> Self
+        RequestQueries : add_query(&mut self, key: &str, val: &str)
+        RequestQueries : remove_query_and_get_val(&mut self, key: &str) -> Option<String>
+        RequestQueries : remove_query(&mut self, key: &str) -> bool
+
+        class RequestHeaders
+        Request "1" *-l- RequestHeaders : contains
+
+        RequestHeaders : headers: HashMap<String, String>
+        RequestHeaders : new_empty() -> Self
+        RequestHeaders : new(headers: HashMap<String, String>) -> Self
+        RequestHeaders : add_header(&mut self, key: &str, val: &str)
+        RequestHeaders : remove_header_and_get_val(&mut self, key: &str) -> Option<String>
+        RequestHeaders : remove_header(&mut self, key: &str) -> bool
+
+        class Response
+        Transaction "1" *-- Response : contains
+
+        Response : protocol: &str
+        Response : status: u16
+        Response : reason_phrase: &str
+        Response : headers: HashMap<&str, String>
+        Response : new(status: u16, reason_phrase: &str) -> Self
+        Response : new_empty() -> Self
+        Response : ok() -> Self
+        Response : not_found() -> Self
+        Response : bad_request(s: &str) -> Self
+        Response : set_body_to_file(&mut self, path_from_public: &str) -> Result<(), Error>
+        Response : add_header(&mut self, key: &'a str, val: String)
+        Response : set_body(&mut self, body: String)
+        Response : set_body_u8(&mut self, body: Vec<u8>)
+        Response : get_as_u8_vec(&mut self) -> Vec<u8>
+        Response : protocol(&self) -> &str
+        Response : status(&self) -> u16
+        Response : reason_phrase(&self) -> &str
+        Response : body(&self) -> &Vec<u8>
+        Response : headers(&self) -> &HashMap<&'a str, String>
+        Response : set_status(&mut self, status: u16) -> &mut Self
+        Response : set_reason_phrase(&mut self, reason_phrase: &'a str) -> &mut Self
+    }
+    namespace util {
+        namespace enums {
+            enum HttpMethod {
+                GET,
+                POST,
+                PUT,
+                DELETE
+            }
+            HttpMethod <|.u. proc_macro_derive.EnumFromStr
+            HttpMethod <|.u. proc_macro_derive.StrFromEnum
+            enum StaticFileExt {
+                AAC, ABW, ARC, AVI, AZW, BIN, BMP, BZ, BZ2, CSH, CSS, CSV, DOC, DOCX, EOT, EPUB, GZ, GIF, HTML,
+                ICO, ICS, JAR, JPEG, JPG, JS, JSON, JSONLD, MIDI, MJS, MP3, MPEG, MPKG, ODP, ODS, ODT, OGA, OGV,
+                OGX, OPUS, OTF, PNG, PDF, PHP, PPT, PPTX, RAR, RTF, SH, SVG, SWF, TAR, TIFF, TS, TTF, TXT, VSD,
+                WAV, WEBA, WEBM, WEBP, WOFF, WOFF2, XHTML, XLS, XLSX, XML, XUL, ZIP, THREEGP, THREEG2, SEVENZ,
+                IgnoreThisVariant
+            }
+            StaticFileExt <|.u.... proc_macro_derive.EnumFromStr : (e.g "7z" => StaticFileExt::SEVENZ)
+            StaticFileExt <|.u. proc_macro_derive.StrFromEnum : (mime_types [using a csv file pointed to by helper attribute])
+        }
+    }
+    namespace request_handling {
+        class chain_handler
+        chain_handler : enter_chain(mut transaction: Transaction, container: Arc<IocContainer>)
+        chain_handler : rule_out_static_resources(transaction: &mut Transaction) -> bool
+        chain_handler <.. models.Transaction : mutates/resolves
+        chain_handler <.l. RouteHandlerContainer : provides user implemented handlers
+        class RouteHandlerContainer
+        RouteHandlerContainer : path_map: HashMap<String, HandlerFunction>
+        RouteHandlerContainer <|.u. di_ioc_lib.Providable
+    }
+}
+package proc_macro_derive {
+    annotation EnumFromStr
+    EnumFromStr : from_str(s: &str) -> Result<Self, ()>
+    annotation StrFromEnum
+    StrFromEnum : to_string(&self) -> String
+}
+
+
+
+
+@enduml

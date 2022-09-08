@@ -30,7 +30,6 @@ pub struct RequestLineData {
     method: String,
     pub(crate) path: String,
     protocol: String,
-    pub(crate) path_query_bypassed: bool,
     request_queries: Option<RequestQueries>
 }
 
@@ -79,7 +78,6 @@ impl RequestLineData {
             method,
             path,
             protocol,
-            path_query_bypassed: false,
             request_queries: request_queries_opt
         }
     }
@@ -102,9 +100,6 @@ impl RequestLineData {
     pub fn path(&self) -> &str {
         &self.path
     }
-    pub fn path_query_bypassed(&self) -> bool {
-        self.path_query_bypassed
-    }
     pub fn request_queries(&self) -> &Option<RequestQueries> {
         &self.request_queries
     }
@@ -116,9 +111,6 @@ impl RequestLineData {
     }
     pub fn set_protocol(&mut self, protocol: String) {
         self.protocol = protocol;
-    }
-    pub fn set_path_query_bypassed(&mut self, path_query_bypassed: bool) {
-        self.path_query_bypassed = path_query_bypassed;
     }
     pub fn set_request_queries(&mut self, request_queries: Option<RequestQueries>) {
         self.request_queries = request_queries;

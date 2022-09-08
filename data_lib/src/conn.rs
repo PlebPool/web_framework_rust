@@ -12,7 +12,7 @@ pub struct GenericConnPoolWrapper {
 impl GenericConnPoolWrapper {
     pub fn new(url: &str) -> Self {
         let pool: Pool = Pool::new(url)
-            .unwrap_or_else(|| panic!("Failed to connect to mysql url: {}", url));
+            .unwrap_or_else(|_| panic!("Failed to connect to mysql url: {}", url));
         Self { connection_pool: pool }
     }
 

@@ -1,9 +1,7 @@
 use proc_macro::TokenStream;
 use quote::quote;
 use std::fs;
-use std::io::Lines;
 use std::ops::Add;
-use std::str::Split;
 use syn::{Attribute, Variant};
 
 struct StrFromEnumAttrs {

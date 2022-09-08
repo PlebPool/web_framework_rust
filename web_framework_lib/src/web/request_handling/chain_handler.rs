@@ -6,11 +6,6 @@ use crate::web::models::transaction::Transaction;
 use crate::web::request_handling::route_handler_container::RouteHandlerContainer;
 use crate::web::util::enums::http_method_enum::HttpMethod;
 
-mod handlers {
-    pub mod handler_config;
-    pub mod static_resource_handler;
-}
-
 /// It takes a `Transaction` and a `Container` and
 /// calls the appropriate handler function for the request path
 ///

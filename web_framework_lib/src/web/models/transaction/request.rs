@@ -83,8 +83,8 @@ impl Request {
     pub fn set_request_line_data(&mut self, request_line_data: RequestLineData) {
         self.request_line_data = request_line_data;
     }
-    pub fn set_request_header_map(&mut self, request_header_map: RequestHeaders) {
-        self.request_headers = request_header_map;
+    pub fn set_request_header_map(&mut self, request_headers: RequestHeaders) {
+        self.request_headers = request_headers;
     }
     pub fn set_stream(&mut self, stream: TcpStream) {
         self.stream = stream;

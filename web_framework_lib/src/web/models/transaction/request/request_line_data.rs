@@ -5,7 +5,6 @@ use std::str::{Split, SplitWhitespace};
 use crate::web::models::transaction::request::request_line_data::request_queries::RequestQueries;
 
 mod request_queries;
-mod request_path_params;
 
 /// It's a struct that holds the method, path, and protocol of a request line.
 ///
@@ -33,7 +32,7 @@ pub struct RequestLineData {
     pub(crate) path: Rc<String>,
     protocol: String,
     pub(crate) path_query_bypassed: bool,
-    request_queries: Option<RequestQueries>,
+    request_queries: Option<RequestQueries>
 }
 
 #[allow(dead_code)]
@@ -51,7 +50,7 @@ impl RequestLineData {
     /// A new instance of the Request struct.
     pub fn new(req_str_first_line: &str) -> Self {
         let mut sws: SplitWhitespace = req_str_first_line.split_whitespace();
-        let method =
+        let method: String =
             match sws.next() { Some(t) => { t }, None => { "[NO_METHOD]" } }.to_string();
         let full_path_string =
             match sws.next() { Some(t) => { t }, None => { "[NO_PATH]" } }.to_string();
@@ -62,14 +61,12 @@ impl RequestLineData {
                 path = parent_path.to_string();
                 let mut map: HashMap<String, String> = HashMap::new();
                 let query_iterator: Split<char> = queries_str.split('&');
-
                 let _ = query_iterator.map(|s: &str| {
                     let key_val_pair: Option<(&str, &str)> = s.split_once('=');
                     if let Some((key, val)) = key_val_pair {
                         map.insert(key.to_string(), val.to_string());
                     }
                 });
-
                 Some(RequestQueries::new(map))
             },
             None => {
@@ -86,6 +83,14 @@ impl RequestLineData {
             path_query_bypassed: false,
             request_queries: request_queries_opt
         }
+    }
+
+    pub fn get_path_cell_by_index(&self, index: usize) -> Option<String> {
+        self.path.split("/")
+            .filter(|s| *s != "")
+            .collect::<Vec<&str>>()
+            .get(index)
+            .map(|s| String::from(*s))
     }
 
     pub fn method(&self) -> &str {

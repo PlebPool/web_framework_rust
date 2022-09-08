@@ -16,26 +16,42 @@ pub struct RouteHandlerContainer {
 
 impl Providable for RouteHandlerContainer { }
 
+// TODO: If global IoC is implemented, maybe make a macro that makes it easier to match handlers, and paths.
 impl RouteHandlerContainer {
     pub fn new() -> Self {
         Self { path_map: HashMap::new() }
     }
 
-    // TODO: Implement searching algorithms.
+    /// "/cars/{car_id}/wow/"
+    /// "/cars/2/wow/" maybe split by slashes and match them?
     pub fn get_match(&self, path: &str) -> Option<&HandlerFunction> {
-        self.path_map.iter().find(|(s, _)| {
-            let reg_res: Result<bool, Error> = Regex::new(s).map(|r: Regex| {
-                let val: bool = r.is_match(&path);
-                dbg!(&r, &path, &val);
+        self.path_map.iter().find(|(regex_str, _)| {
+            let reg_match_result: Result<bool, Error> = Regex::new(regex_str).map(|regex_struct: Regex| {
+                let val: bool = regex_struct.is_match(&path);
+                dbg!(&regex_struct, &path, &val);
                 val
             });
-            return match reg_res {
+            return match reg_match_result {
                 Err(error) => { dbg!(error); false },
                 Ok(t) => { t }
             };
         }).map(|(_, h): (_, &HandlerFunction)| h)
     }
 
+    /// It takes a string and a function, and inserts the function into a hashmap, where the key is a
+    /// regex pattern that matches the string
+    /// e.g
+    /// ```
+    /// let mut rhc = RouteHandlerContainer::new();
+    /// rhc.insert("/hey/test", dummy);
+    /// rhc.insert("/hey/{param}/test", dummy);
+    /// ```
+    /// The string within {} does not matter, it's primarily for semantics.
+    /// Any path cell "/cell/" that contains "{ }" will be replaced with ".{1,}"
+    /// Arguments:
+    ///
+    /// * `k`: &str, v: HandlerFunction
+    /// * `v`: HandlerFunction
     pub fn insert(&mut self, k: &str, v: HandlerFunction) {
         let mut k: String = String::from(k);
         let mut closed_curly_brackets_pos_vec: Vec<usize> = Vec::new();

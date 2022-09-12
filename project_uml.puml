@@ -130,6 +130,40 @@ package proc_macro_derive {
     annotation StrFromEnum
     StrFromEnum : to_string(&self) -> String
 }
+package di_ioc_lib {
+    class IocContainer
+    IocContainer : providers: HashMap<TypeId, Arc<dyn Any>>
+    interface external.Default
+    interface external.Send
+    interface external.Sync
+    IocContainer <|.u. external.Default
+    IocContainer <|.u. external.Send
+    IocContainer <|.u. external.Sync
+    IocContainer : install_value_provider<TypeProvided: Providable, PROVIDER: 'static + Provider<TypeProvided = TypeProvided>>(&mut self, provider: PROVIDER)
+    IocContainer : install_reference_provider<ReferenceType: Providable, PROVIDER: 'static + ReferenceProvider<RefProvided = ReferenceType>>(&mut self, provider: PROVIDER)
+    IocContainer : get<TypeToGet: Providable>(&self) -> Result<TypeToGet, ProviderError>
+    IocContainer : get_ref<RefToGet: 'static>(&self) -> Result<&RefToGet, ProviderError>
+    IocContainer : get_id<T: 'static>() -> TypeId
+    IocContainer : box_provider<T: 'static, P: 'static + Provider<TypeProvided = T>>(provider: P, ) -> Box<dyn Provider<TypeProvided = T>>
+    IocContainer : box_ref_provider<T: 'static, P: 'static + ReferenceProvider<RefProvided = T>>(provider: P, ) -> Box<dyn ReferenceProvider<RefProvided = T>>
+    interface Providable
+    Providable : lifetime='static
+    interface Provider
+    Provider : type TypeProvided: 'static
+    Provider : provide(&self, container: &IocContainer) -> Result<Self::TypeProvided, String>
+    Provider : id_of_type_provided(&self) -> TypeId
+    interface ReferenceProvider
+    ReferenceProvider : type RefProvided: 'static
+    ReferenceProvider : provide(&self, container: &IocContainer) -> Result<&Self::RefProvided, String>
+    ReferenceProvider : id_of_reference_provided(&self) -> TypeId
+    class external.Arc<T>
+    external.Arc <|.. ReferenceProvider
+    class external.HashMap<K, V>
+    external.HashMap <|.. Providable
+    class external.Vec<T>
+    external.HashMap <|.. Providable
+
+}
 
 
 

@@ -16,7 +16,6 @@ pub struct RouteHandlerContainer {
 
 impl Providable for RouteHandlerContainer { }
 
-// TODO: If global IoC is implemented, maybe make a macro that makes it easier to match handlers, and paths.
 impl RouteHandlerContainer {
     pub fn new() -> Self {
         Self { path_map: HashMap::new() }

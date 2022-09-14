@@ -9,6 +9,9 @@ pub mod web {
         pub mod route_handler_container;
     }
     pub mod util {
+        pub mod encoders {
+            pub mod url_encoder;
+        }
         pub mod enums {
             pub mod http_method_enum;
             pub mod static_file_ext_enum;

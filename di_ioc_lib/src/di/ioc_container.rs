@@ -88,8 +88,7 @@ impl IocContainer {
             .ok_or_else(|| ProviderError::ProviderMissing)?
             .downcast_ref::<Box<dyn ReferenceProvider<RefProvided = RefToGet>>>()
             .ok_or_else(|| ProviderError::ProviderCastFailed)?;
-        let provider_result: Result<&RefToGet, String> = provider.provide(&self);
-        match provider_result {
+        match provider.provide(&self) {
             Ok(t) => { Ok(t) },
             Err(e) => { panic!("Provider Failed: {}", e) }
         }

@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use std::ops::Add;
 use regex::{Error, Regex};
 use crate::web::server::HandlerFunction;
+use crate::web::util::enums::http_method_enum::HttpMethod;
 
 /// `RouteHandlerContainer` is a struct that contains a `HashMap` of `Regex` and `HandlerFunction`
 /// `Regex` is a semantic struct that contains a `String` field.
@@ -11,7 +12,8 @@ use crate::web::server::HandlerFunction;
 ///
 /// * `map`: This is a HashMap that will store the regular expression and the handler function.
 pub struct RouteHandlerContainer {
-    path_map: HashMap<String, HandlerFunction>,
+    method_map: HashMap<HttpMethod, HashMap<String, HandlerFunction>>,
+    // path_map: HashMap<String, HandlerFunction>,
 }
 
 impl Providable for RouteHandlerContainer { }
@@ -19,13 +21,25 @@ impl Providable for RouteHandlerContainer { }
 // TODO: If global IoC is implemented, maybe make a macro that makes it easier to match handlers, and paths.
 impl RouteHandlerContainer {
     pub fn new() -> Self {
-        Self { path_map: HashMap::new() }
+        let mut map: HashMap<HttpMethod, HashMap<String, HandlerFunction>> = HashMap::new();
+        map.insert(HttpMethod::GET, HashMap::new());
+        map.insert(HttpMethod::POST, HashMap::new());
+        map.insert(HttpMethod::PUT, HashMap::new());
+        map.insert(HttpMethod::DELETE, HashMap::new());
+        Self {
+           method_map: HashMap::new()
+        }
     }
 
     /// "/cars/{car_id}/wow/"
     /// "/cars/2/wow/" maybe split by slashes and match them?
-    pub fn get_match(&self, path: &str) -> Option<&HandlerFunction> {
-        self.path_map.iter().find(|(regex_str, _)| {
+    pub fn get_match(&self, path: &str, method: &HttpMethod) -> Option<&HandlerFunction> {
+        let path_map = self.method_map.get(method);
+        if path_map.is_none() {
+            return None;
+        }
+        let path_map: HashMap<String, HandlerFunction> = *path_map.unwrap();
+        path_map.iter().find(|(regex_str, _)| {
             let reg_match_result: Result<bool, Error> = Regex::new(regex_str).map(|regex_struct: Regex| {
                 let val: bool = regex_struct.is_match(&path);
                 // dbg!(&regex_struct, &path, &val);
@@ -58,7 +72,7 @@ impl RouteHandlerContainer {
     ///
     /// * `k`: &str, v: HandlerFunction
     /// * `v`: HandlerFunction
-    pub fn insert(&mut self, k: &str, v: HandlerFunction) {
+    pub fn insert(&mut self, k: &str, v: HandlerFunction, method: HttpMethod) {
         let mut k: String = String::from(k);
         let mut closed_curly_brackets_pos_vec: Vec<usize> = Vec::new();
         let mut open_curly_brackets_pos_vec: Vec<usize> = Vec::new();
@@ -85,7 +99,7 @@ impl RouteHandlerContainer {
             k.replace_range(open..&(closed+1), ".{1,}");
         }
         k = String::from("^").add(&k.add("$"));
-        self.path_map.insert(k, v);
+        self.method_map.get(&method).expect("Invalid http method").insert(k, v);
     }
 }
 

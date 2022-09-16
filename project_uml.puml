@@ -162,7 +162,6 @@ package di_ioc_lib {
     external.HashMap <|.. Providable
     class external.Vec<T>
     external.HashMap <|.. Providable
-
 }
 
 

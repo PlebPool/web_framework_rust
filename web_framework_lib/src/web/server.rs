@@ -24,7 +24,7 @@ pub fn start(port: &str, container: Arc<IocContainer>) {
                 [0; 1024]
             );
             if log::log_enabled!(log::Level::Info) {
-                log::info!("Request Recieved from {}", transaction.req().stream().peer_addr().unwrap());
+                log::info!("Request Received from {}", transaction.req().stream().peer_addr().unwrap());
             }
             if log::log_enabled!(log::Level::Debug) {
                 log::debug!("{:#?}", transaction.req());

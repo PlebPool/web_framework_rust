@@ -17,7 +17,7 @@ pub fn index(transaction: &mut Transaction) {
 pub fn path_param_test(transaction: &mut Transaction) {
     let path_cell: String = transaction.req()
         .request_line_data()
-        .get_path_cell_by_index(1)
+        .get_path_cell_by_index_url_decoded(1)
         .unwrap();
     let res: &mut Response = transaction.res_mut();
     res.set_status(200)

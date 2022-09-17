@@ -3,94 +3,96 @@ https://plantuml.com/class-diagram
 package web_framework_lib <<Node>> {
     namespace models {
         class Transaction
-        Transaction : req: Request
-        Transaction : res: Response
-        Transaction : resolved: bool
-        Transaction : new(req: Request, res: Response) -> Self
-        Transaction : resolve(&mut self) -> Result<(), &str>
-        Transaction : req(&self) -> &Request
-        Transaction : res(&self) -> &Response
-        Transaction : req_mut(&mut self) -> &mut Request
-        Transaction : res_mut(&mut self) -> &mut Response
-        Transaction : resolved(&self) -> bool
-        Transaction : set_resolved(&mut self, resolved: bool)
+            Transaction : req: Request
+            Transaction : res: Response
+            Transaction : resolved: bool
+            Transaction : pub fn new(req: Request, res: Response) -> Self
+            Transaction : pub fn resolve(&mut self) -> Result<(), &str>
+            Transaction : pub fn req(&self) -> &Request
+            Transaction : pub fn res(&self) -> &Response
+            Transaction : pub fn req_mut(&mut self) -> &mut Request
+            Transaction : pub fn res_mut(&mut self) -> &mut Response
+            Transaction : pub fn resolved(&self) -> bool
+            Transaction : pub fn set_resolved(&mut self, resolved: bool)
 
         class Request
-        Transaction "1" *-l- Request : contains
+            Transaction "1" *-l- Request : contains
 
-        Request : request_line_data: RequestLineData
-        Request : request_headers: RequestHeaders
-        Request : stream: TcpStream
-        Request : new(req_str: String, stream: TcpStream) -> Self
-        Request : req_str_to_header_map(req_str: Vec<&str>) -> HashMap<String, String>
-        Request : request_line_data(&self) -> &RequestLineData
-        Request : request_header_map(&self) -> &RequestHeaders
-        Request : stream(&self) -> &TcpStream
-        Request : set_request_line_data(&mut self, request_line_data: RequestLineData)
-        Request : set_request_header_map(&mut self, request_headers: RequestHeaders)
-        Request : set_stream(&mut self, stream: TcpStream)
+            Request : request_line_data: RequestLineData
+            Request : request_headers: RequestHeaders
+            Request : stream: TcpStream
+            Request : pub fn new(req_str: String, stream: TcpStream) -> Self
+            Request : fn req_str_to_header_map(req_str: Vec<&str>) -> HashMap<String, String>
+            Request : request_line_data(&self) -> &RequestLineData
+            Request : pub fn request_header_map(&self) -> &RequestHeaders
+            Request : pub fn stream(&self) -> &TcpStream
+            Request : pub fn set_request_line_data(&mut self, request_line_data: RequestLineData)
+            Request : pub fn set_request_header_map(&mut self, request_headers: RequestHeaders)
+            Request : pub fn set_stream(&mut self, stream: TcpStream)
 
         class RequestLineData
-        Request "1" *-- RequestLineData : contains
+            Request "1" *-- RequestLineData : contains
 
-        RequestLineData : method: String
-        RequestLineData : path: String
-        RequestLineData : protocol: String
-        RequestLineData : request_queries: Option<RequestQueries>
-        RequestLineData : new(req_str_first_line: &str) -> Self
-        RequestLineData : get_path_cell_by_index(&self, index: usize) -> Option<String>
-        RequestLineData : method(&self) -> &str
-        RequestLineData : protocol(&self) -> &str
-        RequestLineData : path(&self) -> &str
-        RequestLineData : request_queries(&self) -> &Option<RequestQueries>
-        RequestLineData : set_method(&mut self, method: String)
-        RequestLineData : set_path(&mut self, path: String)
-        RequestLineData : set_protocol(&mut self, protocol: String)
-        RequestLineData : set_request_queries(&mut self, request_queries: Option<RequestQueries>)
+            RequestLineData : method: String
+            RequestLineData : path: String
+            RequestLineData : protocol: String
+            RequestLineData : request_queries: Option<RequestQueries>
+            RequestLineData : pub fn new(req_str_first_line: &str) -> Self
+            RequestLineData : pub fn get_path_cell_by_index_url_encoded(&self, index: usize) -> Option<String>
+            RequestLineData : pub fn get_path_cell_by_index_url_decoded(&self, index: usize) -> Option<String>
+            RequestLineData : pub fn method(&self) -> &str
+            RequestLineData : pub fn protocol(&self) -> &str
+            RequestLineData : pub fn path(&self) -> &str
+            RequestLineData : pub fn request_queries(&self) -> &Option<RequestQueries>
+            RequestLineData : pub fn set_method(&mut self, method: String)
+            RequestLineData : pub fn set_path(&mut self, path: String)
+            RequestLineData : pub fn set_protocol(&mut self, protocol: String)
+            RequestLineData : pub fn set_request_queries(&mut self, request_queries: Option<RequestQueries>)
 
         class RequestQueries
-        RequestLineData "1" *-r- RequestQueries : contains
+            RequestLineData "1" *-r- RequestQueries : contains
 
-        RequestQueries : new_empty() -> Self
-        RequestQueries : new(queries: HashMap<String, String>) -> Self
-        RequestQueries : add_query(&mut self, key: &str, val: &str)
-        RequestQueries : remove_query_and_get_val(&mut self, key: &str) -> Option<String>
-        RequestQueries : remove_query(&mut self, key: &str) -> bool
+            RequestQueries : queries: HashMap<String, String>
+            RequestQueries : pub fn new_empty() -> Self
+            RequestQueries : pub fn new(queries: HashMap<String, String>) -> Self
+            RequestQueries : pub fn add_query(&mut self, key: &str, val: &str)
+            RequestQueries : pub fn remove_query_and_get_val(&mut self, key: &str) -> Option<String>
+            RequestQueries : pub fn remove_query(&mut self, key: &str) -> bool
 
         class RequestHeaders
-        Request "1" *-l- RequestHeaders : contains
+            Request "1" *-l- RequestHeaders : contains
 
-        RequestHeaders : headers: HashMap<String, String>
-        RequestHeaders : new_empty() -> Self
-        RequestHeaders : new(headers: HashMap<String, String>) -> Self
-        RequestHeaders : add_header(&mut self, key: &str, val: &str)
-        RequestHeaders : remove_header_and_get_val(&mut self, key: &str) -> Option<String>
-        RequestHeaders : remove_header(&mut self, key: &str) -> bool
+            RequestHeaders : headers: HashMap<String, String>
+            RequestHeaders : pub fn new_empty() -> Self
+            RequestHeaders : pub fn new(headers: HashMap<String, String>) -> Self
+            RequestHeaders : pub fn add_header(&mut self, key: &str, val: &str)
+            RequestHeaders : pub fn remove_header_and_get_val(&mut self, key: &str) -> Option<String>
+            RequestHeaders : pub fn remove_header(&mut self, key: &str) -> bool
 
-        class Response
-        Transaction "1" *-- Response : contains
+        class Response<'a>
+            Transaction "1" *-- Response : contains
 
-        Response : protocol: &str
-        Response : status: u16
-        Response : reason_phrase: &str
-        Response : headers: HashMap<&str, String>
-        Response : new(status: u16, reason_phrase: &str) -> Self
-        Response : new_empty() -> Self
-        Response : ok() -> Self
-        Response : not_found() -> Self
-        Response : bad_request(s: &str) -> Self
-        Response : set_body_to_file(&mut self, path_from_public: &str) -> Result<(), Error>
-        Response : add_header(&mut self, key: &'a str, val: String)
-        Response : set_body(&mut self, body: String)
-        Response : set_body_u8(&mut self, body: Vec<u8>)
-        Response : get_as_u8_vec(&mut self) -> Vec<u8>
-        Response : protocol(&self) -> &str
-        Response : status(&self) -> u16
-        Response : reason_phrase(&self) -> &str
-        Response : body(&self) -> &Vec<u8>
-        Response : headers(&self) -> &HashMap<&'a str, String>
-        Response : set_status(&mut self, status: u16) -> &mut Self
-        Response : set_reason_phrase(&mut self, reason_phrase: &'a str) -> &mut Self
+            Response : protocol: &'a str
+            Response : status: u16
+            Response : reason_phrase: &'a str
+            Response : headers: HashMap<&'a str, String>
+            Response : pub fn new(status: u16, reason_phrase: &str) -> Self
+            Response : pub fn new_empty() -> Self
+            Response : pub fn ok() -> Self
+            Response : pub fn not_found() -> Self
+            Response : pub fn bad_request(s: &str) -> Self
+            Response : pub fn set_body_to_file(&mut self, path_from_public: &str) -> Result<(), Error>
+            Response : pub fn add_header(&mut self, key: &'a str, val: String)
+            Response : pub fn set_body(&mut self, body: String)
+            Response : pub fn set_body_u8(&mut self, body: Vec<u8>)
+            Response : pub fn get_as_u8_vec(&mut self) -> Vec<u8>
+            Response : pub fn protocol(&self) -> &str
+            Response : pub fn status(&self) -> u16
+            Response : pub fn reason_phrase(&self) -> &str
+            Response : pub fn body(&self) -> &Vec<u8>
+            Response : pub fn headers(&self) -> &HashMap<&'a str, String>
+            Response : pub fn set_status(&mut self, status: u16) -> &mut Self
+            Response : pub fn set_reason_phrase(&mut self, reason_phrase: &'a str) -> &mut Self
     }
     namespace util {
         namespace enums {
@@ -110,25 +112,30 @@ package web_framework_lib <<Node>> {
                 IgnoreThisVariant
             }
             StaticFileExt <|.u.... proc_macro_derive.EnumFromStr : (e.g "7z" => StaticFileExt::SEVENZ)
-            StaticFileExt <|.u. proc_macro_derive.StrFromEnum : (mime_types [using a csv file pointed to by helper attribute])
+            StaticFileExt <|.u. proc_macro_derive.StrFromEnum : (mime_types [using a csv file pointed to by helper attribute])\n(e.g StaticFileExt::HTML => "text/html")
         }
+        class request_parser
+        request_parser : pub fn parse_request<'a>(mut tcp_stream: TcpStream, mut buf: [u8; 1024]) -> Transaction<'a>
     }
     namespace request_handling {
-        class chain_handler
-        chain_handler : enter_chain(mut transaction: Transaction, container: Arc<IocContainer>)
-        chain_handler : rule_out_static_resources(transaction: &mut Transaction) -> bool
-        chain_handler <.. models.Transaction : mutates/resolves
-        chain_handler <.l. RouteHandlerContainer : provides user implemented handlers
+        class request_handler
+        request_handler : pub fn enter_chain(mut transaction: Transaction, container: Arc<IocContainer>)
+        request_handler : fn rule_out_static_resources(transaction: &mut Transaction) -> bool
+        request_handler <.. models.Transaction : mutates/resolves
+        request_handler <.l. RouteHandlerContainer : provides user implemented handlers
         class RouteHandlerContainer
-        RouteHandlerContainer : path_map: HashMap<String, HandlerFunction>
+        RouteHandlerContainer : method_map: HashMap<HttpMethod, HashMap<String, HandlerFunction>>
         RouteHandlerContainer <|.u. di_ioc_lib.Providable
+        RouteHandlerContainer : pub fn new() -> Self
+        RouteHandlerContainer : pub fn get_match(&self, path: &str, method: &HttpMethod) -> Option<&HandlerFunction>
+        RouteHandlerContainer : pub fn insert(&mut self, k: &str, v: HandlerFunction, method: HttpMethod)
     }
 }
 package proc_macro_derive {
     annotation EnumFromStr
-    EnumFromStr : from_str(s: &str) -> Result<Self, ()>
+    EnumFromStr : pub fn from_str(s: &str) -> Result<Self, ()>
     annotation StrFromEnum
-    StrFromEnum : to_string(&self) -> String
+    StrFromEnum : pub fn to_string(&self) -> String
 }
 package di_ioc_lib {
     class IocContainer
@@ -139,23 +146,23 @@ package di_ioc_lib {
     IocContainer <|.u. external.Default
     IocContainer <|.u. external.Send
     IocContainer <|.u. external.Sync
-    IocContainer : install_value_provider<TypeProvided: Providable, PROVIDER: 'static + Provider<TypeProvided = TypeProvided>>(&mut self, provider: PROVIDER)
-    IocContainer : install_reference_provider<ReferenceType: Providable, PROVIDER: 'static + ReferenceProvider<RefProvided = ReferenceType>>(&mut self, provider: PROVIDER)
-    IocContainer : get<TypeToGet: Providable>(&self) -> Result<TypeToGet, ProviderError>
-    IocContainer : get_ref<RefToGet: 'static>(&self) -> Result<&RefToGet, ProviderError>
-    IocContainer : get_id<T: 'static>() -> TypeId
-    IocContainer : box_provider<T: 'static, P: 'static + Provider<TypeProvided = T>>(provider: P, ) -> Box<dyn Provider<TypeProvided = T>>
-    IocContainer : box_ref_provider<T: 'static, P: 'static + ReferenceProvider<RefProvided = T>>(provider: P, ) -> Box<dyn ReferenceProvider<RefProvided = T>>
+    IocContainer : pub fn install_value_provider<TypeProvided: Providable, PROVIDER: 'static + Provider<TypeProvided = TypeProvided>>(&mut self, provider: PROVIDER)
+    IocContainer : pub fn install_reference_provider<ReferenceType: Providable, PROVIDER: 'static + ReferenceProvider<RefProvided = ReferenceType>>(&mut self, provider: PROVIDER)
+    IocContainer : pub fn get<TypeToGet: Providable>(&self) -> Result<TypeToGet, ProviderError>
+    IocContainer : pub fn get_ref<RefToGet: 'static>(&self) -> Result<&RefToGet, ProviderError>
+    IocContainer : fn get_id<T: 'static>() -> TypeId
+    IocContainer : fn box_provider<T: 'static, P: 'static + Provider<TypeProvided = T>>(provider: P, ) -> Box<dyn Provider<TypeProvided = T>>
+    IocContainer : fn box_ref_provider<T: 'static, P: 'static + ReferenceProvider<RefProvided = T>>(provider: P, ) -> Box<dyn ReferenceProvider<RefProvided = T>>
     interface Providable
     Providable : lifetime='static
     interface Provider
     Provider : type TypeProvided: 'static
-    Provider : provide(&self, container: &IocContainer) -> Result<Self::TypeProvided, String>
-    Provider : id_of_type_provided(&self) -> TypeId
+    Provider : (pub implied) fn provide(&self, container: &IocContainer) -> Result<Self::TypeProvided, String>
+    Provider : (pub implied) fn id_of_type_provided(&self) -> TypeId
     interface ReferenceProvider
     ReferenceProvider : type RefProvided: 'static
-    ReferenceProvider : provide(&self, container: &IocContainer) -> Result<&Self::RefProvided, String>
-    ReferenceProvider : id_of_reference_provided(&self) -> TypeId
+    ReferenceProvider : (pub implied) fn provide(&self, container: &IocContainer) -> Result<&Self::RefProvided, String>
+    ReferenceProvider : (pub implied) fn id_of_reference_provided(&self) -> TypeId
     class external.Arc<T>
     external.Arc <|.. ReferenceProvider
     class external.HashMap<K, V>

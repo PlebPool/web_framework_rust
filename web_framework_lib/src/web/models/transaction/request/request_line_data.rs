@@ -29,7 +29,7 @@ mod request_queries;
 #[derive(Debug)]
 pub struct RequestLineData {
     method: String,
-    pub(crate) path: String,
+    path: String,
     protocol: String,
     request_queries: Option<RequestQueries>
 }

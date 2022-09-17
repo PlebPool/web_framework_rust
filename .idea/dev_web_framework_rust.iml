@@ -9,6 +9,7 @@
       <sourceFolder url="file://$MODULE_DIR$/web_framework_lib/src/proc_macros_derive/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/web_framework_lib/src/proc_macro_traits/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/data_lib/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/rust_to_plantuml/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/server/target" />
       <excludeFolder url="file://$MODULE_DIR$/web_framework_lib/target" />
       <excludeFolder url="file://$MODULE_DIR$/di_ioc_lib/target" />
@@ -16,6 +17,7 @@
       <excludeFolder url="file://$MODULE_DIR$/web_framework_lib/src/proc_macros/target" />
       <excludeFolder url="file://$MODULE_DIR$/web_framework_lib/src/proc_macro_traits/target" />
       <excludeFolder url="file://$MODULE_DIR$/data_lib/target" />
+      <excludeFolder url="file://$MODULE_DIR$/rust_to_plantuml/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

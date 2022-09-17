@@ -5,7 +5,7 @@ pub mod web {
         pub mod transaction;
     }
     pub mod request_handling {
-        pub mod chain_handler;
+        pub mod request_handler;
         pub mod route_handler_container;
     }
     pub mod util {

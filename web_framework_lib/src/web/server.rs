@@ -4,7 +4,7 @@ use std::sync::Arc;
 use std::thread;
 
 use crate::web::models::transaction::Transaction;
-use crate::web::request_handling::chain_handler;
+use crate::web::request_handling::request_handler;
 use crate::web::util::request_parser;
 
 pub type HandlerFunction = fn(transaction: &mut Transaction);
@@ -29,7 +29,7 @@ pub fn start(port: &str, container: Arc<IocContainer>) {
             if log::log_enabled!(log::Level::Debug) {
                 log::debug!("{:#?}", transaction.req());
             }
-            chain_handler::enter_chain(transaction, container_reference_clone);
+            request_handler::enter_chain(transaction, container_reference_clone);
         }).expect("Failed to spawn request handler thread.");
     }
 }

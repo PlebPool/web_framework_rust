@@ -20,7 +20,7 @@ pub fn enter_chain(mut transaction: Transaction, container: Arc<IocContainer>) {
         .expect("Failed to get RouteHandlerContainer.");
     let method: HttpMethod = HttpMethod::from_str(transaction.req().request_line_data().method())
         .expect("Invalid http method");
-    if let Some(handler) = route_map.get_match(&path, &method) { // /hey/2/hey
+    if let Some(handler) = route_map.get_match(&path, &method) {
         handler(&mut transaction);
     } else {
         if transaction.req().request_line_data().method() == HttpMethod::GET.to_string() {
@@ -33,21 +33,15 @@ pub fn enter_chain(mut transaction: Transaction, container: Arc<IocContainer>) {
         }
     }
     match transaction.resolve() {
-        Err(e) => {
-            if log::log_enabled!(log::Level::Error) {
-                log::error!("{}", e);
-            }
-        },
+        Err(e) => { if log::log_enabled!(log::Level::Error) { log::error!("{}", e); } },
         Ok(_) => {
             if log::log_enabled!(log::Level::Info) {
                 log::info!("Transaction resolved for {}, status: {}, path: {}",
                 transaction.req().stream().peer_addr().unwrap(),
                 transaction.res().status(),
-                transaction.req().request_line_data().path);
+                transaction.req().request_line_data().path());
             }
-            if log::log_enabled!(log::Level::Debug) {
-                log::debug!("\n{:#?}", transaction);
-            }
+            if log::log_enabled!(log::Level::Debug) { log::debug!("\n{:#?}", transaction); }
         }
     };
 }

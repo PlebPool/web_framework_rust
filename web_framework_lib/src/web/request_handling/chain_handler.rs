@@ -1,3 +1,4 @@
+use std::str::FromStr;
 use di_ioc_lib::di::ioc_container::IocContainer;
 use std::sync::Arc;
 
@@ -17,7 +18,10 @@ pub fn enter_chain(mut transaction: Transaction, container: Arc<IocContainer>) {
     let path: &str = &transaction.req().request_line_data().path();
     let route_map: &RouteHandlerContainer = container.get_ref()
         .expect("Failed to get RouteHandlerContainer.");
-    if let Some(handler) = route_map.get_match(&path) { // /hey/2/hey
+    dbg!(&transaction.req().request_line_data().method());
+    let method: HttpMethod = HttpMethod::from_str(transaction.req().request_line_data().method())
+        .expect("Invalid http method");
+    if let Some(handler) = route_map.get_match(&path, &method) { // /hey/2/hey
         handler(&mut transaction);
     } else {
         if transaction.req().request_line_data().method() == HttpMethod::GET.to_string() {

@@ -13,7 +13,6 @@ use crate::web::util::enums::http_method_enum::HttpMethod;
 /// * `map`: This is a HashMap that will store the regular expression and the handler function.
 pub struct RouteHandlerContainer {
     method_map: HashMap<HttpMethod, HashMap<String, HandlerFunction>>,
-    // path_map: HashMap<String, HandlerFunction>,
 }
 
 impl Providable for RouteHandlerContainer { }
@@ -26,7 +25,7 @@ impl RouteHandlerContainer {
         map.insert(HttpMethod::PUT, HashMap::new());
         map.insert(HttpMethod::DELETE, HashMap::new());
         Self {
-           method_map: HashMap::new()
+           method_map: map
         }
     }
 
@@ -37,7 +36,7 @@ impl RouteHandlerContainer {
         if path_map.is_none() {
             return None;
         }
-        let path_map: HashMap<String, HandlerFunction> = *path_map.unwrap();
+        let path_map: &HashMap<String, HandlerFunction> = path_map.expect("Failed to get path_map.");
         path_map.iter().find(|(regex_str, _)| {
             let reg_match_result: Result<bool, Error> = Regex::new(regex_str).map(|regex_struct: Regex| {
                 let val: bool = regex_struct.is_match(&path);
@@ -98,7 +97,7 @@ impl RouteHandlerContainer {
             k.replace_range(open..&(closed+1), ".{1,}");
         }
         k = String::from("^").add(&k.add("$"));
-        self.method_map.get(&method).expect("Invalid http method").insert(k, v);
+        self.method_map.get_mut(&method).map(|a| a.insert(k, v));
     }
 }
 
@@ -106,13 +105,14 @@ impl RouteHandlerContainer {
 mod test {
     use crate::web::models::transaction::Transaction;
     use crate::web::request_handling::route_handler_container::RouteHandlerContainer;
+    use crate::web::util::enums::http_method_enum::HttpMethod;
 
     fn dummy(_t: &mut Transaction) { }
 
     #[test]
     fn test() {
         let mut rhc = RouteHandlerContainer::new();
-        rhc.insert("/hey/test", dummy);
-        rhc.insert("/hey/{param}/test", dummy);
+        rhc.insert("/hey/test", dummy, HttpMethod::GET);
+        rhc.insert("/hey/{param}/test", dummy, HttpMethod::GET);
     }
 }

@@ -5,6 +5,7 @@ use web_framework_lib::web::server;
 use web_framework_lib::web::models::transaction::response::Response;
 use web_framework_lib::web::models::transaction::Transaction;
 use web_framework_lib::web::request_handling::route_handler_container::RouteHandlerContainer;
+use web_framework_lib::web::util::enums::http_method_enum::HttpMethod;
 
 pub fn index(transaction: &mut Transaction) {
     let res: &mut Response = transaction.res_mut();
@@ -29,8 +30,8 @@ fn main() {
     env::set_var("RUST_LOG", "debug");
     let mut container: IocContainer = IocContainer::default();
     let mut rhc: RouteHandlerContainer = RouteHandlerContainer::new();
-    rhc.insert("/", index);
-    rhc.insert("/hey/{a}/hey", path_param_test);
+    rhc.insert("/", index, HttpMethod::GET);
+    rhc.insert("/hey/{a}/hey", path_param_test, HttpMethod::GET);
     container.install_reference_provider(Arc::new(rhc));
     server::start("7878", Arc::new(container));
 }

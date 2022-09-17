@@ -26,7 +26,7 @@ pub fn path_param_test(transaction: &mut Transaction) {
 }
 
 fn main() {
-    env::set_var("RUST_LOG", "debug");
+    env::set_var("RUST_LOG", "debug"); // These libraries use env_logger for logging.
     let mut container: IocContainer = IocContainer::default();
     let mut rhc: RouteHandlerContainer = RouteHandlerContainer::new();
     rhc.insert("/", index, HttpMethod::GET);

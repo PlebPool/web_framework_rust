@@ -36,9 +36,12 @@ pub fn path_param_test(transaction: &mut Transaction) {
         .set_body(path_cell);
 }
 
+static RUST_LOG: &str = "RUST_LOG";
+static DEBUG: &str = "debug";
+
 /// It starts a server on port 7878 and registers the routes.
 fn main() {
-    env::set_var("RUST_LOG", "debug");
+    env::set_var(RUST_LOG, DEBUG);
     let mut container: IocContainer = IocContainer::default();
     let mut rhc: RouteHandlerContainer = RouteHandlerContainer::new();
     rhc.insert(

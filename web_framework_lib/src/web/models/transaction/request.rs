@@ -1,5 +1,7 @@
+use std::borrow::Cow;
 use std::collections::HashMap;
 use std::net::TcpStream;
+use std::ops::Add;
 
 use crate::web::models::transaction::request::request_headers::RequestHeaders;
 use crate::web::models::transaction::request::request_line_data::RequestLineData;
@@ -19,9 +21,11 @@ mod request_headers;
 pub struct Request {
     request_line_data: RequestLineData,
     request_headers: RequestHeaders,
+    body: Vec<u8>,
     stream: TcpStream
 }
-
+ // TODO: Add methods for getting body in certain format. e.g get_body_as_json(),
+ // TODO: And maybe a generic method that formats the body depending on Content-Type header.
 #[allow(dead_code)]
 impl Request {
     /// This function takes a string and a stream, and returns a Request struct
@@ -34,15 +38,16 @@ impl Request {
     /// Returns:
     ///
     /// A new instance of the Request struct.
-    pub fn new(req_str: String, stream: TcpStream) -> Self {
-        let mut req_split_new_line: Vec<&str> = req_str.lines().collect();
+    pub fn new(req_line_data_and_headers: &[u8], body: &[u8],  stream: TcpStream) -> Self {
+        let lossy_utf8: Cow<str> = String::from_utf8_lossy(req_line_data_and_headers);
+        let mut req_split_new_line: Vec<&str> = lossy_utf8.lines().collect();
         req_split_new_line.reverse();
         Self {
-            request_line_data:
-            RequestLineData
+            request_line_data: RequestLineData
             ::new(req_split_new_line.pop().expect("No first line")),
-            request_headers: RequestHeaders::new(Self
-            ::req_str_to_header_map(req_split_new_line.to_owned())),
+            request_headers: RequestHeaders
+            ::new(Self::req_str_to_header_map(req_split_new_line.to_owned())),
+            body: Vec::from(body),
             stream
         }
     }
@@ -79,7 +84,6 @@ impl Request {
     pub fn stream(&self) -> &TcpStream {
         &self.stream
     }
-
     pub fn set_request_line_data(&mut self, request_line_data: RequestLineData) {
         self.request_line_data = request_line_data;
     }
@@ -88,5 +92,18 @@ impl Request {
     }
     pub fn set_stream(&mut self, stream: TcpStream) {
         self.stream = stream;
+    }
+
+    pub fn request_headers(&self) -> &RequestHeaders {
+        &self.request_headers
+    }
+    pub fn body(&self) -> &Vec<u8> {
+        &self.body
+    }
+    pub fn set_request_headers(&mut self, request_headers: RequestHeaders) {
+        self.request_headers = request_headers;
+    }
+    pub fn set_body(&mut self, body: Vec<u8>) {
+        self.body = body;
     }
 }

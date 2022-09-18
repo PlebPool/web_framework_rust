@@ -1,5 +1,6 @@
 use std::io::Read;
 use std::net::TcpStream;
+use std::ops::Add;
 use std::str::from_utf8;
 
 use crate::web::models::transaction::request::Request;
@@ -20,9 +21,40 @@ use crate::web::models::transaction::Transaction;
 pub fn parse_request<'a>(mut tcp_stream: TcpStream, mut buf: [u8; 1024]) -> Transaction<'a> {
     tcp_stream.read(&mut buf)
         .expect("TcpStream read failed");
-    let req_as_str: String = from_utf8(&buf).expect("Failed to parse buffer to utf8").to_owned();
+
+    let buf: Vec<u8> = buf.iter()
+        .filter(|byte|byte != &&0x0D && byte != &&0x0).map(|b|*b).collect();
+
+    // Checking for delimiting double \n between headers and body.
+    let mut previous_was_newline: bool = false;
+    let mut index_for_split: usize = buf.len();
+    for (index, val) in buf.iter().enumerate() {
+        if val == &0x0A {
+            if previous_was_newline {
+                index_for_split = index;
+                break;
+            }
+            previous_was_newline = true;
+        } else {
+            previous_was_newline = false;
+        }
+    }
+
+    let (headers, body): (&[u8], &[u8]) = buf.split_at(index_for_split);
+    // Removing trailing and prefixing newlines.
+    let (headers, body): (&[u8], &[u8]) = (&headers[..headers.len()-1], &body[1..]);
+
+    if log::log_enabled!(log::Level::Debug) {
+        log::debug!("\nHeaders: \n{:#?},\nBody: \n{:#?},\nEntire: \n{:#?}\n",
+            String::from_utf8_lossy(headers),
+            String::from_utf8_lossy(body),
+            String::from_utf8_lossy(&buf)
+        );
+    }
+
     let req: Request = Request::new(
-        req_as_str,
+        headers,
+        body,
         tcp_stream
     );
     let res: Response = Response::new_empty();

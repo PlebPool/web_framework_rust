@@ -70,8 +70,8 @@ impl RouteHandlerContainer {
     ///
     /// * `k`: &str, v: HandlerFunction
     /// * `v`: HandlerFunction
-    pub fn insert(&mut self, k: &str, v: HandlerFunction, method: HttpMethod) {
-        let mut k: String = String::from(k);
+    pub fn insert(&mut self, path: &str, handler_function: HandlerFunction, method: HttpMethod) {
+        let mut k: String = String::from(path);
         let mut closed_curly_brackets_pos_vec: Vec<usize> = Vec::new();
         let mut open_curly_brackets_pos_vec: Vec<usize> = Vec::new();
         for (i, c) in k.chars().enumerate() {
@@ -82,9 +82,8 @@ impl RouteHandlerContainer {
             }
         }
         if open_curly_brackets_pos_vec.len() != closed_curly_brackets_pos_vec.len() {
-            // dbg!(open_curly_brackets_pos_vec.len(), closed_curly_brackets_pos_vec.len(), k);
             if log::log_enabled!(log::Level::Error) {
-                log::error!("open_curly_pos_vec.len(): {}, closed_curly_brackets_pos_vec.len(): {}, k: {}",
+                log::error!("open_curly_pos_vec.len(): {}, closed_curly_brackets_pos_vec.len(): {}, path: {}",
                     open_curly_brackets_pos_vec.len(),
                     closed_curly_brackets_pos_vec.len(),
                     k
@@ -97,7 +96,7 @@ impl RouteHandlerContainer {
             k.replace_range(open..&(closed+1), ".{1,}");
         }
         k = String::from("^").add(&k.add("$"));
-        self.method_map.get_mut(&method).map(|a| a.insert(k, v));
+        self.method_map.get_mut(&method).map(|a| a.insert(k, handler_function));
     }
 }
 

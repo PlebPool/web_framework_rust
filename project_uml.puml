@@ -20,8 +20,9 @@ package web_framework_lib <<Node>> {
 
             Request : request_line_data: RequestLineData
             Request : request_headers: RequestHeaders
+            Request : body: Vec<u8>
             Request : stream: TcpStream
-            Request : pub fn new(req_str: String, stream: TcpStream) -> Self
+            Request : pub fn new(req_line_data_and_headers: &[u8], body: &[u8],  stream: TcpStream) -> Self
             Request : fn req_str_to_header_map(req_str: Vec<&str>) -> HashMap<String, String>
             Request : request_line_data(&self) -> &RequestLineData
             Request : pub fn request_header_map(&self) -> &RequestHeaders
@@ -29,6 +30,10 @@ package web_framework_lib <<Node>> {
             Request : pub fn set_request_line_data(&mut self, request_line_data: RequestLineData)
             Request : pub fn set_request_header_map(&mut self, request_headers: RequestHeaders)
             Request : pub fn set_stream(&mut self, stream: TcpStream)
+            Request : pub fn request_headers(&self) -> &RequestHeaders
+            Request : pub fn body(&self) -> &Vec<u8>
+            Request : pub fn set_request_headers(&mut self, request_headers: RequestHeaders)
+            Request : pub fn set_body(&mut self, body: Vec<u8>)
 
         class RequestLineData
             Request "1" *-- RequestLineData : contains
@@ -128,7 +133,7 @@ package web_framework_lib <<Node>> {
         RouteHandlerContainer <|.u. di_ioc_lib.Providable
         RouteHandlerContainer : pub fn new() -> Self
         RouteHandlerContainer : pub fn get_match(&self, path: &str, method: &HttpMethod) -> Option<&HandlerFunction>
-        RouteHandlerContainer : pub fn insert(&mut self, k: &str, v: HandlerFunction, method: HttpMethod)
+        RouteHandlerContainer : pub fn insert(&mut self, path: &str, handler: HandlerFunction, method: HttpMethod)
     }
 }
 package proc_macro_derive {

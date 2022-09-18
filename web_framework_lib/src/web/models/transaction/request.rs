@@ -1,7 +1,6 @@
 use std::borrow::Cow;
 use std::collections::HashMap;
 use std::net::TcpStream;
-use std::ops::Add;
 
 use crate::web::models::transaction::request::request_headers::RequestHeaders;
 use crate::web::models::transaction::request::request_line_data::RequestLineData;
@@ -24,6 +23,7 @@ pub struct Request {
     body: Vec<u8>,
     stream: TcpStream
 }
+
  // TODO: Add methods for getting body in certain format. e.g get_body_as_json(),
  // TODO: And maybe a generic method that formats the body depending on Content-Type header.
 #[allow(dead_code)]
@@ -38,7 +38,7 @@ impl Request {
     /// Returns:
     ///
     /// A new instance of the Request struct.
-    pub fn new(req_line_data_and_headers: &[u8], body: &[u8],  stream: TcpStream) -> Self {
+    pub fn new(req_line_data_and_headers: &[u8], body: &[u8], stream: TcpStream) -> Self {
         let lossy_utf8: Cow<str> = String::from_utf8_lossy(req_line_data_and_headers);
         let mut req_split_new_line: Vec<&str> = lossy_utf8.lines().collect();
         req_split_new_line.reverse();

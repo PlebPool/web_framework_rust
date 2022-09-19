@@ -138,7 +138,7 @@ impl <'a> Response<'a> {
     /// res.set_body_to_file("/index.html").expect("");
     pub fn set_body_to_file(&mut self, path_from_public: &str) -> Result<(), Error> {
         let mut path_prefix: String = "src/public".to_string();
-        let mime_type: String = path_from_public.split_once('.')
+        let mime_type: String = path_from_public.rsplit_once('.')
             .map(|(_parent_path, ext): (&str, &str)| {
                 let ext: String = ext.replace(".download", "");
                 let e: StaticFileExt = StaticFileExt::from_str(&ext)

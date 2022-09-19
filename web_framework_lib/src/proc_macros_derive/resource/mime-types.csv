@@ -1,12 +1,14 @@
 .aac;audio/aac
 .abw;application/x-abiword
 .arc;application/x-freearc
+.avif;image/avif
 .avi;video/x-msvideo
 .azw;application/vnd.amazon.ebook
 .bin;application/octet-stream
 .bmp;image/bmp
 .bz;application/x-bzip
 .bz2;application/x-bzip2
+.cda;application/x-cdf
 .csh;application/x-csh
 .css;text/css
 .csv;text/csv
@@ -17,16 +19,20 @@
 .gz;application/gzip
 .gif;image/gif
 .html;text/html
+.htm;text/html
 .ico;image/vnd.microsoft.icon
 .ics;text/calendar
 .jar;application/java-archive
 .jpg;image/jpeg
-.js;text/javascrip
+.jpeg;image/jpeg
+.js;text/javascript
 .json;application/json
 .jsonld;application/ld+json
-.midi;audio/midi audio/x-midi
+.midi;audio/midi
+.mid;audio/midi
 .mjs;text/javascript
 .mp3;audio/mpeg
+.mp4;video/mp4
 .mpeg;video/mpeg
 .mpkg;application/vnd.apple.installer+xml
 .odp;application/vnd.oasis.opendocument.presentation
@@ -46,8 +52,8 @@
 .rtf;application/rtf
 .sh;application/x-sh
 .svg;image/svg+xml
-.swf;application/x-shockwave-flash
 .tar;application/x-tar
+.tif;image/tiff
 .tiff;image/tiff
 .ts;video/mp2t
 .ttf;font/ttf
@@ -62,7 +68,7 @@
 .xhtml;application/xhtml+xml
 .xls;application/vnd.ms-excel
 .xlsx;application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
-.xml;text/xml
+.xml;application/xml
 .xul;application/vnd.mozilla.xul+xml
 .zip;application/zip
 .3gp;video/3gpp

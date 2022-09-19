@@ -16,7 +16,7 @@ pub fn index(transaction: &mut Transaction) {
     let res: &mut Response = transaction.res_mut();
     res.set_status(200)
         .set_reason_phrase("OK")
-        .set_body_to_file("/html/index.html")
+        .set_body_to_file("/index.html")
             .expect("Failed to read file.");
 }
 

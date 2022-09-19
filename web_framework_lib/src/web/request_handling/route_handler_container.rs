@@ -40,7 +40,6 @@ impl RouteHandlerContainer {
         path_map.iter().find(|(regex_str, _)| {
             let reg_match_result: Result<bool, Error> = Regex::new(regex_str).map(|regex_struct: Regex| {
                 let val: bool = regex_struct.is_match(&path);
-                // dbg!(&regex_struct, &path, &val);
                 if log::log_enabled!(log::Level::Debug) {
                     log::debug!("\n regex: {},\n path: {},\n is_match: {}", regex_str, path, val);
                 }

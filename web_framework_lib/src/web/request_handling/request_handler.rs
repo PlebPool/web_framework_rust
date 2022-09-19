@@ -16,13 +16,18 @@ use crate::web::util::enums::http_method_enum::HttpMethod;
 /// * `container`: Arc<Container> - This is the container that holds the route map.
 pub fn enter_chain(mut transaction: Transaction, container: Arc<IocContainer>) {
     let path: &str = &transaction.req().request_line_data().path();
+
+    // We get a reference to the container containing our mapped routes from the IocContainer.
     let route_map: &RouteHandlerContainer = container.get_ref()
         .expect("Failed to get RouteHandlerContainer.");
+
     let method: HttpMethod = HttpMethod::from_str(transaction.req().request_line_data().method())
         .expect("Invalid http method");
+
+    //  Here we are matching the requested path to our mapped routes.
     if let Some(handler) = route_map.get_match(&path, &method) {
         handler(&mut transaction);
-    } else {
+    } else { // We find no match, so we need to rule out static resources, or resolve.
         if transaction.req().request_line_data().method() == HttpMethod::GET.to_string() {
             let was_static: bool = rule_out_static_resources(&mut transaction);
             if !was_static {
@@ -32,7 +37,7 @@ pub fn enter_chain(mut transaction: Transaction, container: Arc<IocContainer>) {
             }
         }
     }
-    match transaction.resolve() {
+    match transaction.resolve() { // We're resolving the transaction, sending the response.
         Err(e) => { if log::log_enabled!(log::Level::Error) { log::error!("{}", e); } },
         Ok(_) => {
             if log::log_enabled!(log::Level::Info) {
@@ -46,8 +51,18 @@ pub fn enter_chain(mut transaction: Transaction, container: Arc<IocContainer>) {
     };
 }
 
+/// If the path contains a dot, then try to serve the file
+///
+/// Arguments:
+///
+/// * `transaction`: &mut Transaction
+///
+/// Returns:
+///
+/// A boolean value.
 fn rule_out_static_resources(transaction: &mut Transaction) -> bool {
     let path: &str = &transaction.req().request_line_data().path().to_owned();
+    // TODO: Look at this.
     if path.contains('.') {
         let res: &mut Response = transaction.res_mut();
         match res.set_body_to_file(&path) {

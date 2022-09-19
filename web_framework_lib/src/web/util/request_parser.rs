@@ -19,10 +19,8 @@ use crate::web::models::transaction::Transaction;
 pub fn parse_request<'a>(mut tcp_stream: TcpStream, mut buf: [u8; 1024]) -> Transaction<'a> {
     tcp_stream.read(&mut buf)
         .expect("TcpStream read failed");
-
     let buf: Vec<u8> = buf.iter()
         .filter(|byte|byte != &&0x0D && byte != &&0x0).map(|b|*b).collect();
-
     // Checking for delimiting double \n between headers and body.
     let mut previous_was_newline: bool = false;
     let mut index_for_split: usize = buf.len();
@@ -37,11 +35,9 @@ pub fn parse_request<'a>(mut tcp_stream: TcpStream, mut buf: [u8; 1024]) -> Tran
             previous_was_newline = false;
         }
     }
-
     let (headers, body): (&[u8], &[u8]) = buf.split_at(index_for_split);
     // Removing trailing and prefixing newlines.
     let (headers, body): (&[u8], &[u8]) = (&headers[..headers.len()-1], &body[1..]);
-
     if log::log_enabled!(log::Level::Debug) {
         log::debug!("\nHeaders: \n{:#?},\nBody: \n{:#?},\nEntire: \n{:#?}\n",
             String::from_utf8_lossy(headers),
@@ -49,7 +45,6 @@ pub fn parse_request<'a>(mut tcp_stream: TcpStream, mut buf: [u8; 1024]) -> Tran
             String::from_utf8_lossy(&buf)
         );
     }
-
     let req: Request = Request::new(
         headers,
         body,

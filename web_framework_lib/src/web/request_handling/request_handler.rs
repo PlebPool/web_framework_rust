@@ -28,13 +28,14 @@ pub fn enter_chain(mut transaction: Transaction, container: Arc<IocContainer>) {
     if let Some(handler) = route_map.get_match(&path, &method) {
         handler(&mut transaction);
     } else { // We find no match, so we need to rule out static resources, or resolve.
+        let mut was_static: bool = false;
         if transaction.req().request_line_data().method() == HttpMethod::GET.to_string() {
-            let was_static: bool = rule_out_static_resources(&mut transaction);
-            if !was_static {
-                let res: &mut Response = transaction.res_mut();
-                res.set_status(404);
-                res.set_reason_phrase("Not Found");
-            }
+            was_static = rule_out_static_resources(&mut transaction);
+        }
+        if !was_static {
+            let res: &mut Response = transaction.res_mut();
+            res.set_status(404);
+            res.set_reason_phrase("Not Found");
         }
     }
     match transaction.resolve() { // We're resolving the transaction, sending the response.

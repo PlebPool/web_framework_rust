@@ -57,9 +57,9 @@ impl Request {
          let as_str = String::from_utf8(self.body.clone());
          match as_str {
              Ok(t) => {
-                 t
+                t
              },
-             Err(e) => {
+             Err(_e) => {
                 String::from("failed")
              }
          }

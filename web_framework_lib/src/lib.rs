@@ -1,5 +1,3 @@
-extern crate core;
-
 pub mod web {
     pub mod models {
         pub mod transaction;

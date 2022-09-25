@@ -58,8 +58,7 @@ impl <'a> Transaction<'a> {
         return if self.resolved {
             Err("Transaction already resolved...")
         } else if self.res.status() == 0 {
-            Err("An attempt was made to resolve \
-            transaction without setting the status of the response.")
+            Err("You have to set the http status before resolving the transaction.")
         } else {
             self.req.stream()
                 .write(self.res.get_as_u8_vec()

@@ -52,6 +52,19 @@ impl Request {
         }
     }
 
+     // TODO: WIP
+     pub fn get_body_as_json<'a>(&self) -> String {
+         let as_str = String::from_utf8(self.body.clone());
+         match as_str {
+             Ok(t) => {
+                 t
+             },
+             Err(e) => {
+                String::from("failed")
+             }
+         }
+     }
+
     /// It takes a vector of strings, and returns a hashmap of strings
     ///
     /// Arguments:

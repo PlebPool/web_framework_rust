@@ -16,6 +16,9 @@ pub mod web {
             pub mod http_method_enum;
             pub mod static_file_ext_enum;
         }
+        pub mod parsers {
+            pub mod json_parser;
+        }
         pub mod request_parser;
     }
     pub mod server;

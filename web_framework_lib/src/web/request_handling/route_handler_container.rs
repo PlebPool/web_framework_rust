@@ -24,21 +24,21 @@ impl RouteHandlerContainer {
         map.insert(HttpMethod::POST, HashMap::new());
         map.insert(HttpMethod::PUT, HashMap::new());
         map.insert(HttpMethod::DELETE, HashMap::new());
-        Self {
-           method_map: map
-        }
+        Self { method_map: map }
     }
 
     /// "/cars/{car_id}/wow/"
     /// "/cars/2/wow/" maybe split by slashes and match them?
     pub fn get_match(&self, path: &str, method: &HttpMethod) -> Option<&HandlerFunction> {
-        let path_map = self.method_map.get(method);
+        let path_map: Option<&HashMap<String, HandlerFunction>> = self.method_map.get(method);
         if path_map.is_none() {
             return None;
         }
-        let path_map: &HashMap<String, HandlerFunction> = path_map.expect("Failed to get path_map.");
+        let path_map: &HashMap<String, HandlerFunction> =
+            path_map.expect("Failed to get path_map.");
         path_map.iter().find(|(regex_str, _)| {
-            let reg_match_result: Result<bool, Error> = Regex::new(regex_str).map(|regex_struct: Regex| {
+            let reg_match_result: Result<bool, Error> = Regex
+            ::new(regex_str).map(|regex_struct: Regex| {
                 let val: bool = regex_struct.is_match(&path);
                 if log::log_enabled!(log::Level::Debug) {
                     log::debug!("\n regex: {},\n path: {},\n is_match: {}", regex_str, path, val);

@@ -16,7 +16,7 @@ pub fn index(transaction: &mut Transaction) {
     let res: &mut Response = transaction.res_mut();
     res.set_status(200)
         .set_reason_phrase("OK")
-        .set_body_to_file("/html/index.html")
+        .set_body_to_file("html/index.html")
             .expect("Failed to read file.");
 }
 
@@ -34,6 +34,11 @@ pub fn path_param_test(transaction: &mut Transaction) {
     res.set_status(200)
         .set_reason_phrase("OK")
         .set_body(path_cell);
+}
+
+pub fn json_test(transaction: &mut Transaction) {
+    let body_as_json = transaction.req().get_body_as_json();
+    transaction.res_mut().set_status(200).set_reason_phrase("uwu").set_body(body_as_json);
 }
 
 static RUST_LOG: &str = "RUST_LOG";
@@ -54,6 +59,7 @@ fn main() {
         path_param_test,
         HttpMethod::GET
     );
+    rhc.insert("/json/test", json_test, HttpMethod::POST);
     container.install_reference_provider(Arc::new(rhc));
     server::start("7878", Arc::new(container));
 }

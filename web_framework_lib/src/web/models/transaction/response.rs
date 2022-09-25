@@ -8,7 +8,7 @@ use std::str::FromStr;
 
 use crate::web::util::enums::static_file_ext_enum::StaticFileExt;
 
-const DEFAULT_HTTP_VERSION: &str = "HTTP/2";
+const DEFAULT_HTTP_VERSION: &str = "HTTP/1.1";
 
 /// `Response` is a struct that contains a reference to a string, a `u16`, another reference to a
 /// string, a `HashMap` of references to strings and strings, and a `Vec` of `u8`s.

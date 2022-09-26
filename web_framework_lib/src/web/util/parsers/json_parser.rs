@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::io::Read;
 
 // #[derive(Debug)]
 // enum ProcessingModes {
@@ -30,6 +31,16 @@ impl JsonValue {
     }
 }
 
+struct TopJsonObject {
+    map: HashMap<String, JsonVariant> // Values, objects, arrays.
+}
+
+impl TopJsonObject {
+    pub fn new(map: HashMap<String, JsonVariant>) -> Self {
+        Self { map }
+    }
+}
+
 struct JsonObject {
     name: String,
     map: HashMap<String, JsonVariant> // Values, objects, arrays.
@@ -52,7 +63,6 @@ impl JsonArray {
     }
 }
 
-
 // Binary    Hex          Comments
 // 0xxxxxxx  0x00..0x7F   Only byte of a 1-byte character encoding
 // 10xxxxxx  0x80..0xBF   Continuation byte: one of 1-3 bytes following the first
@@ -66,25 +76,77 @@ pub fn parse_into_json_objects(s: &str) {
     // Map top level keys / values,
     // go into values that are objects or arrays and handle them, turn them into objects that are
     // to be values.
-    let str_as_bytes: Vec<u8> = s.trim().bytes().collect::<Vec<u8>>();
-    let bytes: Vec<&[u8]> = str_as_bytes
-        .split(|b: &u8| b == &10) // Splitting by newline.
-        .collect::<Vec<&[u8]>>() // Collecting to vec of byte arrays.
-        .into_iter() // Consuming iterator.
-        .map(|arr: &[u8]| { // Trimming (removing trailing and prefixing spaces)
-            let (mut i, mut j): (usize, usize) = (0, arr.len());
-            loop {
-                if arr[i] != 32 && arr[j - 1] != 32 { break; }
-                else {
-                    if arr[i] == 32 { i = i + 1; }
-                    if arr[j - 1] == 32 { j = j - 1; }
-                }
-            }
-            &arr[i..j]
-        }).collect(); // Collecting result into final array.
-    for a in bytes {
-        dbg!(String::from_utf8_lossy(a));
+
+    let bytes: Vec<u8> = s.trim()
+        .replace("[", "[,")
+        .replace("]", ",]")
+        .replace("{", "{,")
+        .replace("}", ",}")
+        .bytes()
+        .collect::<Vec<u8>>()
+        .split(|b: &u8| *b == 10)
+        .collect::<Vec<&[u8]>>()
+        .into_iter()
+        .map(|arr: &[u8]| Vec::from(trim_byte_array(arr)))
+        .reduce(|mut accum: Vec<u8>, mut element: Vec<u8>| { accum.append(&mut element); accum })
+        .expect("EMPTY");
+    if bytes[0] != 123 || bytes[bytes.len() - 1] != 125 {
+        panic!("Invalid first or last character. first: {}, last: {}", bytes[0], bytes[bytes.len() - 1]);
+    } else {
+        let _bytes = bytes[1..bytes.len() - 2].to_vec()
+            .split(|b: &u8| *b == 44)
+            .filter(|b: &&[u8]| b.len() != 0)
+            .map(|b: &[u8]| {
+                let split = b.split(|b: &u8| *b == 58).collect::<Vec<&[u8]>>();
+                let len = split.len();
+                let mut i: i32 = 0;
+                let _ = split.into_iter()
+                    .map(|part: &[u8]| {
+                        let mut classification: &str = "Key";
+                        if len == 1 || i % 2 != 0 { classification = "Val"; }
+                        if trim_byte_array(part)[0] == 91 {
+                            classification = "Array Start";
+                            i = i - 1;
+                        } else if trim_byte_array(part)[0] == 93 {
+                            classification = "Array End";
+                            i = i - 1;
+                        }
+                        else if trim_byte_array(part)[0] == 123 {
+                            classification = "Object Start";
+                            i = i - 1;
+                        } else if trim_byte_array(part)[0] == 125 {
+                            classification = "Object End";
+                            i = i - 1;
+                        }
+                        println!("{}: {}", classification, String::from_utf8_lossy(part));
+                        i = i + 1;
+                    }).count();
+            }).count();
     }
+}
+
+/// It takes a byte array and returns a byte array that is the same as the input array, but with all
+/// leading and trailing whitespace removed
+///
+/// Arguments:
+///
+/// * `arr`: &[u8] - The array of bytes to trim.
+///
+/// Returns:
+///
+/// A slice of the original array.
+fn trim_byte_array(arr: &[u8]) -> &[u8] {
+    if arr.len() > 0 {
+        let (mut i, mut j): (usize, usize) = (0, arr.len());
+        loop {
+            if arr[i] != 32 && arr[j - 1] != 32 { break; }
+            else {
+                if arr[i] == 32 { i = i + 1; }
+                if arr[j - 1] == 32 { j = j - 1; }
+            }
+        }
+        &arr[i..j]
+    } else { arr }
 }
 
 #[cfg(test)]

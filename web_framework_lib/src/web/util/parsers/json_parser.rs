@@ -1,15 +1,57 @@
-#[derive(Debug)]
-enum ProcessingModes {
-    ObjectStart,
-    ObjectEnd,
-    KeyValDelimiter,
-    ArrayStart,
-    ArrayEnd,
-    KeyOrValStartOrEnd,
-    KeyValSwitch,
-    EmptySpace,
-    NonReservedCharacter
+use std::collections::HashMap;
+
+// #[derive(Debug)]
+// enum ProcessingModes {
+//     ObjectStart,
+//     ObjectEnd,
+//     KeyValDelimiter,
+//     ArrayStart,
+//     ArrayEnd,
+//     KeyOrValStartOrEnd,
+//     KeyValSwitch,
+//     EmptySpace,
+//     NonReservedCharacter
+// }
+
+enum JsonVariant {
+    JsonObject(JsonObject),
+    JsonArray(JsonArray),
+    JsonValue(JsonValue)
 }
+
+struct JsonValue {
+    name: String,
+    value: String
+}
+
+impl JsonValue {
+    pub fn new(name: String, value: String) -> Self {
+        Self { name, value }
+    }
+}
+
+struct JsonObject {
+    name: String,
+    map: HashMap<String, JsonVariant> // Values, objects, arrays.
+}
+
+impl JsonObject {
+    pub fn new(name: String, map: HashMap<String, JsonVariant>) -> Self {
+        Self { name, map }
+    }
+}
+
+struct JsonArray {
+    name: String,
+    array: Vec<JsonVariant> // Values, objects, arrays.
+}
+
+impl JsonArray {
+    pub fn new(name: String, array: Vec<JsonVariant>) -> Self {
+        Self { name, array }
+    }
+}
+
 
 // Binary    Hex          Comments
 // 0xxxxxxx  0x00..0x7F   Only byte of a 1-byte character encoding
@@ -18,25 +60,30 @@ enum ProcessingModes {
 // 1110xxxx  0xE0..0xEF   First byte of a 3-byte character encoding
 // 11110xxx  0xF0..0xF7   First byte of a 4-byte character encoding
 pub fn parse_into_json_objects(s: &str) {
-    dbg!(s);
-    let trimmed: &str = s.trim();
-    let as_bytes: Vec<u8> = trimmed.bytes().collect();
-    let mut depth_index = 0;
-    for b in as_bytes {
-        let switch: ProcessingModes = match b {
-            123 => { depth_index = depth_index + 1; ProcessingModes::ObjectStart },
-            125 => { depth_index = depth_index - 1; ProcessingModes::ObjectEnd },
-            91 => { depth_index = depth_index + 1; ProcessingModes::ArrayStart  },
-            93 => { depth_index = depth_index - 1; ProcessingModes::ArrayEnd },
-            44 => { ProcessingModes::KeyValDelimiter },
-            34 => { ProcessingModes::KeyOrValStartOrEnd },
-            58 => { ProcessingModes::KeyValSwitch }
-            32 => { ProcessingModes::EmptySpace }
-            _ => { ProcessingModes::NonReservedCharacter }
-        };
-        if b != 32 && b != 10 {
-            println!("char: {}, switch: {:#?}, depth_index: {}", char::from(b), switch, depth_index);
-        }
+    // We want to create a jsonObject with key value pairs, some values are objects, some
+    // are arrays, some are strings or numbers, objects can be nested. Arrays contain 0 or more
+    // objects.
+    // Map top level keys / values,
+    // go into values that are objects or arrays and handle them, turn them into objects that are
+    // to be values.
+    let str_as_bytes: Vec<u8> = s.trim().bytes().collect::<Vec<u8>>();
+    let bytes: Vec<&[u8]> = str_as_bytes
+        .split(|b: &u8| b == &10) // Splitting by newline.
+        .collect::<Vec<&[u8]>>() // Collecting to vec of byte arrays.
+        .into_iter() // Consuming iterator.
+        .map(|arr: &[u8]| { // Trimming (removing trailing and prefixing spaces)
+            let (mut i, mut j): (usize, usize) = (0, arr.len());
+            loop {
+                if arr[i] != 32 && arr[j - 1] != 32 { break; }
+                else {
+                    if arr[i] == 32 { i = i + 1; }
+                    if arr[j - 1] == 32 { j = j - 1; }
+                }
+            }
+            &arr[i..j]
+        }).collect(); // Collecting result into final array.
+    for a in bytes {
+        dbg!(String::from_utf8_lossy(a));
     }
 }
 

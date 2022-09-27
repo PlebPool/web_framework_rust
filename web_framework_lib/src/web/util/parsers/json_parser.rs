@@ -29,7 +29,7 @@ impl JsonObject {
         // Slicing contents of outer curly brackets.
         let arr: &[u8] = &arr[1..arr.len()-1];
         let _ = arr
-            .split(|byte: &u8| *byte == 0x02C)// Splitting by comma "," (44)
+            .split(|byte: &u8| *byte == 44)// Splitting by comma "," (44)
             .map(|byte_slice: &[u8]| {
                 // Getting index of delimiter colon ":" (58).
                 let index: Option<usize> = byte_slice.iter().position(|byte: &u8| *byte == 58);

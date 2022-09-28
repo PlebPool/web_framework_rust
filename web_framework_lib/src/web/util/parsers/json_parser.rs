@@ -3,54 +3,138 @@
 struct JsonObject {
     name: String,
 }
+// Binary    Hex          Comments
+// 0xxxxxxx  0x00..0x7F   Only byte of a 1-byte character encoding
+// 10xxxxxx  0x80..0xBF   Continuation byte: one of 1-3 bytes following the first
+// 110xxxxx  0xC0..0xDF   First byte of a 2-byte character encoding
+// 1110xxxx  0xE0..0xEF   First byte of a 3-byte character encoding
+// 11110xxx  0xF0..0xF7   First byte of a 4-byte character encoding
+
+#[derive(Debug)]
+enum JsonVariant {
+    JsonObject,
+    JsonArray,
+    JsonValue,
+}
 
 impl JsonObject {
-    // Binary    Hex          Comments
-    // 0xxxxxxx  0x00..0x7F   Only byte of a 1-byte character encoding
-    // 10xxxxxx  0x80..0xBF   Continuation byte: one of 1-3 bytes following the first
-    // 110xxxxx  0xC0..0xDF   First byte of a 2-byte character encoding
-    // 1110xxxx  0xE0..0xEF   First byte of a 3-byte character encoding
-    // 11110xxx  0xF0..0xF7   First byte of a 4-byte character encoding
     pub fn parse(arr: &[u8]) -> Self {
         let mut in_val: bool = false;
+
+        // We trim the array, removing trailing and prefixing spaces.
         let arr: Vec<u8> = trim_byte_array(arr)
-            .into_iter()
-            .map(|b: &u8| *b) // Deref
-            .filter(|byte: &u8| {
-                // Removing spaces (32) outside of keys and vals. We're also removing all newlines.
+            .into_iter() // Turn it into an iterator.
+            .map(|b: &u8| *b) // We deref every element once.
+            .filter(|byte: &u8| { // we remove spaces outside of keys and vals. Also newlines.
                 if *byte == 34 { in_val = !in_val; } // 34
                 !(!in_val && (*byte == 32 || *byte == 10))
             })
-            .collect::<Vec<u8>>();
+            .collect::<Vec<u8>>(); // We collect result in an array.
+        // Because we need it in a variable for next step.
+
         // Making sure the first character is "{" (123), and the last is "}" (125).
         if !(arr[0] == 123 && arr[arr.len()-1] == 125) {
             panic!("INVALID FIRST AND LAST BYTE");
         }
         // Slicing contents of outer curly brackets.
         let arr: &[u8] = &arr[1..arr.len()-1];
+
+        let mut in_big_val: bool = false; // If we're in an array or object.
+        let arr: Vec<&[u8]> = arr.split(|byte: &u8| {
+            // We split by commas "," if the comma is not inside of a value.
+            if *byte == 91 || *byte == 123 {
+                in_big_val = true;
+            } else if *byte == 93 || *byte == 125 {
+                in_big_val = false;
+            }
+            !in_big_val && *byte == 44
+        })
+            .collect::<Vec<&[u8]>>();
+        // We collect result in array because we need it in a variable for the next step.
+
+        // This vector holds all the keys, it also holds the index to the value. Which is in a seperate vector.
+        let mut key_vec: Vec<(&[u8], usize)> = Vec::new();
+        // This vector hold all the values, it also holds the JsonVariant of the value.
+        let mut val_vec: Vec<(JsonVariant, Vec<u8>)> = Vec::new();
+        // Temporary buffer used for multiline values like arrays and objects that need to concatonated.
+        let mut val_buffer: Vec<u8> = Vec::new();
+        // The current index, this is needed as we're synchronizing the indexes of the key and val vectors.
+        let mut current: usize = 0;
+        // Needed for EOF flushing of the buffer.
+        let len: usize = arr.iter().count();
+
         let _ = arr
-            .split(|byte: &u8| *byte == 44)// Splitting by comma "," (44)
+            .into_iter()
             .map(|byte_slice: &[u8]| {
-                // Getting index of delimiter colon ":" (58).
+                // This map returns a tuple containing either (key, val) or (None, val).
+                // Depending on if the line we're processing holds a key or not.
+                // If it returns (None, val) we concat the value onto the previous one.
+                // This is why we have the "val_buffer" above.
+                if byte_slice[0] == 123 || byte_slice[0] == 91 {
+                    // If it starts with either 123 or 91, then the line is a a part of a
+                    // multiproperty value like an array or and object.
+                    return (None, Some(byte_slice))
+                }
+                // Getting the index of possible key val delimiter.
                 let index: Option<usize> = byte_slice.iter().position(|byte: &u8| *byte == 58);
-                // Returns tuple (Some(key), Some(val)), returns None for key if we're in an array.
+                // If we have an index, we have a key and a value.
+                // If we don't, then we only have a value.
                 match index {
                     Some(index) => {
                         let colon_slice: (&[u8], &[u8]) = byte_slice.split_at(index);
-                        (Some(colon_slice.0), Some(colon_slice.1))
+                        // The slice in the second element is to get rid of the colon,
+                        // this is needed because split_at() is inclusive.
+                        (Some(colon_slice.0), Some(&colon_slice.1[1..colon_slice.1.len()]))
                     },
-                    None => { (None, Some(byte_slice)) }
+                    None => {
+                        // The slice in the second element is to get rid of the colon,
+                        // this is needed because split_at() is inclusive.
+                        (None, Some(&byte_slice[1..byte_slice.len()]))
+                    }
                 }
             })
-            .map(|(key, val): (Option<&[u8]>, Option<&[u8]>)| {
-                key.map(|key_slice: &[u8]| {
-                    println!("KEY||| {}", String::from_utf8_lossy(key_slice));
+            .enumerate() // For EOF flushing.
+            .map(|(i, (key, val)): (usize, (Option<&[u8]>, Option<&[u8]>))| {
+                let mut flush: bool = false; // Whether we flush buffer or not.
+                key.map(|k: &[u8]| {
+                    flush = !val_buffer.is_empty();
+                    // Current index, we're not decrementing with 1, because the val_vec will grow,
+                    // later on in this map instance.
+                    current = val_vec.len();
+                    // Pushing key and index of future value attributed to it.
+                    key_vec.push((k, current));
+                    // Clearing buffer.
+                    val_buffer.clear();
                 });
-                val.map(|val_slice: &[u8]| {
-                    println!("VAL||| {}", String::from_utf8_lossy(val_slice));
+                if log::log_enabled!(log::Level::Debug) {
+                    key.map(|b| {
+                        println!("{}: Json key: {}", current, String::from_utf8_lossy(b));
+                    });
+                    val.map(|b: &[u8]| {
+                        println!("{}: Json val: {}", current, String::from_utf8_lossy(b));
+                    });
+                }
+                val.map(|v: &[u8]| {
+                    // We're not flushing if the value starts with 123 or 91.
+                    flush = !(v[0] == 123 || v[0] == 91);
+                    val_buffer.append(&mut v.to_vec());
                 });
-            })
-            .count(); // Triggering map.
+                // We flush the buffer if flush is true or if we're on EOF.
+                if flush || i == len - 1 {
+                    if !val_buffer.is_empty() {
+                        let variant: JsonVariant =
+                            match val_buffer[1] {
+                                123 => { JsonVariant::JsonObject },
+                                91 => { JsonVariant::JsonArray },
+                                _ => { JsonVariant::JsonValue }
+                            };
+                        val_vec.push((variant, val_buffer.to_owned()));
+                    }
+                }
+            }).count(); // Triggering map.
+        if log::log_enabled!(log::Level::Debug) {
+            println!("key_vec_len = {}, val_vec_len = {}", key_vec.len(), val_vec.len());
+        }
         Self {
             name: "hey".to_string()
         }
@@ -77,6 +161,7 @@ pub fn parse_into_json_objects(s: &str) {
 
 #[cfg(test)]
 mod test {
+    use std::env;
     use crate::web::util::parsers::json_parser::parse_into_json_objects;
 
     const TEST_STR: &str = r#"
@@ -121,6 +206,10 @@ mod test {
 
     #[test]
     fn hey() {
+        static RUST_LOG: &str = "RUST_LOG";
+        static DEBUG: &str = "debug";
+        env::set_var(RUST_LOG, DEBUG);
+        let _ = env_logger::try_init();
         dbg!(parse_into_json_objects(TEST_STR));
     }
 }

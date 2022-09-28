@@ -41,11 +41,10 @@ pub fn json_test(transaction: &mut Transaction) {
     transaction.res_mut().set_status(200).set_reason_phrase("uwu").set_body(body_as_json);
 }
 
-static RUST_LOG: &str = "RUST_LOG";
-static DEBUG: &str = "debug";
-
 /// It starts a server on port 7878 and registers the routes.
 fn main() {
+    static RUST_LOG: &str = "RUST_LOG";
+    static DEBUG: &str = "debug";
     env::set_var(RUST_LOG, DEBUG);
     let mut container: IocContainer = IocContainer::default();
     let mut rhc: RouteHandlerContainer = RouteHandlerContainer::new();

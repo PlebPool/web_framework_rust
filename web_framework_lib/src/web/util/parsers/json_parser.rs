@@ -7,6 +7,9 @@
 // 1110xxxx  0xE0..0xEF   First byte of a 3-byte character encoding
 // 11110xxx  0xF0..0xF7   First byte of a 4-byte character encoding
 
+use std::collections::HashMap;
+use std::io::BufRead;
+
 //  █     █░▓█████   ▄████  ▄▄▄▄    ██▓     ▄▄▄      ▓█████▄
 // ▓█░ █ ░█░▓█   ▀  ██▒ ▀█▒▓█████▄ ▓██▒    ▒████▄    ▒██▀ ██▌
 // ▒█░ █ ░█ ▒███   ▒██░▄▄▄░▒██▒ ▄██▒██░    ▒██  ▀█▄  ░██   █▌
@@ -18,70 +21,21 @@
 //     ░       ░  ░      ░  ░          ░  ░      ░  ░   ░
 //                               ░                    ░
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-enum JsonPropertyToken {
-    JsonObjectStart,
-    JsonObjectEnd,
-    JsonArrayStart,
-    JsonArrayEnd,
-    None
-}
-
-impl JsonPropertyToken {
-    pub fn get_variant(&self) -> JsonVariant {
-        match self {
-            JsonPropertyToken::JsonObjectStart | JsonPropertyToken::JsonObjectEnd => {
-                JsonVariant::JsonObject
-            },
-            JsonPropertyToken::JsonArrayStart | JsonPropertyToken::JsonArrayEnd => {
-                JsonVariant::JsonArray
-            },
-            JsonPropertyToken::None => {
-                unimplemented!()
-            }
-        }
-    }
-}
-
 #[derive(Debug)]
 enum JsonVariant {
-    JsonObject,
-    JsonArray,
-    JsonValue,
+    JsonObject(String, JsonObject),
+    JsonArray(String, Vec<String>),
+    JsonValue(String, String),
     None
 }
 
 #[derive(Debug)]
-struct JsonObject { }
-
-#[derive(Debug)]
-struct JsonIndexSearchStruct {
-    variant: JsonPropertyToken,
-    index: usize,
-    depth: usize,
-    target_variant: JsonPropertyToken,
-}
-
-impl JsonIndexSearchStruct {
-    pub fn new(variant: JsonPropertyToken, index: usize, depth: usize, target_variant: JsonPropertyToken) -> Self {
-        Self { variant, index, depth, target_variant }
-    }
-
-    pub fn variant(&self) -> &JsonPropertyToken {
-        &self.variant
-    }
-    pub fn index(&self) -> usize {
-        self.index
-    }
-    pub fn depth(&self) -> usize {
-        self.depth
-    }
-    pub fn target_variant(&self) -> &JsonPropertyToken {
-        &self.target_variant
-    }
+struct JsonObject {
+    map: HashMap<String, JsonVariant>,
 }
 
 impl JsonObject {
+
     /// We trim the array, removing trailing and prefixing spaces. Then we turn it into an iterator. We
     /// deref every element once. We remove spaces outside of keys and vals. Also newlines. We collect
     /// result in an array
@@ -131,66 +85,69 @@ impl JsonObject {
         } else { arr }
     }
 
-    pub fn parse(arr: &[u8]) -> Self {
-        let type_start_end_depth: Vec<JsonIndexSearchStruct>;
-        {
-            let vec: Vec<u8> = Self::surgical_trim(arr);
-            let (mut depth, mut current_depth): (usize, usize) =  (0, 0);
-            type_start_end_depth = vec
-                .iter()
-                .enumerate()
-                .map(|(i, byte): (usize, &u8)| {
-                    if *byte == 123 { (JsonPropertyToken::JsonObjectStart, i, true, JsonPropertyToken::JsonObjectEnd) }
-                    else if *byte == 125 { (JsonPropertyToken::JsonObjectEnd, i, false, JsonPropertyToken::None) }
-                    else if *byte == 91 { (JsonPropertyToken::JsonArrayStart, i, true, JsonPropertyToken::JsonArrayEnd) }
-                    else if *byte == 93 { (JsonPropertyToken::JsonArrayEnd, i, false, JsonPropertyToken::None) }
-                    else { (JsonPropertyToken::None, i, false, JsonPropertyToken::None) }
-                })
-                .filter(|(variant, _index, _start, _target_variant): &(JsonPropertyToken, usize, bool, JsonPropertyToken)| {
-                    *variant != JsonPropertyToken::None
-                })
-                .map(|(variant, i, start, target_variant): (JsonPropertyToken, usize, bool, JsonPropertyToken)| {
-                    if start { current_depth = current_depth + 1; }
-                    depth = current_depth - 1;
-                    if !start { current_depth = current_depth - 1; }
-                    JsonIndexSearchStruct::new(variant, i, depth, target_variant)
-                }).collect::<Vec<JsonIndexSearchStruct>>();
-        }
-        {
-            let mut taken_indexes: Vec<usize> = Vec::new();
-            for js_iss in &type_start_end_depth {
-                if *js_iss.target_variant() == JsonPropertyToken::None { continue; }
-                let pos: Option<usize> = type_start_end_depth.iter().enumerate().position(|(i, it): (usize, &JsonIndexSearchStruct)| {
-                    it.variant() == js_iss.target_variant() && it.depth() == js_iss.depth() && !taken_indexes.contains(&i)
-                });
-                if let Some(index) = pos {
-                    taken_indexes.push(index);
-                    if log::log_enabled!(log::Level::Debug) {
-                        log::debug!(
-                                "Variant: {:?}, Start: {}, End: {}",
-                                js_iss.variant().get_variant(),
-                                js_iss.index(),
-                                type_start_end_depth.get(index).unwrap().index()
-                            );
-                    }
-                } else {
-                    // TODO
-                    panic!("TARGET NOT FOUND");
-                }
+    fn parse_array(slice: &[u8]) -> Vec<u8> {
+
+        Vec::new()
+    }
+
+    fn private_parse(&mut self, vec: Vec<u8>) {
+        let mut depth: isize = -1;
+        let comma_split: Vec<&[u8]> = vec.split(|b: &u8| {
+            match *b {
+                123 | 91 => { depth = depth + 1; },
+                125 | 93 => { depth = depth - 1; },
+                _ => {  }
             }
+            depth == 0 && *b == 44
+        }).collect::<Vec<&[u8]>>();
+        let key_val_tuples: Vec<(&[u8], &[u8])> = comma_split
+            .into_iter()
+            .map(|key_val_pair: &[u8]| {
+            if let Some(index) =
+            key_val_pair.iter().position(|b: &u8| { *b == 58 }) {
+                key_val_pair.split_at(index)
+            } else {
+                // TODO
+                panic!("NO SPLIT");
+            }
+        }).collect::<Vec<(&[u8], &[u8])>>();
+        for (key, val) in key_val_tuples {
+            match val[0] {
+                91 => {
+                    let array = Self::parse_array(val);
+                    // Json array.
+                },
+                123 => {
+                    let mut object = JsonObject::new();
+                    object.parse(val);
+                    // Json object.
+                },
+                _ => {  }
+            }
+
         }
-        Self { }
+    }
+
+    pub fn parse(&mut self, arr: &[u8]) -> Self {
+        let vec: Vec<u8> = Self::surgical_trim(arr);
+        let vec: Vec<u8> = vec[1..vec.len()-1].to_vec();
+        dbg!(Self::private_parse(self, vec));
+        return Self { map: Default::default() };
+    }
+    
+    pub fn new() -> Self {
+        Self { map: HashMap::new() }
     }
 }
 
 pub fn parse_into_json_objects(s: &str) {
-    let _ = JsonObject::parse(s.as_bytes());
+    let mut a = JsonObject::new();
+    a.parse(s.as_bytes());
 }
 
 #[cfg(test)]
 mod test {
     use std::env;
-    use std::ops::Sub;
     use std::time::Instant;
     use crate::web::util::parsers::json_parser::parse_into_json_objects;
 

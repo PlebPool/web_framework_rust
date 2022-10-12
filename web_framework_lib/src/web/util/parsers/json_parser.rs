@@ -9,6 +9,7 @@
 
 use std::collections::HashMap;
 use std::io::BufRead;
+use crate::web::util::parsers::json_parser::JsonVariant::{JsonObject as OtherJsonObject, JsonValue};
 
 //  █     █░▓█████   ▄████  ▄▄▄▄    ██▓     ▄▄▄      ▓█████▄
 // ▓█░ █ ░█░▓█   ▀  ██▒ ▀█▒▓█████▄ ▓██▒    ▒████▄    ▒██▀ ██▌
@@ -23,9 +24,9 @@ use std::io::BufRead;
 
 #[derive(Debug)]
 enum JsonVariant {
-    JsonObject(String, JsonObject),
-    JsonArray(String, Vec<String>),
-    JsonValue(String, String),
+    JsonObject(JsonObject),
+    JsonArray(Vec<JsonVariant>),
+    JsonValue(String),
     None
 }
 
@@ -35,7 +36,6 @@ struct JsonObject {
 }
 
 impl JsonObject {
-
     /// We trim the array, removing trailing and prefixing spaces. Then we turn it into an iterator. We
     /// deref every element once. We remove spaces outside of keys and vals. Also newlines. We collect
     /// result in an array
@@ -85,64 +85,96 @@ impl JsonObject {
         } else { arr }
     }
 
-    fn parse_array(slice: &[u8]) -> Vec<u8> {
-
-        Vec::new()
-    }
-
-    fn private_parse(&mut self, vec: Vec<u8>) {
-        let mut depth: isize = -1;
-        let comma_split: Vec<&[u8]> = vec.split(|b: &u8| {
-            match *b {
-                123 | 91 => { depth = depth + 1; },
-                125 | 93 => { depth = depth - 1; },
-                _ => {  }
+    fn parse_value(val: &[u8]) -> JsonVariant {
+        match val[0] {
+            123 => {
+                let val: JsonObject = Self::parse_object(val);
+                JsonVariant::JsonObject(val)
+            },
+            91 => {
+                let split: Vec<&[u8]> = Self::split_by_element(val);
+                let mut result: Vec<JsonVariant> = Vec::new();
+                for value in split {
+                    match value[0] {
+                        123 | 91 => {
+                            result.push(Self::parse_value(value));
+                        },
+                        _ => {
+                            let a: Vec<u8> = value[1..value.len()-1].to_vec();
+                            result.push(JsonVariant::JsonValue(String::from_utf8(a).unwrap()));
+                        }
+                    }
+                }
+                JsonVariant::JsonArray(result)
+            },
+            _ => {
+                let val: Vec<u8> = Self::remove_unescaped_quotation_marks(val);
+                JsonVariant::JsonValue(String::from_utf8(val.to_vec())
+                        .expect("Failed val parse"))
             }
-            depth == 0 && *b == 44
-        }).collect::<Vec<&[u8]>>();
-        let key_val_tuples: Vec<(&[u8], &[u8])> = comma_split
-            .into_iter()
-            .map(|key_val_pair: &[u8]| {
-            if let Some(index) =
-            key_val_pair.iter().position(|b: &u8| { *b == 58 }) {
-                key_val_pair.split_at(index)
-            } else {
-                // TODO
-                panic!("NO SPLIT");
-            }
-        }).collect::<Vec<(&[u8], &[u8])>>();
-        for (key, val) in key_val_tuples {
-            match val[0] {
-                91 => {
-                    let array = Self::parse_array(val);
-                    // Json array.
-                },
-                123 => {
-                    let mut object = JsonObject::new();
-                    object.parse(val);
-                    // Json object.
-                },
-                _ => {  }
-            }
-
         }
     }
 
-    pub fn parse(&mut self, arr: &[u8]) -> Self {
-        let vec: Vec<u8> = Self::surgical_trim(arr);
-        let vec: Vec<u8> = vec[1..vec.len()-1].to_vec();
-        dbg!(Self::private_parse(self, vec));
-        return Self { map: Default::default() };
+    pub fn parse_object(arr: &[u8]) -> Self {
+        let mut it: JsonObject = Self { map: Default::default() };
+        let trimmed: Vec<u8> = Self::surgical_trim(arr);
+        let mut split: Vec<&[u8]> = Self::split_by_element(trimmed.as_slice());
+        split = split.into_iter().filter(|b| {
+            !b.is_empty()
+        }).collect::<Vec<&[u8]>>();
+        for current in split {
+            let opt_pos: Option<usize> = current.iter().position(|b| *b == 58);
+            if let Some(index) = opt_pos {
+                let (key, mut val): (&[u8], &[u8]) = current.split_at(index);
+                val = &val[1..val.len()];
+                let key: String = String::from_utf8(Self::remove_unescaped_quotation_marks(key)).unwrap();
+                let val = Self::parse_value(val);
+                it.map.insert(key, val);
+            } else {
+                // TODO:
+                panic!("NO COLON: {}", String::from_utf8_lossy(current));
+            }
+        }
+        it
     }
-    
-    pub fn new() -> Self {
-        Self { map: HashMap::new() }
+
+    fn split_by_element(arr: &[u8]) -> Vec<&[u8]> {
+        let arr: &[u8] = &arr[1..arr.len()-1];
+        let mut depth: usize = 0;
+        let mut switch: bool = true;
+        arr.split(|b: &u8| {
+            match *b {
+                34 => {
+                    if switch { depth = depth + 1; }
+                    else { depth = depth - 1; }
+                    switch = !switch;
+                },
+                123 | 91 => { depth = depth + 1; },
+                125 | 93 => { depth = depth - 1; },
+                _ => { }
+            }
+            depth == 0 && *b == 44
+        }).collect::<Vec<&[u8]>>()
+    }
+
+    fn remove_unescaped_quotation_marks(arr: &[u8]) -> Vec<u8> {
+        let mut escaped: bool = false;
+        arr.into_iter().filter(|b| {
+            if **b == 92 {
+                escaped = true;
+            }
+            if escaped {
+                escaped = false;
+                return true
+            } else {
+                **b != 34
+            }
+        }).map(|b: &u8| *b).collect::<Vec<u8>>()
     }
 }
 
 pub fn parse_into_json_objects(s: &str) {
-    let mut a = JsonObject::new();
-    a.parse(s.as_bytes());
+    dbg!(JsonObject::parse_object(s.as_bytes()));
 }
 
 #[cfg(test)]
@@ -158,7 +190,11 @@ mod test {
   "formed": 2016,
   "secretBase": "Super tower",
   "active": true,
+  "amongus": {
+    "sus": true,
+  },
   "members": [
+  "uwu",
     {
       "name": "Molecule Man",
       "age": 29,

@@ -148,7 +148,7 @@ impl JsonObject {
     }
 
     pub fn parse_object(arr: &[u8]) -> Result<Self, JsonParseError> {
-        let mut it: JsonObject = Self { map: Default::default() };
+        let mut it: JsonObject = Self { map: HashMap::new() };
         let trimmed: Vec<u8> = Self::surgical_trim(arr);
         let mut split: Vec<&[u8]> = Self::split_by_element(trimmed.as_slice());
         split = split.into_iter().filter(|b: &&[u8]| {

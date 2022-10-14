@@ -27,11 +27,9 @@ pub fn path_param_test(transaction: &mut Transaction) {
 }
 
 pub fn json_test(transaction: &mut Transaction) {
-    let now: Instant = Instant::now();
     let body_as_json: JsonObject = transaction.req().get_body_as_json();
     transaction.res_mut().set_status(200).set_reason_phrase("uwu").set_body(body_as_json.to_string());
     transaction.res_mut().content_type(MimeTypes::JSON);
-    dbg!(Instant::now().duration_since(now));
 }
 
 pub fn index(transaction: &mut Transaction) {

@@ -7,6 +7,17 @@ use crate::web::models::transaction::Transaction;
 use crate::web::request_handling::request_handler;
 use crate::web::util::request_parser;
 
+//  █     █░▓█████   ▄████  ▄▄▄▄    ██▓     ▄▄▄      ▓█████▄
+// ▓█░ █ ░█░▓█   ▀  ██▒ ▀█▒▓█████▄ ▓██▒    ▒████▄    ▒██▀ ██▌
+// ▒█░ █ ░█ ▒███   ▒██░▄▄▄░▒██▒ ▄██▒██░    ▒██  ▀█▄  ░██   █▌
+// ░█░ █ ░█ ▒▓█  ▄ ░▓█  ██▓▒██░█▀  ▒██░    ░██▄▄▄▄██ ░▓█▄   ▌
+// ░░██▒██▓ ░▒████▒░▒▓███▀▒░▓█  ▀█▓░██████▒ ▓█   ▓██▒░▒████▓
+// ░ ▓░▒ ▒  ░░ ▒░ ░ ░▒   ▒ ░▒▓███▀▒░ ▒░▓  ░ ▒▒   ▓▒█░ ▒▒▓  ▒
+//   ▒ ░ ░   ░ ░  ░  ░   ░ ▒░▒   ░ ░ ░ ▒  ░  ▒   ▒▒ ░ ░ ▒  ▒
+//   ░   ░     ░   ░ ░   ░  ░    ░   ░ ░     ░   ▒    ░ ░  ░
+//     ░       ░  ░      ░  ░          ░  ░      ░  ░   ░
+//                               ░                    ░
+
 pub type HandlerFunction = fn(transaction: &mut Transaction);
 
 pub fn start(port: &str, container: Arc<IocContainer>) {
@@ -32,10 +43,6 @@ pub fn start(port: &str, container: Arc<IocContainer>) {
 
             if log::log_enabled!(log::Level::Info) {
                 log::info!("Request Received from {}", transaction.req().stream().peer_addr().unwrap());
-            }
-
-            if log::log_enabled!(log::Level::Debug) {
-                log::debug!("{:#?}", transaction.req());
             }
 
             // Pass container reference and parsed transaction.

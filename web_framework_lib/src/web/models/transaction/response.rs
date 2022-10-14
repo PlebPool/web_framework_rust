@@ -6,7 +6,7 @@ use std::io::Error;
 use std::ops::Add;
 use std::str::FromStr;
 
-use crate::web::util::enums::static_file_ext_enum::StaticFileExt;
+use crate::web::util::enums::mime_types::MimeTypes;
 
 const DEFAULT_HTTP_VERSION: &str = "HTTP/1.1";
 
@@ -141,7 +141,7 @@ impl <'a> Response<'a> {
         let mime_type: String = path_from_public.rsplit_once('.')
             .map(|(_parent_path, ext): (&str, &str)| {
                 let ext: String = ext.replace(".download", "");
-                let e: StaticFileExt = StaticFileExt::from_str(&ext)
+                let e: MimeTypes = MimeTypes::from_str(&ext)
                     .unwrap_or_else(|()| panic!("Invalid ext: {}", ext));
                 e.to_string()
             }).expect("Failed to get mime type.");
@@ -167,6 +167,10 @@ impl <'a> Response<'a> {
     /// * `val`: String - The value of the header.
     pub fn add_header(&mut self, key: &'a str, val: String) {
         self.headers.insert(key, val);
+    }
+
+    pub fn content_type(&mut self, mime: MimeTypes) {
+        self.headers.insert("Content-Type", mime.to_string());
     }
 
     /// It sets the body of the response to the given string.

@@ -7,6 +7,17 @@ use crate::web::models::transaction::Transaction;
 use crate::web::request_handling::route_handler_container::RouteHandlerContainer;
 use crate::web::util::enums::http_method_enum::HttpMethod;
 
+//  █     █░▓█████   ▄████  ▄▄▄▄    ██▓     ▄▄▄      ▓█████▄
+// ▓█░ █ ░█░▓█   ▀  ██▒ ▀█▒▓█████▄ ▓██▒    ▒████▄    ▒██▀ ██▌
+// ▒█░ █ ░█ ▒███   ▒██░▄▄▄░▒██▒ ▄██▒██░    ▒██  ▀█▄  ░██   █▌
+// ░█░ █ ░█ ▒▓█  ▄ ░▓█  ██▓▒██░█▀  ▒██░    ░██▄▄▄▄██ ░▓█▄   ▌
+// ░░██▒██▓ ░▒████▒░▒▓███▀▒░▓█  ▀█▓░██████▒ ▓█   ▓██▒░▒████▓
+// ░ ▓░▒ ▒  ░░ ▒░ ░ ░▒   ▒ ░▒▓███▀▒░ ▒░▓  ░ ▒▒   ▓▒█░ ▒▒▓  ▒
+//   ▒ ░ ░   ░ ░  ░  ░   ░ ▒░▒   ░ ░ ░ ▒  ░  ▒   ▒▒ ░ ░ ▒  ▒
+//   ░   ░     ░   ░ ░   ░  ░    ░   ░ ░     ░   ▒    ░ ░  ░
+//     ░       ░  ░      ░  ░          ░  ░      ░  ░   ░
+//                               ░                    ░
+
 /// It takes a `Transaction` and a `Container` and
 /// calls the appropriate handler function for the request path
 ///
@@ -47,7 +58,7 @@ pub fn enter_chain(mut transaction: Transaction, container: Arc<IocContainer>) {
                 transaction.res().status(),
                 transaction.req().request_line_data().path());
             }
-            if log::log_enabled!(log::Level::Debug) { log::debug!("\n{:#?}", transaction); }
+            if log::log_enabled!(log::Level::Debug) { log::debug!("\n{:?}", transaction); }
         }
     };
 }

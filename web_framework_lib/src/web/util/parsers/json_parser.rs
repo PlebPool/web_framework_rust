@@ -1,15 +1,5 @@
-
-
-// Binary    Hex          Comments
-// 0xxxxxxx  0x00..0x7F   Only byte of a 1-byte character encoding
-// 10xxxxxx  0x80..0xBF   Continuation byte: one of 1-3 bytes following the first
-// 110xxxxx  0xC0..0xDF   First byte of a 2-byte character encoding
-// 1110xxxx  0xE0..0xEF   First byte of a 3-byte character encoding
-// 11110xxx  0xF0..0xF7   First byte of a 4-byte character encoding
-
 use std::collections::HashMap;
-use std::io::BufRead;
-use crate::web::util::parsers::json_parser::JsonVariant::{JsonObject as OtherJsonObject, JsonValue};
+use std::ops::Add;
 
 //  █     █░▓█████   ▄████  ▄▄▄▄    ██▓     ▄▄▄      ▓█████▄
 // ▓█░ █ ░█░▓█   ▀  ██▒ ▀█▒▓█████▄ ▓██▒    ▒████▄    ▒██▀ ██▌
@@ -22,17 +12,57 @@ use crate::web::util::parsers::json_parser::JsonVariant::{JsonObject as OtherJso
 //     ░       ░  ░      ░  ░          ░  ░      ░  ░   ░
 //                               ░                    ░
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 enum JsonVariant {
     JsonObject(JsonObject),
     JsonArray(Vec<JsonVariant>),
-    JsonValue(String),
-    None
+    JsonString(String),
+}
+
+impl ToString for JsonVariant {
+    fn to_string(&self) -> String {
+        match self {
+            JsonVariant::JsonObject(obj) => {
+                let mut string: String = String::from("{");
+                for (key, variant) in &obj.map {
+                    string = string
+                        .add(&format!(r#""{}""#, key))
+                        .add(":")
+                        .add(&variant.to_string())
+                        .add(",");
+                }
+                string = string.add("}");
+                dbg!(string)
+            },
+            JsonVariant::JsonArray(vec) => {
+                let mut string: String = String::from("[");
+                for current in vec {
+                    string = string.add(&current.to_string()).add(",");
+                }
+                string = string.add("]");
+                string
+            }
+            JsonVariant::JsonString(s) => {
+                String::from(format!(r#""{}""#, s))
+            }
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct JsonObject {
+    map: HashMap<String, JsonVariant>,
 }
 
 #[derive(Debug)]
-struct JsonObject {
-    map: HashMap<String, JsonVariant>,
+pub enum JsonParseError {
+    Error(String),
+}
+
+impl ToString for JsonObject {
+    fn to_string(&self) -> String {
+        JsonVariant::JsonObject(self.to_owned()).to_string()
+    }
 }
 
 impl JsonObject {
@@ -85,11 +115,11 @@ impl JsonObject {
         } else { arr }
     }
 
-    fn parse_value(val: &[u8]) -> JsonVariant {
+    fn parse_value(val: &[u8]) -> Result<JsonVariant, JsonParseError> {
         match val[0] {
             123 => {
-                let val: JsonObject = Self::parse_object(val);
-                JsonVariant::JsonObject(val)
+                let val: JsonObject = Self::parse_object(val)?;
+                Ok(JsonVariant::JsonObject(val))
             },
             91 => {
                 let split: Vec<&[u8]> = Self::split_by_element(val);
@@ -97,29 +127,32 @@ impl JsonObject {
                 for value in split {
                     match value[0] {
                         123 | 91 => {
-                            result.push(Self::parse_value(value));
+                            result.push(Self::parse_value(value)?);
                         },
                         _ => {
                             let a: Vec<u8> = value[1..value.len()-1].to_vec();
-                            result.push(JsonVariant::JsonValue(String::from_utf8(a).unwrap()));
+                            result.push(JsonVariant::JsonString(String::from_utf8(a).unwrap()));
                         }
                     }
                 }
-                JsonVariant::JsonArray(result)
+                Ok(JsonVariant::JsonArray(result))
             },
             _ => {
                 let val: Vec<u8> = Self::remove_unescaped_quotation_marks(val);
-                JsonVariant::JsonValue(String::from_utf8(val.to_vec())
-                        .expect("Failed val parse"))
+                if let Ok(res) = String::from_utf8(val.to_vec()) {
+                    Ok(JsonVariant::JsonString(res))
+                } else {
+                    Err(JsonParseError::Error(String::from("Failed to parse value to string")))
+                }
             }
         }
     }
 
-    pub fn parse_object(arr: &[u8]) -> Self {
+    pub fn parse_object(arr: &[u8]) -> Result<Self, JsonParseError> {
         let mut it: JsonObject = Self { map: Default::default() };
         let trimmed: Vec<u8> = Self::surgical_trim(arr);
         let mut split: Vec<&[u8]> = Self::split_by_element(trimmed.as_slice());
-        split = split.into_iter().filter(|b| {
+        split = split.into_iter().filter(|b: &&[u8]| {
             !b.is_empty()
         }).collect::<Vec<&[u8]>>();
         for current in split {
@@ -128,14 +161,13 @@ impl JsonObject {
                 let (key, mut val): (&[u8], &[u8]) = current.split_at(index);
                 val = &val[1..val.len()];
                 let key: String = String::from_utf8(Self::remove_unescaped_quotation_marks(key)).unwrap();
-                let val = Self::parse_value(val);
+                let val: JsonVariant = Self::parse_value(val)?;
                 it.map.insert(key, val);
             } else {
-                // TODO:
-                panic!("NO COLON: {}", String::from_utf8_lossy(current));
+                return Err(JsonParseError::Error(String::from("No Colon")));
             }
         }
-        it
+        Ok(it)
     }
 
     fn split_by_element(arr: &[u8]) -> Vec<&[u8]> {
@@ -154,7 +186,8 @@ impl JsonObject {
                 _ => { }
             }
             depth == 0 && *b == 44
-        }).collect::<Vec<&[u8]>>()
+        })
+            .collect::<Vec<&[u8]>>()
     }
 
     fn remove_unescaped_quotation_marks(arr: &[u8]) -> Vec<u8> {
@@ -173,15 +206,19 @@ impl JsonObject {
     }
 }
 
-pub fn parse_into_json_objects(s: &str) {
-    dbg!(JsonObject::parse_object(s.as_bytes()));
+pub fn parse_into_json_object(bytes: &[u8]) -> Result<JsonObject, JsonParseError> {
+    let json: Result<JsonObject, JsonParseError> = JsonObject::parse_object(bytes);
+    if log::log_enabled!(log::Level::Debug) {
+        log::debug!("Parsed Json: {:?}", json)
+    }
+    json
 }
 
 #[cfg(test)]
 mod test {
     use std::env;
     use std::time::Instant;
-    use crate::web::util::parsers::json_parser::parse_into_json_objects;
+    use crate::web::util::parsers::json_parser::{JsonVariant, parse_into_json_object};
 
     const TEST_STR: &str = r#"
         {
@@ -234,7 +271,8 @@ mod test {
         env::set_var(RUST_LOG, DEBUG);
         let _ = env_logger::try_init();
         let now = Instant::now();
-        parse_into_json_objects(TEST_STR);
+        let j_o = parse_into_json_object(TEST_STR.as_bytes()).unwrap();
+        println!("String json: {}", JsonVariant::JsonObject(j_o).to_string());
         dbg!(Instant::now().duration_since(now));
     }
 }

@@ -1,3 +1,5 @@
+extern crate core;
+
 pub mod web {
     pub mod models {
         pub mod transaction;
@@ -12,7 +14,7 @@ pub mod web {
         }
         pub mod enums {
             pub mod http_method_enum;
-            pub mod static_file_ext_enum;
+            pub mod mime_types;
         }
         pub mod parsers {
             pub mod json_parser;

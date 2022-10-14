@@ -4,9 +4,21 @@ use std::net::TcpStream;
 
 use crate::web::models::transaction::request::request_headers::RequestHeaders;
 use crate::web::models::transaction::request::request_line_data::RequestLineData;
+use crate::web::util::parsers::json_parser::{JsonObject, JsonParseError, parse_into_json_object};
 
 mod request_line_data;
 mod request_headers;
+
+//  █     █░▓█████   ▄████  ▄▄▄▄    ██▓     ▄▄▄      ▓█████▄
+// ▓█░ █ ░█░▓█   ▀  ██▒ ▀█▒▓█████▄ ▓██▒    ▒████▄    ▒██▀ ██▌
+// ▒█░ █ ░█ ▒███   ▒██░▄▄▄░▒██▒ ▄██▒██░    ▒██  ▀█▄  ░██   █▌
+// ░█░ █ ░█ ▒▓█  ▄ ░▓█  ██▓▒██░█▀  ▒██░    ░██▄▄▄▄██ ░▓█▄   ▌
+// ░░██▒██▓ ░▒████▒░▒▓███▀▒░▓█  ▀█▓░██████▒ ▓█   ▓██▒░▒████▓
+// ░ ▓░▒ ▒  ░░ ▒░ ░ ░▒   ▒ ░▒▓███▀▒░ ▒░▓  ░ ▒▒   ▓▒█░ ▒▒▓  ▒
+//   ▒ ░ ░   ░ ░  ░  ░   ░ ▒░▒   ░ ░ ░ ▒  ░  ▒   ▒▒ ░ ░ ▒  ▒
+//   ░   ░     ░   ░ ░   ░  ░    ░   ░ ░     ░   ▒    ░ ░  ░
+//     ░       ░  ░      ░  ░          ░  ░      ░  ░   ░
+//                               ░                    ░
 
 /// `Request` is a struct that contains a `RequestLineData` struct, a `HashMap` of `String`s, and a
 /// `TcpStream`.
@@ -24,8 +36,6 @@ pub struct Request {
     stream: TcpStream
 }
 
- // TODO: Add methods for getting body in certain format. e.g get_body_as_json(),
- // TODO: And maybe a generic method that formats the body depending on Content-Type header.
 #[allow(dead_code)]
 impl Request {
     /// This function takes a string and a stream, and returns a Request struct
@@ -53,14 +63,15 @@ impl Request {
     }
 
      // TODO: WIP
-     pub fn get_body_as_json<'a>(&self) -> String {
-         let as_str = String::from_utf8(self.body.clone());
-         match as_str {
+     pub fn get_body_as_json<'a>(&self) -> JsonObject {
+         let as_json: Result<JsonObject, JsonParseError> = parse_into_json_object(self.body.as_slice());
+         match as_json {
              Ok(t) => {
-                t
+                 t
              },
-             Err(_e) => {
-                String::from("failed")
+             Err(e) => {
+                 // TODO:
+                 panic!("{:#?}", e);
              }
          }
      }

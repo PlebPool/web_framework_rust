@@ -31,8 +31,7 @@ impl ToString for JsonVariant {
                         .add(&variant.to_string())
                         .add(",");
                 }
-                string = string.add("}");
-                dbg!(string)
+                string.add("}")
             },
             JsonVariant::JsonArray(vec) => {
                 let mut string: String = String::from("[");

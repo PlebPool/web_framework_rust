@@ -48,11 +48,17 @@ impl ToString for JsonVariant {
     }
 }
 
+/// `JsonObject` is a `HashMap` of `String`s to `JsonVariant`s.
+///
+/// Properties:
+///
+/// * `map`: This is the HashMap that will store the key-value pairs of the JSON object.
 #[derive(Debug, Clone)]
 pub struct JsonObject {
     map: HashMap<String, JsonVariant>,
 }
 
+/// Creating a custom error type for the json parser.
 #[derive(Debug)]
 pub enum JsonParseError {
     Error(String),
@@ -114,6 +120,15 @@ impl JsonObject {
         } else { arr }
     }
 
+    /// Parses a byte vector slice representing the value in a key value pair.
+    ///
+    /// Arguments:
+    ///
+    /// * `val`: &[u8] - The value to parse
+    ///
+    /// Returns:
+    ///
+    /// A JsonVariant enum
     fn parse_value(val: &[u8]) -> Result<JsonVariant, JsonParseError> {
         match val[0] {
             123 => {
@@ -147,6 +162,17 @@ impl JsonObject {
         }
     }
 
+    /// It takes a slice of bytes, trims it, splits it into a vector of slices of bytes, filters out
+    /// empty slices, splits each slice into a key and a value, removes the quotation marks from the
+    /// key, parses the value, and inserts the key and value into a hashmap
+    ///
+    /// Arguments:
+    ///
+    /// * `arr`: &[u8] - The array of bytes to parse
+    ///
+    /// Returns:
+    ///
+    /// A JsonObject
     pub fn parse_object(arr: &[u8]) -> Result<Self, JsonParseError> {
         let mut it: JsonObject = Self { map: HashMap::new() };
         let trimmed: Vec<u8> = Self::surgical_trim(arr);
@@ -169,6 +195,15 @@ impl JsonObject {
         Ok(it)
     }
 
+    /// It splits the array by commas, but only when the comma is not inside a string or array
+    ///
+    /// Arguments:
+    ///
+    /// * `arr`: &[u8] - The array to split
+    ///
+    /// Returns:
+    ///
+    /// A vector of slices of the original array.
     fn split_by_element(arr: &[u8]) -> Vec<&[u8]> {
         let arr: &[u8] = &arr[1..arr.len()-1];
         let mut depth: usize = 0;
@@ -185,10 +220,18 @@ impl JsonObject {
                 _ => { }
             }
             depth == 0 && *b == 44
-        })
-            .collect::<Vec<&[u8]>>()
+        }).collect::<Vec<&[u8]>>()
     }
 
+    /// It removes all quotation marks that are not escaped
+    ///
+    /// Arguments:
+    ///
+    /// * `arr`: &[u8] - The array of bytes to remove the quotation marks from.
+    ///
+    /// Returns:
+    ///
+    /// A vector of bytes.
     fn remove_unescaped_quotation_marks(arr: &[u8]) -> Vec<u8> {
         let mut escaped: bool = false;
         arr.into_iter().filter(|b| {
@@ -205,6 +248,15 @@ impl JsonObject {
     }
 }
 
+/// It takes a byte array and returns a JsonObject
+///
+/// Arguments:
+///
+/// * `bytes`: &[u8] - The bytes to parse into a JSON object.
+///
+/// Returns:
+///
+/// A Result<JsonObject, JsonParseError>
 pub fn parse_into_json_object(bytes: &[u8]) -> Result<JsonObject, JsonParseError> {
     let json: Result<JsonObject, JsonParseError> = JsonObject::parse_object(bytes);
     if log::log_enabled!(log::Level::Debug) {

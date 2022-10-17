@@ -1,6 +1,5 @@
 use std::env;
 use std::sync::Arc;
-use std::time::Instant;
 use di_ioc_lib::di::ioc_container::IocContainer;
 use web_framework_lib::web::server;
 use web_framework_lib::web::models::transaction::response::Response;
@@ -19,11 +18,9 @@ pub fn path_param_test(transaction: &mut Transaction) {
     let path_cell: String = transaction.req()
         .request_line_data()
         .get_path_cell_by_index_url_decoded(1)
-            .expect("Failed to get url path cell.");
+        .expect("uwu");
     let res: &mut Response = transaction.res_mut();
-    res.set_status(200)
-        .set_reason_phrase("OK")
-        .set_body(path_cell);
+    res.set_status(200).set_reason_phrase("OK").set_body(path_cell);
 }
 
 pub fn json_test(transaction: &mut Transaction) {
@@ -37,7 +34,7 @@ pub fn index(transaction: &mut Transaction) {
     res.set_status(200)
         .set_reason_phrase("OK")
         .set_body_to_file("html/index.html")
-        .expect("Failed to read file.");
+        .expect("uwu");
 }
 /// It starts a server on port 7878 and registers the routes.
 fn main() {

@@ -31,10 +31,14 @@ pub fn json_test(transaction: &mut Transaction) {
 
 pub fn index(transaction: &mut Transaction) {
     let res: &mut Response = transaction.res_mut();
-    res.set_status(200)
+    let result = res.set_status(200)
         .set_reason_phrase("OK")
-        .set_body_to_file("html/index.html")
-        .expect("uwu");
+        .set_body_to_file("html/index.html");
+    if let Err(e) = result {
+        res.set_status(404)
+            .set_reason_phrase("Not Found")
+            .set_body(e.to_string());
+    }
 }
 /// It starts a server on port 7878 and registers the routes.
 fn main() {

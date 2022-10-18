@@ -64,11 +64,10 @@ impl Request {
 
      // TODO: WIP
      pub fn get_body_as_json<'a>(&self) -> JsonObject {
-         let as_json: Result<JsonObject, JsonParseError> = parse_into_json_object(self.body.as_slice());
+         let as_json: Result<JsonObject, JsonParseError> =
+             parse_into_json_object(self.body.as_slice());
          match as_json {
-             Ok(t) => {
-                 t
-             },
+             Ok(json_object) => { json_object }
              Err(e) => {
                  // TODO:
                  panic!("{:#?}", e);

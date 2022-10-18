@@ -1,6 +1,70 @@
 https://plantuml.com/class-diagram
 @startuml
 package web_framework_lib <<Node>> {
+    namespace util {
+        namespace util.encoders {
+            class url_encoder {
+                static ref RESERVED_AND_UNSAFE_CHARACTERS: HashMap<&'static str, &'static str> = init_encoding_table()
+                fn init_encoding_table() -> HashMap<&'static str, &'static str>
+                pub fn decode(encoded: &str) -> String
+                pub fn encode(decoded: &str) -> String
+            }
+        }
+        namespace enums {
+            enum HttpMethod {
+                GET,
+                POST,
+                PUT,
+                DELETE
+            }
+            HttpMethod <|.u. proc_macro_derive.EnumFromStr
+            HttpMethod <|.u. proc_macro_derive.StrFromEnum
+            enum MimeTypes {
+                AAC, ABW, ARC, AVI, AZW, BIN, BMP, BZ, BZ2, CSH, CSS, CSV, DOC, DOCX, EOT, EPUB, GZ, GIF, HTML,
+                ICO, ICS, JAR, JPEG, JPG, JS, JSON, JSONLD, MIDI, MJS, MP3, MPEG, MPKG, ODP, ODS, ODT, OGA, OGV,
+                OGX, OPUS, OTF, PNG, PDF, PHP, PPT, PPTX, RAR, RTF, SH, SVG, SWF, TAR, TIFF, TS, TTF, TXT, VSD,
+                WAV, WEBA, WEBM, WEBP, WOFF, WOFF2, XHTML, XLS, XLSX, XML, XUL, ZIP, THREEGP, THREEG2, SEVENZ,
+                IgnoreThisVariant
+            }
+            MimeTypes <|.u... proc_macro_derive.EnumFromStr : (e.g "7z" => MimeTypes::SEVENZ)
+            MimeTypes <|.u. proc_macro_derive.StrFromEnum : (mime_types [using a csv file pointed to by helper attribute])\n(e.g MimeTypes::HTML => "text/html")
+        }
+        namespace parsers {
+            namespace json_parser {
+                -enum JsonVariant {
+                    +JsonObject(JsonObject)
+                    +JsonArray(Vec<JsonVariant>)
+                    +JsonString(String)
+                    +fn to_string(&self) -> String
+                }
+                +enum JsonParseError {
+                    +Error(String)
+                }
+                +class JsonObject {
+                    -map: HashMap<String, JsonVariant>
+                    +fn to_string(&self) -> String
+                    -fn surgical_trim(arr: &[u8]) -> Vec<u8>
+                    -fn trim_byte_array(arr: &[u8]) -> &[u8]
+                    -fn parse_value(val: &[u8]) -> Result<JsonVariant, JsonParseError>
+                    +pub fn parse_object(arr: &[u8]) -> Result<Self, JsonParseError>
+                    -fn split_by_element(arr: &[u8]) -> Vec<&[u8]>
+                    -fn remove_unescaped_quotation_marks(arr: &[u8]) -> Vec<u8>
+                }
+                +class json_parser {
+                    +pub fn parse_into_json_object(bytes: &[u8]) -> Result<JsonObject, JsonParseError>
+                }
+                JsonObject <.. json_parser : returns
+                JsonParseError <.. json_parser : returns
+                JsonParseError <.. JsonObject : returns
+                JsonVariant <.. JsonObject : internal relevance
+            }
+            class request_parser {
+                +pub fn parse_request<'a>(mut tcp_stream: TcpStream, mut buf: [u8; 1024]) -> Transaction<'a>
+            }
+        }
+        util.enums <-[hidden]- util.parsers
+
+    }
     namespace models {
         class Transaction
             Transaction : req: Request
@@ -37,6 +101,7 @@ package web_framework_lib <<Node>> {
 
         class RequestLineData
             Request "1" *-- RequestLineData : contains
+            util.encoders.url_encoder <.[norank]. RequestLineData : uses
 
             RequestLineData : method: String
             RequestLineData : path: String
@@ -99,29 +164,6 @@ package web_framework_lib <<Node>> {
             Response : pub fn set_status(&mut self, status: u16) -> &mut Self
             Response : pub fn set_reason_phrase(&mut self, reason_phrase: &'a str) -> &mut Self
     }
-    namespace util {
-        namespace enums {
-            enum HttpMethod {
-                GET,
-                POST,
-                PUT,
-                DELETE
-            }
-            HttpMethod <|.u. proc_macro_derive.EnumFromStr
-            HttpMethod <|.u. proc_macro_derive.StrFromEnum
-            enum StaticFileExt {
-                AAC, ABW, ARC, AVI, AZW, BIN, BMP, BZ, BZ2, CSH, CSS, CSV, DOC, DOCX, EOT, EPUB, GZ, GIF, HTML,
-                ICO, ICS, JAR, JPEG, JPG, JS, JSON, JSONLD, MIDI, MJS, MP3, MPEG, MPKG, ODP, ODS, ODT, OGA, OGV,
-                OGX, OPUS, OTF, PNG, PDF, PHP, PPT, PPTX, RAR, RTF, SH, SVG, SWF, TAR, TIFF, TS, TTF, TXT, VSD,
-                WAV, WEBA, WEBM, WEBP, WOFF, WOFF2, XHTML, XLS, XLSX, XML, XUL, ZIP, THREEGP, THREEG2, SEVENZ,
-                IgnoreThisVariant
-            }
-            StaticFileExt <|.u.... proc_macro_derive.EnumFromStr : (e.g "7z" => StaticFileExt::SEVENZ)
-            StaticFileExt <|.u. proc_macro_derive.StrFromEnum : (mime_types [using a csv file pointed to by helper attribute])\n(e.g StaticFileExt::HTML => "text/html")
-        }
-        class request_parser
-        request_parser : pub fn parse_request<'a>(mut tcp_stream: TcpStream, mut buf: [u8; 1024]) -> Transaction<'a>
-    }
     namespace request_handling {
         class request_handler
         request_handler : pub fn enter_chain(mut transaction: Transaction, container: Arc<IocContainer>)
@@ -143,7 +185,15 @@ package proc_macro_derive {
     StrFromEnum : pub fn to_string(&self) -> String
 }
 package di_ioc_lib {
-    class IocContainer
+    class IocContainer {
+            pub fn install_value_provider<TypeProvided: Providable, PROVIDER: 'static + Provider<TypeProvided = TypeProvided>>(&mut self, provider: PROVIDER)
+            pub fn install_reference_provider<ReferenceType: Providable, PROVIDER: 'static + ReferenceProvider<RefProvided = ReferenceType>>(&mut self, provider: PROVIDER)
+            pub fn get<TypeToGet: Providable>(&self) -> Result<TypeToGet, ProviderError>
+            pub fn get_ref<RefToGet: 'static>(&self) -> Result<&RefToGet, ProviderError>
+            fn get_id<T: 'static>() -> TypeId
+            fn box_provider<T: 'static, P: 'static + Provider<TypeProvided = T>>(provider: P, ) -> Box<dyn Provider<TypeProvided = T>>
+            fn box_ref_provider<T: 'static, P: 'static + ReferenceProvider<RefProvided = T>>(provider: P, ) -> Box<dyn ReferenceProvider<RefProvided = T>>
+    }
     IocContainer : providers: HashMap<TypeId, Arc<dyn Any>>
     interface external.Default
     interface external.Send
@@ -151,13 +201,7 @@ package di_ioc_lib {
     IocContainer <|.u. external.Default
     IocContainer <|.u. external.Send
     IocContainer <|.u. external.Sync
-    IocContainer : pub fn install_value_provider<TypeProvided: Providable, PROVIDER: 'static + Provider<TypeProvided = TypeProvided>>(&mut self, provider: PROVIDER)
-    IocContainer : pub fn install_reference_provider<ReferenceType: Providable, PROVIDER: 'static + ReferenceProvider<RefProvided = ReferenceType>>(&mut self, provider: PROVIDER)
-    IocContainer : pub fn get<TypeToGet: Providable>(&self) -> Result<TypeToGet, ProviderError>
-    IocContainer : pub fn get_ref<RefToGet: 'static>(&self) -> Result<&RefToGet, ProviderError>
-    IocContainer : fn get_id<T: 'static>() -> TypeId
-    IocContainer : fn box_provider<T: 'static, P: 'static + Provider<TypeProvided = T>>(provider: P, ) -> Box<dyn Provider<TypeProvided = T>>
-    IocContainer : fn box_ref_provider<T: 'static, P: 'static + ReferenceProvider<RefProvided = T>>(provider: P, ) -> Box<dyn ReferenceProvider<RefProvided = T>>
+
     interface Providable
     Providable : lifetime='static
     interface Provider

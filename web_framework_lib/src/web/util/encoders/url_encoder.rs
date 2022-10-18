@@ -1,8 +1,19 @@
 use std::collections::HashMap;
 
+//  █     █░▓█████   ▄████  ▄▄▄▄    ██▓     ▄▄▄      ▓█████▄
+// ▓█░ █ ░█░▓█   ▀  ██▒ ▀█▒▓█████▄ ▓██▒    ▒████▄    ▒██▀ ██▌
+// ▒█░ █ ░█ ▒███   ▒██░▄▄▄░▒██▒ ▄██▒██░    ▒██  ▀█▄  ░██   █▌
+// ░█░ █ ░█ ▒▓█  ▄ ░▓█  ██▓▒██░█▀  ▒██░    ░██▄▄▄▄██ ░▓█▄   ▌
+// ░░██▒██▓ ░▒████▒░▒▓███▀▒░▓█  ▀█▓░██████▒ ▓█   ▓██▒░▒████▓
+// ░ ▓░▒ ▒  ░░ ▒░ ░ ░▒   ▒ ░▒▓███▀▒░ ▒░▓  ░ ▒▒   ▓▒█░ ▒▒▓  ▒
+//   ▒ ░ ░   ░ ░  ░  ░   ░ ▒░▒   ░ ░ ░ ▒  ░  ▒   ▒▒ ░ ░ ▒  ▒
+//   ░   ░     ░   ░ ░   ░  ░    ░   ░ ░     ░   ▒    ░ ░  ░
+//     ░       ░  ░      ░  ░          ░  ░      ░  ░   ░
+//                               ░                    ░
+
 lazy_static::lazy_static! {
     static ref RESERVED_AND_UNSAFE_CHARACTERS:
-    HashMap<&'static str, &'static str> = initialize_map();
+    HashMap<&'static str, &'static str> = init_encoding_table();
 }
 
 /// It creates a hashmap of all the characters that need to be escaped and their escaped counterparts
@@ -11,7 +22,7 @@ lazy_static::lazy_static! {
 ///
 /// A HashMap with the keys being the characters that need to be encoded and the values being the
 /// encoded characters.
-fn initialize_map() -> HashMap<&'static str, &'static str> {
+fn init_encoding_table() -> HashMap<&'static str, &'static str> {
     let mut map: HashMap<&str, &str> = HashMap::new();
     map.insert(":", "%3A");map.insert("/", "%2F");map.insert("?", "%3F");
     map.insert("#", "%23");map.insert("[", "%5B");map.insert("]", "%5D");

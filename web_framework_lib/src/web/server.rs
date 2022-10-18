@@ -1,11 +1,13 @@
+use std::io::Write;
 use di_ioc_lib::di::ioc_container::IocContainer;
 use std::net::TcpListener;
 use std::sync::Arc;
 use std::thread;
+use std::time::Duration;
 
 use crate::web::models::transaction::Transaction;
 use crate::web::request_handling::request_handler;
-use crate::web::util::request_parser;
+use crate::web::util::parsers::request_parser;
 
 //  █     █░▓█████   ▄████  ▄▄▄▄    ██▓     ▄▄▄      ▓█████▄
 // ▓█░ █ ░█░▓█   ▀  ██▒ ▀█▒▓█████▄ ▓██▒    ▒████▄    ▒██▀ ██▌
@@ -18,6 +20,18 @@ use crate::web::util::request_parser;
 //     ░       ░  ░      ░  ░          ░  ░      ░  ░   ░
 //                               ░                    ░
 
+const BANNER: &str = "
+ █████╗     ██████╗     ██╗         ██╗    ██╗  ██╗
+██╔══██╗    ██╔══██╗    ██║         ██║    ╚██╗██╔╝
+███████║    ██████╔╝    ██║         ██║     ╚███╔╝
+██╔══██║    ██╔═══╝     ██║         ██║     ██╔██╗
+██║  ██║    ██║         ███████╗    ██║    ██╔╝ ██╗
+╚═╝  ╚═╝    ╚═╝         ╚══════╝    ╚═╝    ╚═╝  ╚═╝
+███████████████████████████████████████████████████
+███████████████████████████████████████████████████
+
+";
+
 pub type HandlerFunction = fn(transaction: &mut Transaction);
 
 pub fn start(port: &str, container: Arc<IocContainer>) {
@@ -25,6 +39,12 @@ pub fn start(port: &str, container: Arc<IocContainer>) {
 
     let listener: TcpListener = TcpListener::bind("127.0.0.1:".to_owned() + port)
         .expect("BIND FAILED");
+
+    for a in BANNER.chars() {
+        print!("{}", a);
+        thread::sleep(Duration::from_millis(1));
+        std::io::stdout().flush().unwrap();
+    }
 
     for tcp_stream in listener.incoming() {
 

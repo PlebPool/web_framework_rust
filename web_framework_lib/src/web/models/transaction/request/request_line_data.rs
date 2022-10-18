@@ -4,6 +4,17 @@ use std::str::{Split, SplitWhitespace};
 use crate::web::models::transaction::request::request_line_data::request_queries::RequestQueries;
 use crate::web::util::encoders::url_encoder;
 
+//  █     █░▓█████   ▄████  ▄▄▄▄    ██▓     ▄▄▄      ▓█████▄
+// ▓█░ █ ░█░▓█   ▀  ██▒ ▀█▒▓█████▄ ▓██▒    ▒████▄    ▒██▀ ██▌
+// ▒█░ █ ░█ ▒███   ▒██░▄▄▄░▒██▒ ▄██▒██░    ▒██  ▀█▄  ░██   █▌
+// ░█░ █ ░█ ▒▓█  ▄ ░▓█  ██▓▒██░█▀  ▒██░    ░██▄▄▄▄██ ░▓█▄   ▌
+// ░░██▒██▓ ░▒████▒░▒▓███▀▒░▓█  ▀█▓░██████▒ ▓█   ▓██▒░▒████▓
+// ░ ▓░▒ ▒  ░░ ▒░ ░ ░▒   ▒ ░▒▓███▀▒░ ▒░▓  ░ ▒▒   ▓▒█░ ▒▒▓  ▒
+//   ▒ ░ ░   ░ ░  ░  ░   ░ ▒░▒   ░ ░ ░ ▒  ░  ▒   ▒▒ ░ ░ ▒  ▒
+//   ░   ░     ░   ░ ░   ░  ░    ░   ░ ░     ░   ▒    ░ ░  ░
+//     ░       ░  ░      ░  ░          ░  ░      ░  ░   ░
+//                               ░                    ░
+
 mod request_queries;
 
 /// It's a struct that holds the method, path, and protocol of a request line.
@@ -85,15 +96,15 @@ impl RequestLineData {
 
     pub fn get_path_cell_by_index_url_encoded(&self, index: usize) -> Option<String> {
         self.path.split('/')
-            .filter(|s| !s.is_empty())
+            .filter(|s: &&str| !s.is_empty())
             .collect::<Vec<&str>>()
             .get(index)
-            .map(|s| String::from(*s))
+            .map(|s: &&str| String::from(*s))
     }
 
     pub fn get_path_cell_by_index_url_decoded(&self, index: usize) -> Option<String> {
         self.get_path_cell_by_index_url_encoded(index)
-            .map(|s| url_encoder::decode(&s))
+            .map(|s: String| url_encoder::decode(&s))
     }
 
     pub fn method(&self) -> &str {

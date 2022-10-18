@@ -18,8 +18,8 @@ pub mod web {
         }
         pub mod parsers {
             pub mod json_parser;
+            pub mod request_parser;
         }
-        pub mod request_parser;
     }
     pub mod server;
 }

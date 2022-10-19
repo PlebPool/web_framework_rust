@@ -2,8 +2,10 @@ extern crate core;
 
 pub mod web {
     pub mod models {
-        pub mod transaction;
+        pub mod request;
+        pub mod response;
     }
+
     pub mod request_handling {
         pub mod request_handler;
         pub mod route_handler_container;

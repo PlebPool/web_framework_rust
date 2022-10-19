@@ -4,9 +4,9 @@ use std::net::TcpListener;
 use std::sync::Arc;
 use std::thread;
 use std::time::Duration;
-use crate::web::models::transaction::response::Response;
+use crate::web::models::request::Request;
+use crate::web::models::response::Response;
 
-use crate::web::models::transaction::Transaction;
 use crate::web::request_handling::request_handler;
 use crate::web::util::parsers::request_parser;
 
@@ -34,7 +34,7 @@ const BANNER: &str = "
 
 
 
-pub type HandlerFunction = fn(transaction: &Transaction) -> Response;
+pub type HandlerFunction = fn(req: &Request) -> Response;
 
 pub fn start(port: &str, container: Arc<IocContainer>) {
     let _ = env_logger::try_init();
@@ -58,18 +58,18 @@ pub fn start(port: &str, container: Arc<IocContainer>) {
         thread_builder.spawn(move || {
 
             // We pass the TcpStream and a buffer to the parser. It returns an initialized transaction.
-            let transaction: Transaction = request_parser::parse_request(
+            let req: Request = request_parser::parse_request(
                 tcp_stream.expect("Failed to unwrap tcp stream"),
                 [0; 1024]
             );
 
             if log::log_enabled!(log::Level::Info) {
-                log::info!("Request Received from {}", transaction.req().stream().peer_addr().unwrap());
+                log::info!("Request Received from {}", req.stream().peer_addr().unwrap());
             }
 
             // Pass container reference and parsed transaction.
             // TODO: Maybe extract RouteHandlerContainer here already, or earlier.
-            request_handler::enter_chain(transaction, container_reference_clone);
+            request_handler::enter_chain(req, container_reference_clone);
         }).expect("Failed to spawn request handler thread.");
     }
 }

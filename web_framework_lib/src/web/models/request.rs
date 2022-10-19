@@ -1,9 +1,12 @@
 use std::borrow::Cow;
 use std::collections::HashMap;
+use std::io::Write;
 use std::net::TcpStream;
+use std::sync::{LockResult, Mutex, MutexGuard};
 
-use crate::web::models::transaction::request::request_headers::RequestHeaders;
-use crate::web::models::transaction::request::request_line_data::RequestLineData;
+use crate::web::models::request::request_headers::RequestHeaders;
+use crate::web::models::request::request_line_data::RequestLineData;
+use crate::web::models::response::Response;
 use crate::web::util::parsers::json_parser::{JsonObject, JsonParseError, parse_into_json_object};
 
 mod request_line_data;
@@ -33,7 +36,8 @@ pub struct Request {
     request_line_data: RequestLineData,
     request_headers: RequestHeaders,
     body: Vec<u8>,
-    stream: TcpStream
+    stream: TcpStream,
+    resolved: Mutex<bool>
 }
 
 #[allow(dead_code)]
@@ -58,7 +62,8 @@ impl Request {
             request_headers: RequestHeaders
             ::new(Self::req_str_to_header_map(req_split_new_line.to_owned())),
             body: Vec::from(body),
-            stream
+            stream,
+            resolved: Mutex::new(false)
         }
     }
 
@@ -74,6 +79,28 @@ impl Request {
              }
          }
      }
+
+    pub fn resolve(&self, mut res: Response) -> Result<(), &str> {
+        let mutex_lock: LockResult<MutexGuard<bool>> = self.resolved.lock();
+        if let Ok(mut t) = mutex_lock {
+            return if *t {
+                Err("Transaction already resolved...")
+            } else if res.status() == 0 {
+                Err("You have to set the http status before resolving the transaction.")
+            } else {
+                self.stream()
+                    .write(res.get_as_u8_vec()
+                        .as_slice())
+                    .expect("Failed to resolve transaction.");
+                *t = true;
+                Ok(())
+            }
+        } else {
+            // TODO.
+            unimplemented!();
+        }
+
+    }
 
     /// It takes a vector of strings, and returns a hashmap of strings
     ///

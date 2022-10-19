@@ -1,8 +1,7 @@
 use std::io::Read;
 use std::net::TcpStream;
 
-use crate::web::models::transaction::request::Request;
-use crate::web::models::transaction::Transaction;
+use crate::web::models::request::Request;
 
 //  █     █░▓█████   ▄████  ▄▄▄▄    ██▓     ▄▄▄      ▓█████▄
 // ▓█░ █ ░█░▓█   ▀  ██▒ ▀█▒▓█████▄ ▓██▒    ▒████▄    ▒██▀ ██▌
@@ -26,7 +25,7 @@ use crate::web::models::transaction::Transaction;
 /// Returns:
 ///
 /// A Transaction struct
-pub fn parse_request<'a>(mut tcp_stream: TcpStream, mut buf: [u8; 1024]) -> Transaction {
+pub fn parse_request<'a>(mut tcp_stream: TcpStream, mut buf: [u8; 1024]) -> Request {
     tcp_stream.read(&mut buf).expect("TcpStream read failed");
     let buf: Vec<u8> = buf.into_iter()
         .filter(|byte: &u8|*byte != 13 && *byte != 0).collect::<Vec<u8>>();
@@ -53,6 +52,5 @@ pub fn parse_request<'a>(mut tcp_stream: TcpStream, mut buf: [u8; 1024]) -> Tran
             String::from_utf8_lossy(body),
         );
     }
-    let req: Request = Request::new(headers, body, tcp_stream);
-    Transaction::new(req)
+    Request::new(headers, body, tcp_stream)
 }

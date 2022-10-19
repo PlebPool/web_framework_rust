@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::str::{Split, SplitWhitespace};
 
-use crate::web::models::transaction::request::request_line_data::request_queries::RequestQueries;
+use crate::web::models::request::request_line_data::request_queries::RequestQueries;
 use crate::web::util::encoders::url_encoder;
 
 //  █     █░▓█████   ▄████  ▄▄▄▄    ██▓     ▄▄▄      ▓█████▄

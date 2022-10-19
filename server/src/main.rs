@@ -35,12 +35,8 @@ pub fn json_test(req: &Request) -> Response {
 
 pub fn index(_req: &Request) -> Response {
     let mut res: Response = Response::ok();
-    let result: Result<(), Error> = res.set_body_to_file("html/index.html");
-    if let Err(e) = result {
-        res.set_status(404)
-            .set_reason_phrase("Not Found")
-            .set_body(e.to_string());
-    }
+    let result: Result<(), Error> = res.set_body_to_file("/index.html");
+    if let Err(_e) = result { res.set_status(404).set_reason_phrase("Not Found"); }
     res
 }
 /// It starts a server on port 7878 and registers the routes.

@@ -38,6 +38,7 @@ const DEFAULT_HTTP_VERSION: &str = "HTTP/1.1";
 /// * `reason_phrase`: The reason phrase is a human-readable string that is usually
 /// * `headers`: A HashMap of the headers in the response.
 /// * `body`: The body of the response.
+#[derive(Clone)]
 pub struct Response<'a> {
     protocol: &'a str,
     status: u16,
@@ -106,7 +107,10 @@ impl <'a> Response<'a> {
     pub fn ok() -> Self {
         Self::new(200, "OK")
     }
-
+    pub fn set_ok(&mut self) {
+        self.set_status(200);
+        self.set_reason_phrase("OK");
+    }
     /// `not_found()` returns a new `Status` with a code of `404` and a message of `Not Found`
     ///
     /// Returns:
@@ -115,7 +119,10 @@ impl <'a> Response<'a> {
     pub fn not_found() -> Self {
         Self::new(404, "Not Found")
     }
-
+    pub fn set_not_found(&mut self) {
+        self.set_status(404);
+        self.set_reason_phrase("Not Found");
+    }
     /// `bad_request` returns a `Response` with a status code of 400 and a body of `s`
     ///
     /// Arguments:

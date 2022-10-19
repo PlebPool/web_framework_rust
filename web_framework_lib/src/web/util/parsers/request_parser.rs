@@ -2,7 +2,6 @@ use std::io::Read;
 use std::net::TcpStream;
 
 use crate::web::models::transaction::request::Request;
-use crate::web::models::transaction::response::Response;
 use crate::web::models::transaction::Transaction;
 
 //  █     █░▓█████   ▄████  ▄▄▄▄    ██▓     ▄▄▄      ▓█████▄
@@ -27,7 +26,7 @@ use crate::web::models::transaction::Transaction;
 /// Returns:
 ///
 /// A Transaction struct
-pub fn parse_request<'a>(mut tcp_stream: TcpStream, mut buf: [u8; 1024]) -> Transaction<'a> {
+pub fn parse_request<'a>(mut tcp_stream: TcpStream, mut buf: [u8; 1024]) -> Transaction {
     tcp_stream.read(&mut buf).expect("TcpStream read failed");
     let buf: Vec<u8> = buf.into_iter()
         .filter(|byte: &u8|*byte != 13 && *byte != 0).collect::<Vec<u8>>();
@@ -49,13 +48,11 @@ pub fn parse_request<'a>(mut tcp_stream: TcpStream, mut buf: [u8; 1024]) -> Tran
     // Removing trailing and prefixing newlines.
     let (headers, body): (&[u8], &[u8]) = (&headers[..headers.len()-1], &body[1..]);
     if log::log_enabled!(log::Level::Debug) {
-        log::debug!("\nHeaders: \n{:#?},\nBody: \n{:#?},\nEntire: \n{:#?}\n",
+        log::debug!("\nHeaders: \n{:#?},\nBody: \n{:#?},\n",
             String::from_utf8_lossy(headers),
             String::from_utf8_lossy(body),
-            String::from_utf8_lossy(&buf)
         );
     }
     let req: Request = Request::new(headers, body, tcp_stream);
-    let res: Response = Response::new_empty();
-    Transaction::new(req, res)
+    Transaction::new(req)
 }

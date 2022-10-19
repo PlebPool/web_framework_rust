@@ -1,4 +1,5 @@
 use std::env;
+use std::io::Error;
 use std::sync::Arc;
 use di_ioc_lib::di::ioc_container::IocContainer;
 use web_framework_lib::web::server;
@@ -14,31 +15,33 @@ use web_framework_lib::web::util::parsers::json_parser::JsonObject;
 /// Arguments:
 ///
 /// * `transaction`: &mut Transaction
-pub fn path_param_test(transaction: &mut Transaction) {
+pub fn path_param_test(transaction: &Transaction) -> Response {
     let path_cell: String = transaction.req()
         .request_line_data()
         .get_path_cell_by_index_url_decoded(1)
         .expect("uwu");
-    let res: &mut Response = transaction.res_mut();
-    res.set_status(200).set_reason_phrase("OK").set_body(path_cell);
+    let mut res: Response = Response::ok();
+    res.set_body(path_cell);
+    res
 }
 
-pub fn json_test(transaction: &mut Transaction) {
+pub fn json_test(transaction: &Transaction) -> Response {
     let body_as_json: JsonObject = transaction.req().get_body_as_json();
-    transaction.res_mut().set_status(200).set_reason_phrase("uwu").set_body(body_as_json.to_string());
-    transaction.res_mut().content_type(MimeTypes::JSON);
+    let mut res: Response = Response::ok();
+    res.set_body(body_as_json.to_string());
+    res.content_type(MimeTypes::JSON);
+    res
 }
 
-pub fn index(transaction: &mut Transaction) {
-    let res: &mut Response = transaction.res_mut();
-    let result = res.set_status(200)
-        .set_reason_phrase("OK")
-        .set_body_to_file("html/index.html");
+pub fn index(_transaction: &Transaction) -> Response {
+    let mut res: Response = Response::ok();
+    let result: Result<(), Error> = res.set_body_to_file("html/index.html");
     if let Err(e) = result {
         res.set_status(404)
             .set_reason_phrase("Not Found")
             .set_body(e.to_string());
     }
+    res
 }
 /// It starts a server on port 7878 and registers the routes.
 fn main() {
@@ -47,14 +50,9 @@ fn main() {
     env::set_var(RUST_LOG, DEBUG);
     let mut container: IocContainer = IocContainer::default();
     let mut rhc: RouteHandlerContainer = RouteHandlerContainer::new();
-    rhc.insert(
-        "/",
-        index,
-        HttpMethod::GET
-    );
+    rhc.insert("/", index, HttpMethod::GET);
     rhc.insert("/hey/{a}/hey", path_param_test, HttpMethod::GET);
     rhc.insert("/json/test", json_test, HttpMethod::POST);
-
     container.install_reference_provider(Arc::new(rhc));
     server::start("7878", Arc::new(container));
 }

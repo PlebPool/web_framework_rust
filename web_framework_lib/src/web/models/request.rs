@@ -67,15 +67,13 @@ impl Request {
         }
     }
 
-     // TODO: WIP
-     pub fn get_body_as_json<'a>(&self) -> JsonObject {
+     pub fn get_body_as_json<'a>(&self) -> Result<JsonObject, JsonParseError> {
          let as_json: Result<JsonObject, JsonParseError> =
              parse_into_json_object(self.body.as_slice());
          match as_json {
-             Ok(json_object) => { json_object }
+             Ok(json_object) => { Ok(json_object) }
              Err(e) => {
-                 // TODO:
-                 panic!("{:#?}", e);
+                 Err(e)
              }
          }
      }
@@ -96,10 +94,8 @@ impl Request {
                 Ok(())
             }
         } else {
-            // TODO.
-            unimplemented!();
+            panic!("Failed to get mutex lock for self.");
         }
-
     }
 
     /// It takes a vector of strings, and returns a hashmap of strings

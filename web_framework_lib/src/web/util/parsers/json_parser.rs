@@ -136,12 +136,12 @@ impl JsonObject {
                 Ok(JsonVariant::JsonObject(val))
             },
             91 => {
-                let split: Vec<&[u8]> = Self::split_by_element(val);
+                let split: Vec<Vec<u8>> = Self::split_by_element(val.to_vec());
                 let mut result: Vec<JsonVariant> = Vec::new();
                 for value in split {
                     match value[0] {
                         123 | 91 => {
-                            result.push(Self::parse_value(value)?);
+                            result.push(Self::parse_value(value.as_slice())?);
                         },
                         _ => {
                             let a: Vec<u8> = value[1..value.len()-1].to_vec();
@@ -176,10 +176,10 @@ impl JsonObject {
     pub fn parse_object(arr: &[u8]) -> Result<Self, JsonParseError> {
         let mut it: JsonObject = Self { map: HashMap::new() };
         let trimmed: Vec<u8> = Self::surgical_trim(arr);
-        let mut split: Vec<&[u8]> = Self::split_by_element(trimmed.as_slice());
-        split = split.into_iter().filter(|b: &&[u8]| {
+        let mut split: Vec<Vec<u8>> = Self::split_by_element(trimmed);
+        split = split.into_iter().filter(|b: &Vec<u8>| {
             !b.is_empty()
-        }).collect::<Vec<&[u8]>>();
+        }).collect::<Vec<Vec<u8>>>();
         for current in split {
             let opt_pos: Option<usize> = current.iter().position(|b| *b == 58);
             if let Some(index) = opt_pos {
@@ -204,7 +204,7 @@ impl JsonObject {
     /// Returns:
     ///
     /// A vector of slices of the original array.
-    fn split_by_element(arr: &[u8]) -> Vec<&[u8]> {
+    fn split_by_element<'a>(arr: Vec<u8>) -> Vec<Vec<u8>> {
         let arr: &[u8] = &arr[1..arr.len()-1];
         let mut depth: usize = 0;
         let mut switch: bool = true;
@@ -220,7 +220,8 @@ impl JsonObject {
                 _ => { }
             }
             depth == 0 && *b == 44
-        }).collect::<Vec<&[u8]>>()
+        }).map(|a| a.to_vec())
+            .collect::<Vec<Vec<u8>>>()
     }
 
     /// It removes all quotation marks that are not escaped

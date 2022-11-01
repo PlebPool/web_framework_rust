@@ -32,8 +32,6 @@ const BANNER: &str = "
 
 ";
 
-
-
 pub type HandlerFunction = fn(req: &Request) -> Response;
 
 pub fn start(port: &str, container: Arc<IocContainer>) {
@@ -68,7 +66,6 @@ pub fn start(port: &str, container: Arc<IocContainer>) {
             }
 
             // Pass container reference and parsed transaction.
-            // TODO: Maybe extract RouteHandlerContainer here already, or earlier.
             request_handler::enter_chain(req, container_reference_clone);
         }).expect("Failed to spawn request handler thread.");
     }

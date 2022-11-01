@@ -77,7 +77,6 @@ pub fn enter_chain(req: Request, container: Arc<IocContainer>) {
 /// A boolean value.
 fn rule_out_static_resources<'a>(path: String) -> Response<'a> {
     let mut res: Response = Response::not_found();
-    // TODO: Look at this.
     if path.contains('.') {
         match res.set_body_to_file(&path) {
             Ok(_) => {

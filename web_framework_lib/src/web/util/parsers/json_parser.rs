@@ -13,7 +13,7 @@ use std::ops::Add;
 //                               ░                    ░
 
 #[derive(Debug, Clone)]
-enum JsonVariant {
+pub enum JsonVariant {
     JsonObject(JsonObject),
     JsonArray(Vec<JsonVariant>),
     JsonString(String),
@@ -70,7 +70,49 @@ impl ToString for JsonObject {
     }
 }
 
+#[derive(Debug)]
+pub enum JsonGetError {
+    InvalidType,
+    NotFound
+}
+
 impl JsonObject {
+    pub fn get(&self, k: &str) -> Option<&JsonVariant> {
+        self.map.get(k)
+    }
+
+    pub fn get_array(&self, k: &str) -> Result<&Vec<JsonVariant>, JsonGetError> {
+        if let JsonVariant::JsonArray(obj) = self.get_as_result(k)? {
+            Ok(obj)
+        } else {
+            Err(JsonGetError::InvalidType)
+        }
+    }
+
+    pub fn get_object(&self, k: &str) -> Result<&JsonObject, JsonGetError> {
+        if let JsonVariant::JsonObject(obj) = self.get_as_result(k)? {
+            Ok(obj)
+        } else {
+            Err(JsonGetError::InvalidType)
+        }
+    }
+
+    pub fn get_string(&self, k: &str) -> Result<&String, JsonGetError> {
+        if let JsonVariant::JsonString(str) = self.get_as_result(k)? {
+            Ok(str)
+        } else {
+            Err(JsonGetError::InvalidType)
+        }
+    }
+
+    fn get_as_result(&self, k: &str) -> Result<&JsonVariant, JsonGetError> {
+        if let Some(json_variant) = self.get(k) {
+            Ok(json_variant)
+        } else {
+            Err(JsonGetError::NotFound)
+        }
+    }
+
     /// We trim the array, removing trailing and prefixing spaces. Then we turn it into an iterator. We
     /// deref every element once. We remove spaces outside of keys and vals. Also newlines. We collect
     /// result in an array

@@ -46,7 +46,7 @@ fn main() {
     static DEBUG: &str = "debug";
     env::set_var(RUST_LOG, DEBUG);
     let mut container: IocContainer = IocContainer::default();
-    let rhc: RouteHandlerContainer = RouteHandlerContainer::new();
+    let mut rhc: RouteHandlerContainer = RouteHandlerContainer::new();
     rhc.insert("/", index, HttpMethod::GET);
     rhc.insert("/hey/{a}/hey", path_param_test, HttpMethod::GET);
     rhc.insert("/json/test", json_test, HttpMethod::POST);

@@ -1,7 +1,6 @@
 use di_ioc_lib::di::providable_trait::Providable;
 use std::collections::HashMap;
 use std::ops::Add;
-use std::sync::{LockResult, Mutex, MutexGuard};
 use regex::{Error, Regex};
 use crate::web::server::HandlerFunction;
 use crate::web::util::enums::http_method_enum::HttpMethod;
@@ -24,7 +23,7 @@ use crate::web::util::enums::http_method_enum::HttpMethod;
 ///
 /// * `map`: This is a HashMap that will store the regular expression and the handler function.
 pub struct RouteHandlerContainer {
-    method_map: Mutex<HashMap<HttpMethod, HashMap<String, HandlerFunction>>>,
+    method_map: HashMap<HttpMethod, HashMap<String, HandlerFunction>>,
 }
 
 impl Providable for RouteHandlerContainer { }
@@ -36,24 +35,13 @@ impl RouteHandlerContainer {
         map.insert(HttpMethod::POST, HashMap::new());
         map.insert(HttpMethod::PUT, HashMap::new());
         map.insert(HttpMethod::DELETE, HashMap::new());
-        Self { method_map: Mutex::new(map) }
+        Self { method_map: map }
     }
 
     /// "/cars/{car_id}/wow/"
     /// "/cars/2/wow/" maybe split by slashes and match them?
     pub fn get_match(&self, path: &str, method: &HttpMethod) -> Option<HandlerFunction> {
-        let lock_res: LockResult<MutexGuard<HashMap<HttpMethod, HashMap<String, HandlerFunction>>>> =
-            self.method_map.lock();
-        let method_map: MutexGuard<HashMap<HttpMethod, HashMap<String, HandlerFunction>>> =
-            match lock_res {
-                Ok(t) => {
-                    t
-                },
-                Err(_) => {
-                    unimplemented!();
-                }
-            };
-        let path_map: Option<&HashMap<String, HandlerFunction>> = method_map.get(&method);
+        let path_map: Option<&HashMap<String, HandlerFunction>> = self.method_map.get(&method);
         if path_map.is_none() {
             return None;
         }
@@ -95,7 +83,7 @@ impl RouteHandlerContainer {
     ///
     /// * `k`: &str, v: HandlerFunction
     /// * `v`: HandlerFunction
-    pub fn insert(&self, path: &str, handler_function: HandlerFunction, method: HttpMethod) {
+    pub fn insert(&mut self, path: &str, handler_function: HandlerFunction, method: HttpMethod) {
         let mut k: String = String::from(path);
         let mut closed_curly_brackets_pos_vec: Vec<usize> = Vec::new();
         let mut open_curly_brackets_pos_vec: Vec<usize> = Vec::new();
@@ -121,14 +109,9 @@ impl RouteHandlerContainer {
             k.replace_range(open..&(closed+1), ".{1,}");
         }
         k = String::from("^").add(&k.add("$"));
-        let _ = self.method_map
-            .lock()
-            .map(|mut mutex_guard_map: MutexGuard<HashMap<HttpMethod, HashMap<String, HandlerFunction>>>| {
-                mutex_guard_map
-                    .get_mut(&method)
-                    .map(|the_methods_map: &mut HashMap<String, HandlerFunction>| {
-                        the_methods_map.insert(k, handler_function);
-                    });
+        let _ = self.method_map.get_mut(&method)
+            .map(|the_methods_map: &mut HashMap<String, HandlerFunction>| {
+                the_methods_map.insert(k, handler_function);
             });
     }
 }
@@ -146,7 +129,7 @@ mod test {
 
     #[test]
     fn test() {
-        let rhc = RouteHandlerContainer::new();
+        let mut rhc = RouteHandlerContainer::new();
         rhc.insert("/hey/test", dummy, HttpMethod::GET);
         rhc.insert("/hey/{param}/test", dummy, HttpMethod::GET);
     }

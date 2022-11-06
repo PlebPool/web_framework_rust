@@ -81,6 +81,17 @@ impl JsonObject {
         self.map.get(k)
     }
 
+    /// Returns the value at the key as a array.
+    /// If the key is not found, this will return a JsonGetError::NotFound,
+    /// If the key is not referencing a array, it will return a JsonGetError::InvalidType
+    ///
+    /// Arguments:
+    ///
+    /// * `k`: &str - The key to get the value of.
+    ///
+    /// Returns:
+    ///
+    /// A reference to a Vec<JsonVariant>.
     pub fn get_array(&self, k: &str) -> Result<&Vec<JsonVariant>, JsonGetError> {
         if let JsonVariant::JsonArray(obj) = self.get_as_result(k)? {
             Ok(obj)
@@ -89,6 +100,17 @@ impl JsonObject {
         }
     }
 
+    /// Returns the value at the key as a object.
+    /// If the key is not found, this will return a JsonGetError::NotFound,
+    /// If the key is not referencing a object, it will return a JsonGetError::InvalidType
+    ///
+    /// Arguments:
+    ///
+    /// * `k`: &str - The key to get the value of.
+    ///
+    /// Returns:
+    ///
+    /// A reference to a JsonObject.
     pub fn get_object(&self, k: &str) -> Result<&JsonObject, JsonGetError> {
         if let JsonVariant::JsonObject(obj) = self.get_as_result(k)? {
             Ok(obj)
@@ -97,6 +119,17 @@ impl JsonObject {
         }
     }
 
+    /// Returns the value at the key as a string.
+    /// If the key is not found, this will return a JsonGetError::NotFound,
+    /// If the key is not referencing a string, it will return a JsonGetError::InvalidType
+    ///
+    /// Arguments:
+    ///
+    /// * `k`: &str - The key to get the value of.
+    ///
+    /// Returns:
+    ///
+    /// A reference to a String.
     pub fn get_string(&self, k: &str) -> Result<&String, JsonGetError> {
         if let JsonVariant::JsonString(str) = self.get_as_result(k)? {
             Ok(str)
@@ -105,6 +138,15 @@ impl JsonObject {
         }
     }
 
+    /// If the key exists, return the value, otherwise return an error
+    ///
+    /// Arguments:
+    ///
+    /// * `k`: &str - The key to get the value of.
+    ///
+    /// Returns:
+    ///
+    /// A reference to a JsonVariant.
     fn get_as_result(&self, k: &str) -> Result<&JsonVariant, JsonGetError> {
         if let Some(json_variant) = self.get(k) {
             Ok(json_variant)
@@ -366,6 +408,7 @@ mod test {
         let _ = env_logger::try_init();
         let now = Instant::now();
         let j_o = parse_into_json_object(TEST_STR.as_bytes()).unwrap();
+        dbg!(j_o.get_string("members").err());
         println!("String json: {}", JsonVariant::JsonObject(j_o).to_string());
         dbg!(Instant::now().duration_since(now));
     }

@@ -201,7 +201,9 @@ impl JsonObject {
                 }
             }
             &arr[i..j]
-        } else { arr }
+        } else {
+            arr
+        }
     }
 
     /// Parses a byte vector slice representing the value in a key value pair.

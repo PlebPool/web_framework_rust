@@ -1,6 +1,7 @@
 use std::str::FromStr;
 use di_ioc_lib::di::ioc_container::IocContainer;
 use std::sync::Arc;
+use std::thread;
 use std::time::Instant;
 use crate::web::models::request::Request;
 
@@ -42,23 +43,23 @@ pub fn enter_chain(req: Request, container: Arc<IocContainer>) {
         handler(&req)
     } else { // We find no match, so we need to rule out static resources, or resolve.
         if req.request_line_data().method() == HttpMethod::GET.to_string() {
-            let path_bind = req.request_line_data().path().to_owned();
+            let path_bind: String = req.request_line_data().path().to_owned();
             rule_out_static_resources(path_bind)
         } else {
             Response::not_found()
         }
     };
     let res_dbg_clone: Response = res.clone();
-    let now: Instant = Instant::now();
     match req.resolve(res) { // We're resolving the transaction, sending the response.
         Err(e) => { if log::log_enabled!(log::Level::Error) { log::error!("{}", e); } },
         Ok(_) => {
+            let now = Instant::now().duration_since(start_time).as_secs_f32() * 1000f32;
             if log::log_enabled!(log::Level::Info) {
-                log::info!("Transaction resolved for: {}, status: {}, path: {}, in: {}ms",
+                log::info!("Transaction resolved for: {}, status: {}, path: {}, in: {}ms.",
                     req.stream().peer_addr().unwrap(),
                     res_dbg_clone.status(),
                     req.request_line_data().path(),
-                    now.duration_since(start_time).as_secs_f32() * 1000.0
+                    now
                 );
             }
             if log::log_enabled!(log::Level::Debug) { log::debug!("\n{:?}", req); }

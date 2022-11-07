@@ -46,6 +46,8 @@ pub fn start(port: &str, container: Arc<IocContainer>) {
         std::io::stdout().flush().unwrap();
     }
 
+    println!("Started on port: {}", port);
+
     for tcp_stream in listener.incoming() {
 
         let thread_builder: thread::Builder = thread::Builder::new()
@@ -54,15 +56,14 @@ pub fn start(port: &str, container: Arc<IocContainer>) {
         let container_reference_clone: Arc<IocContainer> = Arc::clone(&container);
 
         thread_builder.spawn(move || {
-
             // We pass the TcpStream and a buffer to the parser. It returns an initialized transaction.
             let req: Request = request_parser::parse_request(
                 tcp_stream.expect("Failed to unwrap tcp stream"),
                 [0; 1024]
             );
 
-            if log::log_enabled!(log::Level::Info) {
-                log::info!("Request Received from {}", req.stream().peer_addr().unwrap());
+            if log::log_enabled!(log::Level::Debug) {
+                log::debug!("Request Received from {}", req.stream().peer_addr().unwrap());
             }
 
             // Pass container reference and parsed transaction.

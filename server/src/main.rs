@@ -43,7 +43,7 @@ pub fn index(_req: &Request) -> Response {
 /// It starts a server on port 7878 and registers the routes.
 fn main() {
     static RUST_LOG: &str = "RUST_LOG";
-    static DEBUG: &str = "debug";
+    static DEBUG: &str = "info";
     env::set_var(RUST_LOG, DEBUG);
     let mut container: IocContainer = IocContainer::default();
     let mut rhc: RouteHandlerContainer = RouteHandlerContainer::new();

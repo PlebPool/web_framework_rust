@@ -64,15 +64,19 @@ impl IocContainer {
     ///
     /// A Result<TypeToGet, ProviderError>
     pub fn get<TypeToGet: Providable>(&self) -> Result<TypeToGet, ProviderError> {
-        let provider = self.providers
+        let provider: &Box<dyn Provider<TypeProvided=TypeToGet>> = self.providers
             .get(&Self::get_id::<TypeToGet>())
             .ok_or_else(|| ProviderError::ProviderMissing)?
             .downcast_ref::<Box<dyn Provider<TypeProvided = TypeToGet>>>()
             .ok_or_else(|| ProviderError::ProviderCastFailed)?;
         let provider_result: Result<TypeToGet, String> = provider.provide(&self);
         match provider_result {
-            Ok(t) => { Ok(t) },
-            Err(e) => { panic!("Provider Failed: {}", e) }
+            Ok(t) => {
+                Ok(t)
+            },
+            Err(e) => {
+                panic!("Provider Failed: {}", e)
+            }
         }
     }
 
@@ -89,8 +93,12 @@ impl IocContainer {
             .downcast_ref::<Box<dyn ReferenceProvider<RefProvided = RefToGet>>>()
             .ok_or_else(|| ProviderError::ProviderCastFailed)?;
         match provider.provide(&self) {
-            Ok(t) => { Ok(t) },
-            Err(e) => { panic!("Provider Failed: {}", e) }
+            Ok(t) => {
+                Ok(t)
+            },
+            Err(e) => {
+                panic!("Provider Failed: {}", e)
+            }
         }
     }
 

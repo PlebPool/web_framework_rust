@@ -51,8 +51,12 @@ impl RequestHeaders {
     /// Returns:
     ///
     /// A new instance of the struct `Headers`
-    pub fn new(headers: HashMap<String, String>) -> Self {
-        Self { headers }
+    pub fn new(headers: HashMap<String, String>) -> Option<Self> {
+        if headers.is_empty() {
+            None
+        } else {
+            Some(Self { headers })
+        }
     }
 
     /// This function takes a mutable reference to a `Request` struct, and two strings, and inserts the

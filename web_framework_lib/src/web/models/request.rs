@@ -8,6 +8,7 @@ use crate::web::models::request::request_headers::RequestHeaders;
 use crate::web::models::request::request_line_data::RequestLineData;
 use crate::web::models::response::Response;
 use crate::web::util::parsers::json_parser::{JsonObject, JsonParseError, parse_into_json_object};
+use crate::web::util::parsers::request_parser::RequestParseError;
 
 mod request_line_data;
 mod request_headers;
@@ -34,7 +35,7 @@ mod request_headers;
 #[derive(Debug)]
 pub struct Request {
     request_line_data: RequestLineData,
-    request_headers: RequestHeaders,
+    request_headers: Option<RequestHeaders>,
     body: Vec<u8>,
     stream: TcpStream,
     resolved: Mutex<bool>
@@ -52,19 +53,19 @@ impl Request {
     /// Returns:
     ///
     /// A new instance of the Request struct.
-    pub fn new(req_line_data_and_headers: &[u8], body: &[u8], stream: TcpStream) -> Self {
+    pub fn new(req_line_data_and_headers: &[u8], body: &[u8], stream: TcpStream) -> Result<Self, RequestParseError> {
         let lossy_utf8: Cow<str> = String::from_utf8_lossy(req_line_data_and_headers);
         let mut req_split_new_line: Vec<&str> = lossy_utf8.lines().collect();
         req_split_new_line.reverse();
-        Self {
-            request_line_data: RequestLineData
-            ::new(req_split_new_line.pop().expect("No first line")),
-            request_headers: RequestHeaders
-            ::new(Self::req_str_to_header_map(req_split_new_line.to_owned())),
+        let request_line_data: RequestLineData = RequestLineData::new(req_split_new_line.pop().expect("No first line"))?;
+        let request_headers: Option<RequestHeaders> = RequestHeaders::new(Self::req_str_to_header_map(req_split_new_line.to_owned()));
+        Ok(Self {
+            request_line_data,
+            request_headers,
             body: Vec::from(body),
             stream,
             resolved: Mutex::new(false)
-        }
+        })
     }
 
      pub fn get_body_as_json<'a>(&self) -> Result<JsonObject, JsonParseError> {
@@ -124,32 +125,32 @@ impl Request {
     pub fn request_line_data(&self) -> &RequestLineData {
         &self.request_line_data
     }
-    pub fn request_header_map(&self) -> &RequestHeaders {
-        &self.request_headers
-    }
-    pub fn stream(&self) -> &TcpStream {
-        &self.stream
-    }
-    pub fn set_request_line_data(&mut self, request_line_data: RequestLineData) {
-        self.request_line_data = request_line_data;
-    }
-    pub fn set_request_header_map(&mut self, request_headers: RequestHeaders) {
-        self.request_headers = request_headers;
-    }
-    pub fn set_stream(&mut self, stream: TcpStream) {
-        self.stream = stream;
-    }
-
-    pub fn request_headers(&self) -> &RequestHeaders {
+    pub fn request_headers(&self) -> &Option<RequestHeaders> {
         &self.request_headers
     }
     pub fn body(&self) -> &Vec<u8> {
         &self.body
     }
-    pub fn set_request_headers(&mut self, request_headers: RequestHeaders) {
+    pub fn stream(&self) -> &TcpStream {
+        &self.stream
+    }
+    pub fn resolved(&self) -> &Mutex<bool> {
+        &self.resolved
+    }
+
+    pub fn set_request_line_data(&mut self, request_line_data: RequestLineData) {
+        self.request_line_data = request_line_data;
+    }
+    pub fn set_request_headers(&mut self, request_headers: Option<RequestHeaders>) {
         self.request_headers = request_headers;
     }
     pub fn set_body(&mut self, body: Vec<u8>) {
         self.body = body;
+    }
+    pub fn set_stream(&mut self, stream: TcpStream) {
+        self.stream = stream;
+    }
+    pub fn set_resolved(&mut self, resolved: Mutex<bool>) {
+        self.resolved = resolved;
     }
 }

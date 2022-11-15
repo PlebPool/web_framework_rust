@@ -47,13 +47,9 @@ pub fn start(port: &str, container: Arc<IocContainer>) {
     }
 
     for tcp_stream in listener.incoming() {
-
-        let thread_builder: thread::Builder = thread::Builder::new()
-            .name(String::from("REQUEST_HANDLER_THREAD"));
-
         let container_reference_clone: Arc<IocContainer> = Arc::clone(&container);
 
-        thread_builder.spawn(move || {
+        thread::spawn(move || {
 
             // We pass the TcpStream and a buffer to the parser. It returns an initialized transaction.
             let req: Request = request_parser::parse_request(
@@ -67,7 +63,7 @@ pub fn start(port: &str, container: Arc<IocContainer>) {
 
             // Pass container reference and parsed transaction.
             request_handler::enter_chain(req, container_reference_clone);
-        }).expect("Failed to spawn request handler thread.");
+        });
     }
 }
 

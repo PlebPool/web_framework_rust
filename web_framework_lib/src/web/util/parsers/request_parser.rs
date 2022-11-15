@@ -1,7 +1,9 @@
-use std::io::Read;
+
+use std::io::{Read, Write};
 use std::net::TcpStream;
 
 use crate::web::models::request::Request;
+use crate::web::models::response::Response;
 
 //  █     █░▓█████   ▄████  ▄▄▄▄    ██▓     ▄▄▄      ▓█████▄
 // ▓█░ █ ░█░▓█   ▀  ██▒ ▀█▒▓█████▄ ▓██▒    ▒████▄    ▒██▀ ██▌
@@ -13,6 +15,28 @@ use crate::web::models::request::Request;
 //   ░   ░     ░   ░ ░   ░  ░    ░   ░ ░     ░   ▒    ░ ░  ░
 //     ░       ░  ░      ░  ░          ░  ░      ░  ░   ░
 //                               ░                    ░
+
+pub enum RequestParseError {
+    NoMethod,
+    NoPath,
+    NoProtocol
+}
+
+impl ToString for RequestParseError {
+    fn to_string(&self) -> String {
+        match self {
+            RequestParseError::NoProtocol => {
+                "No protocol"
+            },
+            RequestParseError::NoPath => {
+                "No path"
+            },
+            RequestParseError::NoMethod => {
+                "No method"
+            }
+        }.to_string()
+    }
+}
 
 /// It reads a buffer from a TcpStream, parses it into a Request, creates a new empty Response, and
 /// returns a Transaction
@@ -52,5 +76,17 @@ pub fn parse_request<'a>(mut tcp_stream: TcpStream, mut buf: [u8; 1024]) -> Requ
             String::from_utf8_lossy(body),
         );
     }
-    Request::new(headers, body, tcp_stream)
+    let tcp_clone: std::io::Result<TcpStream> = tcp_stream.try_clone();
+    let parse_result: Result<Request, RequestParseError> = Request::new(headers, body, tcp_stream);
+    match parse_result {
+        Ok(parsed_request) => {
+            parsed_request
+        },
+        Err(e) => {
+            if let Ok(mut tcp) = tcp_clone {
+                let _ = tcp.write(Response::bad_request(&e.to_string()).get_as_u8_vec().as_slice());
+            }
+            panic!("http: 400");
+        }
+    }
 }

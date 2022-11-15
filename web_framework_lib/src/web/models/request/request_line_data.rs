@@ -3,6 +3,7 @@ use std::str::{Split, SplitWhitespace};
 
 use crate::web::models::request::request_line_data::request_queries::RequestQueries;
 use crate::web::util::encoders::url_encoder;
+use crate::web::util::parsers::request_parser::RequestParseError;
 
 //  █     █░▓█████   ▄████  ▄▄▄▄    ██▓     ▄▄▄      ▓█████▄
 // ▓█░ █ ░█░▓█   ▀  ██▒ ▀█▒▓█████▄ ▓██▒    ▒████▄    ▒██▀ ██▌
@@ -58,12 +59,26 @@ impl RequestLineData {
     /// Returns:
     ///
     /// A new instance of the Request struct.
-    pub fn new(req_str_first_line: &str) -> Self {
+    pub fn new(req_str_first_line: &str) -> Result<Self, RequestParseError> {
         let mut sws: SplitWhitespace = req_str_first_line.split_whitespace();
         let method: String =
-            match sws.next() { Some(t) => { t }, None => { "[NO_METHOD]" } }.to_string();
-        let full_path_string =
-            match sws.next() { Some(t) => { t }, None => { "[NO_PATH]" } }.to_string();
+            match sws.next() {
+                Some(method) => {
+                    Ok(method)
+                },
+                None => {
+                    Err(RequestParseError::NoMethod)
+                }
+            }?.to_string();
+        let full_path_string: String =
+            match sws.next() {
+                Some(path) => {
+                    Ok(path)
+                },
+                None => {
+                     Err(RequestParseError::NoPath)
+                }
+            }?.to_string();
         let path: String;
         let path_query_split_opt: Option<(&str, &str)> = full_path_string.split_once('?');
         let request_queries_opt: Option<RequestQueries> = match path_query_split_opt {
@@ -85,13 +100,20 @@ impl RequestLineData {
             }
         };
         let protocol: String =
-            match sws.next() { Some(t) => { t }, None => { "[NO_PROTOCOL]" } }.to_string();
-        Self {
+            match sws.next() {
+                Some(protocol) => {
+                    Ok(protocol)
+                },
+                None => {
+                    Err(RequestParseError::NoProtocol)
+                }
+            }?.to_string();
+        Ok(Self {
             method,
             path,
             protocol,
             request_queries: request_queries_opt
-        }
+        })
     }
 
     pub fn get_path_cell_by_index_url_encoded(&self, index: usize) -> Option<String> {

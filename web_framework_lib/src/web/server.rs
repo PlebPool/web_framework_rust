@@ -50,19 +50,8 @@ pub fn start(port: &str, container: Arc<IocContainer>) {
         let container_reference_clone: Arc<IocContainer> = Arc::clone(&container);
 
         thread::spawn(move || {
-
-            // We pass the TcpStream and a buffer to the parser. It returns an initialized transaction.
-            let req: Request = request_parser::parse_request(
-                tcp_stream.expect("Failed to unwrap tcp stream"),
-                [0; 1024]
-            );
-
-            if log::log_enabled!(log::Level::Info) {
-                log::info!("Request Received from {}", req.stream().peer_addr().unwrap());
-            }
-
             // Pass container reference and parsed transaction.
-            request_handler::enter_chain(req, container_reference_clone);
+            request_handler::handle(tcp_stream, container_reference_clone);
         });
     }
 }

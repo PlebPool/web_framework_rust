@@ -16,6 +16,7 @@ use crate::web::models::response::Response;
 //     ░       ░  ░      ░  ░          ░  ░      ░  ░   ░
 //                               ░                    ░
 
+#[derive(Debug)]
 pub enum RequestParseError {
     NoMethod,
     NoPath,
@@ -49,7 +50,7 @@ impl ToString for RequestParseError {
 /// Returns:
 ///
 /// A Transaction struct
-pub fn parse_request<'a>(mut tcp_stream: TcpStream, mut buf: [u8; 1024]) -> Request {
+pub fn parse_request<'a>(mut tcp_stream: TcpStream, mut buf: [u8; 1024]) -> Result<Request, RequestParseError> {
     tcp_stream.read(&mut buf).expect("TcpStream read failed");
     let buf: Vec<u8> = buf.into_iter()
         .filter(|byte: &u8|*byte != 13 && *byte != 0).collect::<Vec<u8>>();
@@ -77,16 +78,5 @@ pub fn parse_request<'a>(mut tcp_stream: TcpStream, mut buf: [u8; 1024]) -> Requ
         );
     }
     let tcp_clone: std::io::Result<TcpStream> = tcp_stream.try_clone();
-    let parse_result: Result<Request, RequestParseError> = Request::new(headers, body, tcp_stream);
-    match parse_result {
-        Ok(parsed_request) => {
-            parsed_request
-        },
-        Err(e) => {
-            if let Ok(mut tcp) = tcp_clone {
-                let _ = tcp.write(Response::bad_request(&e.to_string()).get_as_u8_vec().as_slice());
-            }
-            panic!("http: 400");
-        }
-    }
+    Request::new(headers, body, tcp_stream)
 }

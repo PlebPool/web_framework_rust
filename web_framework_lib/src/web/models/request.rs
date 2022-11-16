@@ -7,6 +7,7 @@ use std::sync::{LockResult, Mutex, MutexGuard};
 use crate::web::models::request::request_headers::RequestHeaders;
 use crate::web::models::request::request_line_data::RequestLineData;
 use crate::web::models::response::Response;
+use crate::web::request_handling::request_handler::HandleError;
 use crate::web::util::parsers::json_parser::{JsonObject, JsonParseError, parse_into_json_object};
 use crate::web::util::parsers::request_parser::RequestParseError;
 
@@ -79,23 +80,25 @@ impl Request {
          }
      }
 
-    pub fn resolve(&self, mut res: Response) -> Result<(), &str> {
+    pub fn resolve(&self, mut res: Response) -> Result<(), HandleError> {
         let mutex_lock: LockResult<MutexGuard<bool>> = self.resolved.lock();
         if let Ok(mut t) = mutex_lock {
             return if *t {
-                Err("Transaction already resolved...")
+                Err(HandleError::AlreadyResolved)
             } else if res.status() == 0 {
-                Err("You have to set the http status before resolving the transaction.")
+                Err(HandleError::HttpStatusNotSet)
             } else {
-                self.stream()
+                let write_result: std::io::Result<usize> = self.stream()
                     .write(res.get_as_u8_vec()
-                        .as_slice())
-                    .expect("Failed to resolve transaction.");
+                        .as_slice());
+                if write_result.is_err() {
+                    return Err(HandleError::ResolveFailed)
+                }
                 *t = true;
                 Ok(())
             }
         } else {
-            panic!("Failed to get mutex lock for self.");
+            Err(HandleError::UnobtainedMutex)
         }
     }
 

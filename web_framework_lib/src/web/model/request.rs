@@ -1,10 +1,10 @@
-use std::io::Read;
+
 use std::net::TcpStream;
 use std::sync::Mutex;
 use crate::web::model::http_headers::HttpHeaders;
-use crate::web::model::request::request_entity::RequestLine;
+use crate::web::model::request::request_line::RequestLine;
 
-pub mod request_entity;
+pub mod request_line;
 
 /// `Request` is a struct that contains a `RequestEntity`, a `Future` that resolves to an
 /// `Option<HttpHeaders>`, a `Future` that resolves to a `Vec<u8>`, a `TcpStream`, and a `Mutex<bool>`.

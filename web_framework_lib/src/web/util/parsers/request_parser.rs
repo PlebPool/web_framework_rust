@@ -1,9 +1,7 @@
 
 use std::io::{Read, Write};
 use std::net::TcpStream;
-
-use crate::web::models::request::Request;
-use crate::web::models::response::Response;
+use crate::web::model::request::Request;
 
 //  █     █░▓█████   ▄████  ▄▄▄▄    ██▓     ▄▄▄      ▓█████▄
 // ▓█░ █ ░█░▓█   ▀  ██▒ ▀█▒▓█████▄ ▓██▒    ▒████▄    ▒██▀ ██▌
@@ -52,6 +50,7 @@ impl ToString for RequestParseError {
 /// A Transaction struct
 pub fn parse_request<'a>(mut tcp_stream: TcpStream, mut buf: [u8; 1024]) -> Result<Request, RequestParseError> {
     tcp_stream.read(&mut buf).expect("TcpStream read failed");
+    // 13 = CR-LF (Carriage Return (and) Line Feed), 0 = null.
     let buf: Vec<u8> = buf.into_iter()
         .filter(|byte: &u8|*byte != 13 && *byte != 0).collect::<Vec<u8>>();
     // Checking for delimiting double \n between headers and body.
@@ -78,5 +77,6 @@ pub fn parse_request<'a>(mut tcp_stream: TcpStream, mut buf: [u8; 1024]) -> Resu
         );
     }
     let tcp_clone: std::io::Result<TcpStream> = tcp_stream.try_clone();
-    Request::new(headers, body, tcp_stream)
+    unimplemented!();
+    // Request::new(headers, body, tcp_stream)
 }

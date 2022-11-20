@@ -4,11 +4,10 @@ use std::net::TcpListener;
 use std::sync::Arc;
 use std::thread;
 use std::time::Duration;
-use crate::web::models::request::Request;
-use crate::web::models::response::Response;
+use crate::web::model::request::Request;
+use crate::web::model::response::Response;
 
 use crate::web::request_handling::request_handler;
-use crate::web::util::parsers::request_parser;
 
 //  █     █░▓█████   ▄████  ▄▄▄▄    ██▓     ▄▄▄      ▓█████▄
 // ▓█░ █ ░█░▓█   ▀  ██▒ ▀█▒▓█████▄ ▓██▒    ▒████▄    ▒██▀ ██▌

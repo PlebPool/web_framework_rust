@@ -1,14 +1,13 @@
 
 
 pub mod web {
-    pub mod models {
+    pub mod model {
         pub mod request;
+        pub mod http_headers;
         pub mod response;
     }
-
     pub mod request_handling {
         pub mod request_handler;
-        pub mod route_handler_container;
     }
     pub mod util {
         pub mod encoders {
